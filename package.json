@@ -1,0 +1,24 @@
+{
+  "name": "onsenui-v2-react-splitter",
+  "version": "2.4.0+20180301.1",
+  "description": "",
+  "dependencies": {
+    "cordova-custom-config": "5.0.2",
+    "cordova-plugin-splashscreen": "5.0.1",
+    "cordova-plugin-whitelist": "1.3.3",
+    "monaca-plugin-monaca-core": "3.2.0",
+    "onsenui": "~2.10.0",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0",
+    "react-onsenui": "~1.11.0",
+    "react-xml-parser": "^1.0.7"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-custom-config": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-whitelist": {},
+      "monaca-plugin-monaca-core": {}
+    }
+  }
+}
