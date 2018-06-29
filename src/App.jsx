@@ -66,7 +66,7 @@ export default class App extends React.Component {
   }
   
   render() {
-    let imageStyle = {
+    const imageStyle = {
       width: '40%',
       marginLeft: '30%',
       marginRight: '30%',
@@ -74,16 +74,16 @@ export default class App extends React.Component {
       marginTop: '4%'
     };
 
-    let divCenter = {
+    const divCenter = {
       textAlign: 'center'
     };
 
-    let imageSmall = {
+    const imageSmall = {
       marginTop: '5px',
       height: '20px'
     };
 
-    let listDiv = {
+    const listDiv = {
       height: '20px'
     };
 
@@ -104,7 +104,7 @@ export default class App extends React.Component {
               <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
             </div>
             <List>
-              <ListItem key={HomePage.name} onClick={this.loadPage.bind(this, HomePage)} tappable>
+              <ListItem key={App.name} onClick={this.loadPage.bind(this, App)} tappable>
                 <div style={listDiv}>{this.state.strings.home}</div>
               </ListItem>
               <ListItem onClick={this.changeLanguage.bind(this)} tappable>

@@ -7,7 +7,10 @@
     "festival": "축제, 공연",
     "activity": "액티비티",
     "shopping": "쇼핑",
-    "foods": "먹거리"
+    "foods": "먹거리",
+    "all": "전체",
+    "seoguipo": "서귀포",
+    "jeju": "제주"
   },
   "en": {
     "home": "Home",
@@ -17,6 +20,10 @@
     "festival": "Festivals",
     "activity": "Activities",
     "shopping": "Shopping",
-    "foods": "Foods"
+    "foods": "Foods",
+    "all": "All",
+    "seoguipo": "Seoguipo",
+    "jeju": "Jeju"
+
   }
 }
