@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Navigator, Splitter, SplitterSide, SplitterContent, Page, Button, List, ListItem, Icon} from 'react-onsenui';
+import LocalizedStrings from 'react-localization';
 
 import HomePage from './HomePage';
 
@@ -8,16 +9,39 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
+    let langFile = require('public/str/langPack.json'); /* load lang pack */
+    let strings = new LocalizedStrings(langFile);
+
     this.state = {
-      isOpen: false
+      isOpen: false,
+      strings: strings
     };
+
+    let lang = localStorage.getItem('lang');
+    strings.setLanguage(lang);
+  }
+
+  changeLanguage() {
+    this.hide();
+    let lang = this.state.strings.getLanguage();
+    if(lang == 'kr') {
+      this.state.strings.setLanguage('en');
+      localStorage.setItem('lang', 'en');
+    } else {
+      this.state.strings.setLanguage('kr');
+      localStorage.setItem('lang', 'kr');
+    }
+    this.setState({});
   }
 
   loadPage(page) {
     this.hide();
     const currentPage = this.navigator.pages.slice(-1)[0] // --- or [this.navigator.pages.length - 1]
     if(currentPage.key != page.name){
-      this.navigator.resetPage({ component: page, props: { key: page.name } }, { animation: 'fade' });
+      this.navigator.resetPage({ 
+        component: page, 
+        props: { key: page.name, strings: this.state.strings } }, 
+        { animation: 'fade' });
     }
   }
 
@@ -49,39 +73,51 @@ export default class App extends React.Component {
       marginBotton: '4%',
       marginTop: '4%'
     };
+
     let divCenter = {
       textAlign: 'center'
     };
+
     let imageSmall = {
       marginTop: '5px',
       height: '20px'
     };
+
+    let listDiv = {
+      height: '20px'
+    };
+
     return (
       <Splitter>
         <SplitterSide
-          side='left'
+          side='right'
           collapse={true}
           isOpen={this.state.isOpen}
           onClose={this.hide.bind(this)}
-          swipeable={true}>
+          swipeable={false}>
           <Page>
-             <img src="img/islander.png" 
-               className="center" 
-               style={imageStyle} />
-             <div style={divCenter} >
-               <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
-               <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
-             </div>
-             <List>
+            <img src="img/islander.png" 
+              className="center" 
+              style={imageStyle} />
+            <div style={divCenter} >
+              <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
+              <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
+            </div>
+            <List>
               <ListItem key={HomePage.name} onClick={this.loadPage.bind(this, HomePage)} tappable>
-                Home
+                <div style={listDiv}>{this.state.strings.home}</div>
+              </ListItem>
+              <ListItem onClick={this.changeLanguage.bind(this)} tappable>
+                <div style={listDiv}>{this.state.strings.language}</div>
               </ListItem>
             </List>
           </Page>
         </SplitterSide>
         <SplitterContent>
           <Navigator 
-            initialRoute={{ component: HomePage, props: { key: HomePage.name } }} 
+            initialRoute={{ 
+              component: HomePage, 
+              props: { key: HomePage.name, strings: this.state.strings } }} 
             renderPage={this.renderPage.bind(this)}
             ref={(navigator) => { this.navigator = navigator; }} />
         </SplitterContent>
