@@ -23,14 +23,35 @@ export default class HomePage extends React.Component {
     this.props.showMenu();
   }
 
+  changeLanguage() {
+    let lang = this.props.strings.getLanguage();
+    if(lang == 'kr') {
+      this.props.strings.setLanguage('en');
+      localStorage.setItem('lang', 'en');
+    } else {
+      this.props.strings.setLanguage('kr');
+      localStorage.setItem('lang', 'kr');
+    }
+    this.setState({});
+  }
+
   renderToolbar() {
-    const imgStyle= {
+    const imgStyle = {
       height: '35%',
       marginTop: '5%'
     };
+    
+    const imgTag = this.props.strings.getLanguage() == 'kr' ? 
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/english.png" 
+         style={{width: "33px"}}/></Button>) :
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/korean.png" 
+         style={{width: "33px"}}/></Button>);
 
     return (
       <Toolbar>
+        <div className="left">
+          {imgTag}
+        </div>
         <div className="center">
         Islander Jeju <img src="img/milgam.png" style={imgStyle} />
         </div>

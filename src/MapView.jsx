@@ -72,8 +72,6 @@ export default class MapView extends React.Component {
   }
 
   render() {
-    console.log("MapView render");
-    console.log(this.props.strings);
     const centerDiv = {
       textAlign: 'center'
     };
@@ -88,9 +86,9 @@ export default class MapView extends React.Component {
           <div style={innerDiv}>
             <Segment index={this.state.segmentIndex} 
               onPostChange={() => this.setState({ segmentIndex: event.index})} style={{ width: '55%' }}>
-              <button>{this.props.strings.all}</button>
-              <button>{this.props.strings.seoguipo}</button>
-              <button>{this.props.strings.jeju}</button>
+              <Button>{this.props.strings.all}</Button>
+              <Button>{this.props.strings.seoguipo}</Button>
+              <Button>{this.props.strings.jeju}</Button>
             </Segment>
           </div>
           <div style={innerDiv}>

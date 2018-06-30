@@ -21,18 +21,6 @@ export default class App extends React.Component {
     strings.setLanguage(lang);
   }
 
-  changeLanguage() {
-    this.hide();
-    let lang = this.state.strings.getLanguage();
-    if(lang == 'kr') {
-      this.state.strings.setLanguage('en');
-      localStorage.setItem('lang', 'en');
-    } else {
-      this.state.strings.setLanguage('kr');
-      localStorage.setItem('lang', 'kr');
-    }
-    this.setState({});
-  }
 
   loadPage(page) {
     this.hide();
@@ -106,9 +94,6 @@ export default class App extends React.Component {
             <List>
               <ListItem key={App.name} onClick={this.loadPage.bind(this, App)} tappable>
                 <div style={listDiv}>{this.state.strings.home}</div>
-              </ListItem>
-              <ListItem onClick={this.changeLanguage.bind(this)} tappable>
-                <div style={listDiv}>{this.state.strings.language}</div>
               </ListItem>
             </List>
           </Page>
