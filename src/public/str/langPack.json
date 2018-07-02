@@ -10,7 +10,9 @@
     "foods": "먹거리",
     "all": "전체",
     "seoguipo": "서귀포",
-    "jeju": "제주"
+    "jeju": "제주",
+    "godetails": "상세정보",
+    "zipcode": "우편번호"
   },
   "en": {
     "home": "Home",
@@ -23,7 +25,8 @@
     "foods": "Foods",
     "all": "All",
     "seoguipo": "Seoguipo",
-    "jeju": "Jeju"
-
+    "jeju": "Jeju",
+    "godetails": "Details",
+    "zipcode": "Zip Code"
   }
 }

@@ -8,18 +8,26 @@ export default class MapView extends React.Component {
   constructor(props) {
     super(props);
 
-    
+    let serviceLang = "";
+    let lang = this.props.strings.getLanguage();
+    if(lang == 'kr') {
+      serviceLang = "KorService";
+    } else {
+      serviceLang = "EngService";
+    }
+   
     const fixedAreaCode = 39; /* jeju island area code */
     const serviceKey = 
       "XU3%2BCzeg%2BV5ML42ythVLdLSe05DgiBqmS1wCZJfnhdpQ6X5y%2BB5W%2BJ3E%2B98cXaALAMFCqZQxlMdzLYrSy4fUrw%3D%3D";
     this.state = {
       urlForContentBase: "http://api.visitkorea.or.kr/openapi/service/rest/" + 
-        "KorService/areaBasedList?ServiceKey=" + 
+        serviceLang + "/areaBasedList?ServiceKey=" + 
         serviceKey + "&contentTypeId=", 
       urlForContentRemain: "&areaCode=" + fixedAreaCode + 
         "&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC" + 
         "&MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=1000&pageNo=1",
       segmentIndex: 0,
+      itemCarouselIndex: 0,
       items: [],
       availCategories: [],
       filterCarouselIndex: 0,
@@ -43,6 +51,7 @@ export default class MapView extends React.Component {
         var XMLParser = require('react-xml-parser');
         var xml = new XMLParser().parseFromString(xhr.responseText);
         var items = xml.getElementsByTagName('item');
+        console.log(items);
         var availCategorySet = new Set();
 
         /* read available category from API and store them into a set*/
@@ -55,9 +64,20 @@ export default class MapView extends React.Component {
           }
         }
 
-        let allCategories = require('public/category/category.json'); /* load all category pack */
-        let availCategories = [];
+        let categories_kr = require('public/category/category_kr.json'); /* load all category pack (kr) */
+        let categories_en = require('public/category/category_en.json'); /* load all category pack (kr) */
         let categoryAll = {key: "0", value: "전체"};
+        let allCategories = null;
+
+        let lang = this_.props.strings.getLanguage();
+        if(lang == 'kr') {
+          allCategories = categories_kr;
+        } else {
+          allCategories = categories_en;
+          categoryAll = {key: "0", value: "All"};
+        }
+ 
+        let availCategories = [];
         availCategories.push(categoryAll);
 
         /* compare all category and set item and if the category is available one, 
@@ -91,45 +111,60 @@ export default class MapView extends React.Component {
           height: '30px'
         };
 
+        /* prev button for carousel */
         let backButton = (
-          <Button modifier='quiet' style={buttonStyle} onClick={this_.goBack.bind(this_)}>
+          <Button modifier='quiet' style={buttonStyle} onClick={this_.goPrevFilterCarousel.bind(this_)}>
             <div style={innerDivStyle}>&lt;</div>
           </Button>);
 
+        /* next button for carousel */
         let nextButton =(
-          <Button modifier='quiet' style={buttonStyle} onClick={this_.goNext.bind(this_)}>
+          <Button modifier='quiet' style={buttonStyle} onClick={this_.goNextFilterCarousel.bind(this_)}>
             <div style={innerDivStyle}>&gt;</div>
           </Button>); 
-
+        
         let filterButtons = [];
         let filterCarouselItems = [];
+        // four buttons in a row, so make length / 4 size of carousel item
         for(let i = 0; i < availCategories.length / 4; i++) {
+          // four buttons in a row
           let start = i * 4;
           let end = start + 4;
+          // four buttons will be grouped in a buttonGroup array and then stored into a carousel item.
           let buttonGroup = [];
+          // add prev button at first
           buttonGroup.push(backButton);
           for(let j = start; j < end; j++) {
+            // if a item with index is not null or not undefined, make that into button with key.
             if(availCategories[j] != null) {
               let category = availCategories[j];
-              let modifier = 'outline';
-              if(j == 0) modifier = null;
-              let button = (<Button key={category.key} style={filterButtonStyle} modifier={modifier}>
-                <div style={innerDivStyle}>
-                  {category.value}
-                </div></Button>);
+              let modifier = 'outline'; // default inactive button style is outline.
+              if(j == 0) modifier = null; 
+              // the first button is button for no filter. so let us make this button in active.
+              let button = (
+                <Button key={category.key} style={filterButtonStyle} modifier={modifier}
+                  onClick={this_.toggleFilterStatus.bind(this_, category.key)}>
+                  <div style={innerDivStyle}>
+                    {category.value}
+                  </div>
+                </Button>);
               buttonGroup.push(button);
             } else {
+              // make dummy button. if there is no proper item.
               let button = (<Button 
-                style={{width:'21%', margin: '1%', height: '30px'}} modifier='quiet'>
+                style={{width:'21%', margin: '1%', height: '30px'}} modifier='quiet' disabled={true}>
                 <div style={innerDivStyle}>
                 </div></Button>);
               buttonGroup.push(button);
             }
           }
+          // add next button at first
           buttonGroup.push(nextButton);
           filterButtons.push(buttonGroup);
+          // make carousel item with grouped buttons.
           let carouselItem = (<CarouselItem key={i}>
             <div style={{textAlign: "left"}}>{buttonGroup}</div></CarouselItem>);
+          // and add it.
           filterCarouselItems.push(carouselItem);
         }
 
@@ -149,19 +184,73 @@ export default class MapView extends React.Component {
     });
   }
 
-  goBack() {
+  toggleFilterStatus(key) {
+    let newArray = this.state.filterButtons.slice(); // copy the array
+    let newCarouselItems = this.state.filterCarouselItems.slice(); // copy the array
+    let indexToToggleI = 0;
+    let indexToToggleJ = 0;
+    let newButton = null;
+
+    const filterButtonStyle = {
+      width: '22%', // draw 4 buttons on single carousel
+      margin: '1%',
+      height: '30px',
+      fontSize: '0.7em',
+      padding: '1px'
+    };
+
+    const innerDivStyle = {
+      textAlign: "center",
+      margin: '0%',
+      height: '30px'
+    };
+
+    /* search desired button in the button group */
+    for(let i = 0; i < newArray.length; i++) {
+      let buttonGroup = newArray[i];
+      for(let j = 0; j < buttonGroup.length; j++) {
+        let button = buttonGroup[j];
+        if(button.key == key) {
+          let modifier = button.props.modifier == 'outline' ? null : 'outline';
+
+          let buttonNew = (
+            <Button key={key} style={filterButtonStyle} modifier={modifier}
+              onClick={this.toggleFilterStatus.bind(this, key)}>
+              <div style={innerDivStyle}>
+                {button.props.children.props.children}
+              </div>
+            </Button>);
+          
+          newArray[i][j] = buttonNew; // replace array with new button
+          let newCarouselItem = (<CarouselItem key={i}>
+            <div style={{textAlign: "left"}}>{newArray[i]}</div></CarouselItem>);
+
+          newCarouselItems[i] = newCarouselItem;
+
+          this.setState({filterButtons: newArray, filterCarouselItems: newCarouselItems}); // and change them.
+          return;
+        }
+      }
+    }
+  }
+
+  goPrevFilterCarousel() {
     let change = this.state.filterCarouselIndex - 1 < 0 ? 
       this.state.filterButtons.length - 1 : 
       this.state.filterCarouselIndex - 1;
     this.setState({filterCarouselIndex: change});
   }
 
-  goNext() {
+  goNextFilterCarousel() {
     let change = this.state.filterCarouselIndex + 1 > this.state.filterButtons.length - 1 ? 
       0 : 
       this.state.filterCarouselIndex + 1;
 
     this.setState({filterCarouselIndex: change});
+  }
+
+  goDetails(contentId, contentTypeId) {
+    console.log(contentId + " : " + contentTypeId + " pressed");
   }
 
   renderToolbar() {
@@ -199,13 +288,61 @@ export default class MapView extends React.Component {
     };
 
 
-    let carousel = this.state.filterCarouselItems == null ? null : 
+    let filterCarousel = this.state.filterCarouselItems == null ? null : 
       (<Carousel
          index={this.state.filterCarouselIndex} 
          swipeable autoScroll overscrollable>
-           {this.state.filterCarouselItems}
+         {this.state.filterCarouselItems}
        </Carousel>);
 
+    let itemsToDisplay = [];
+    let placeCarouselItems = [];
+    for(let i = 0; i < this.state.items.length; i++) {
+      let item = this.state.items[i];
+      let mapX = item.getElementsByTagName("mapx")[0].value;
+      let mapY = item.getElementsByTagName("mapy")[0].value;
+      let addr = item.getElementsByTagName("addr1")[0].value;
+      let title = item.getElementsByTagName("title")[0].value;
+      let tel = item.getElementsByTagName("tel");
+      let image = item.getElementsByTagName("firstimage");
+      let zipCode = item.getElementsByTagName("zipcode");
+      let contentId = item.getElementsByTagName("contentid")[0].value;
+      let contentTypeId = item.getElementsByTagName("contenttypeid")[0].value;
+
+      let carouselKey = "carousel-" + contentId;
+
+      let imageSrc = image.length == 0 ? null : (<img src={image[0].value} style={{width: "20%"}}/>)
+      let telTag = tel.length == 0 ? null : (<p>{tel[0].value}</p>);
+      let detailButton = (
+        <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
+         {this.props.strings.godetails}
+        </Button>);
+      let zipCodeTag = zipCode.length == 0 ? null : 
+        (<p>{this.props.strings.zipcode} : {zipCode[0].value}</p>);
+      let placeCarouselItem = (
+        <CarouselItem key={carouselKey} style={{backgroundColor: item}}>
+          <div style={{textAlign: 'center'}}>
+            <h3>{title}</h3>
+            {zipCodeTag}
+            <h4>{addr}</h4>
+            {telTag}
+            {imageSrc}
+            {detailButton}
+          </div>
+        </CarouselItem>);
+
+      placeCarouselItems.push(placeCarouselItem);
+    }
+
+
+    console.log(placeCarouselItems);
+
+    let placeCarousel = this.state.items == null ? null :
+      (<Carousel
+         index = {this.state.itemCarouselIndex}
+         swipeable autoScroll overscrollable>
+         {placeCarouselItems}
+       </Carousel>);
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div style={centerDiv}>
@@ -225,8 +362,11 @@ export default class MapView extends React.Component {
           </div>
           <div>
             <hr style={hrStyle}/>
-            {carousel}
+            {filterCarousel}
             <hr style={hrStyle}/>
+          </div>
+          <div>
+            {placeCarousel}
           </div>
         </div>
       </Page>

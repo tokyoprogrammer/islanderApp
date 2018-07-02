@@ -78,12 +78,14 @@ export default class HomePage extends React.Component {
       textAlign: 'center'
     };
 
-    const sightCode = 12; 
-    const cultureCode = 14;
-    const festivalCode = 15;
-    const activityCode = 28;
-    const shoppingCode = 38;
-    const foodsCode = 39;
+    const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
+    
+    let sightCode = isKr ? 12 : 76; 
+    let cultureCode = isKr ? 14 : 78;
+    let festivalCode = isKr ? 15 : 85;
+    let activityCode = isKr ? 28 : 75;
+    let shoppingCode = isKr ? 38 : 79;
+    let foodsCode = isKr ? 39 : 82;
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
