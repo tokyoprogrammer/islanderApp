@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col} from 'react-onsenui';
 
 import MapContainer from './MapContainer'
 
@@ -249,6 +249,21 @@ export default class MapView extends React.Component {
     this.setState({filterCarouselIndex: change});
   }
 
+  prevItem() {
+    let change = this.state.itemCarouselIndex - 1 < 0 ?
+      this.state.items.length - 1 :
+      this.state.itemCarouselIndex - 1;
+    this.setState({itemCarouselIndex: change});
+  }
+
+  nextItem() {
+    let change = this.state.itemCarouselIndex + 1 > this.state.items.length - 1 ?
+      0 :
+      this.state.itemCarouselIndex + 1;
+    console.log(change);
+    this.setState({itemCarouselIndex: change});
+  }
+
   goDetails(contentId, contentTypeId) {
     console.log(contentId + " : " + contentTypeId + " pressed");
   }
@@ -287,6 +302,10 @@ export default class MapView extends React.Component {
       margin: '1px'
     };
 
+    const arrowIconSize = {
+      default: 30,
+      material: 28
+    };
 
     let filterCarousel = this.state.filterCarouselItems == null ? null : 
       (<Carousel
@@ -311,38 +330,73 @@ export default class MapView extends React.Component {
 
       let carouselKey = "carousel-" + contentId;
 
-      let imageSrc = image.length == 0 ? null : (<img src={image[0].value} style={{width: "20%"}}/>)
-      let telTag = tel.length == 0 ? null : (<p>{tel[0].value}</p>);
+      let imageSrc = image.length == 0 ? 
+        (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
+        (<img src={image[0].value} style={{width: "100%"}} />);
+
+      
+      let telLink = tel.length == 0 ? null : "tel:" + tel[0].value;
+      let telTag = tel.length == 0 ? null : 
+        (<a href={telLink}>{tel[0].value}</a>);
       let detailButton = (
         <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
          {this.props.strings.godetails}
         </Button>);
-      let zipCodeTag = zipCode.length == 0 ? null : 
-        (<p>{this.props.strings.zipcode} : {zipCode[0].value}</p>);
+      let zipCodeString = zipCode.length == 0 ? null : 
+        this.props.strings.zipcode + " : " + zipCode[0].value;
+
       let placeCarouselItem = (
         <CarouselItem key={carouselKey} style={{backgroundColor: item}}>
-          <div style={{textAlign: 'center'}}>
-            <h3>{title}</h3>
-            {zipCodeTag}
-            <h4>{addr}</h4>
-            {telTag}
-            {imageSrc}
-            {detailButton}
+          <div style={{height: "35%", padding: "1px 0 0 0"}}>
+            <div className="card">
+              <h2 className="card__title">{title}</h2>
+              <div className="card__content">
+                <Row style={{width: "100%"}}>
+                  <Col width="5%">
+                    <Button modifier='quiet' 
+                      onClick={this.prevItem.bind(this)} 
+                      style={{width: '10px', padding: "1%"}}>
+                      <Icon icon='md-chevron-left' size={arrowIconSize} />
+                    </Button>
+                  </Col>
+                  <Col width="37%">
+                    <div style={{textAligh: "center", padding: "1%"}}>
+                      {imageSrc}
+                    </div>
+                  </Col>
+                  <Col width="53%">
+                    <div style={{padding: "1%"}}>
+                      <p style={{margin: "1%"}}>{addr}</p>
+                      <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
+                      <p style={{margin: "1%"}}>{telTag}</p>
+                      <div style={{margin: "2%"}}>
+                        {detailButton}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col width="5%">
+                    <Button modifier='quiet' 
+                      onClick={this.nextItem.bind(this)} 
+                      style={{width: '10px', padding: "1%"}}>
+                      <Icon icon='md-chevron-right' size={arrowIconSize} />
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+            </div>
           </div>
         </CarouselItem>);
 
       placeCarouselItems.push(placeCarouselItem);
     }
 
-
-    console.log(placeCarouselItems);
-
-    let placeCarousel = this.state.items == null ? null :
+    let placeCarousel = this.state.items == null ? <Icon spin icon='md-spinner' /> :
       (<Carousel
          index = {this.state.itemCarouselIndex}
          swipeable autoScroll overscrollable>
          {placeCarouselItems}
        </Carousel>);
+
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div style={centerDiv}>
