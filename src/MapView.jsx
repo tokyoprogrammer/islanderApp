@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular} from 'react-onsenui';
 
 import MapContainer from './MapContainer'
 
@@ -29,6 +29,7 @@ export default class MapView extends React.Component {
       segmentIndex: 0,
       itemCarouselIndex: 0,
       items: [],
+      placeCarouselItems: [],
       availCategories: [],
       filterCarouselIndex: 0,
       filterButtons: [],
@@ -48,18 +49,21 @@ export default class MapView extends React.Component {
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
-        var XMLParser = require('react-xml-parser');
-        var xml = new XMLParser().parseFromString(xhr.responseText);
-        var items = xml.getElementsByTagName('item');
+
+        var convert = require('xml-js');
+        var options = {compact: true, ignoreComment: true, spaces: 4};
+        var xml = convert.xml2js(xhr.responseText, options);
+        console.log(xml);
+        var items = xml.response.body.items.item;
         console.log(items);
         var availCategorySet = new Set();
 
         /* read available category from API and store them into a set*/
         for(let i = 0; i < items.length; i++) {
           let item = items[i];
-          let cat3 = item.getElementsByTagName('cat3');
-          if(cat3.length == 1) {
-            let cat3Code = cat3[0].value;
+          let cat3 = item.cat3;
+          if(cat3 != null) {
+            let cat3Code = cat3._text;
             availCategorySet.add(cat3Code)
           }
         }
@@ -168,11 +172,91 @@ export default class MapView extends React.Component {
           filterCarouselItems.push(carouselItem);
         }
 
+        const arrowIconSize = {
+          default: 30,
+          material: 28
+        };
+
+        let placeCarouselItems = [];
+        for(let i = 0; i < items.length; i++) {
+          let item = items[i];
+          let mapX = item.mapx._text;
+          let mapY = item.mapy._text;
+          let addr = item.addr1._text;
+          let title = item.title._text;
+          let tel = item.tel;
+          let image = item.firstimage;
+          let zipCode = item.zipcode;
+          let contentId = item.contentid._text;
+          let contentTypeId = item.contenttypeid._text;
+
+          let carouselKey = "carousel-" + contentId;
+
+          let imageSrc = image == null ? 
+            (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
+            (<img src={image._text} style={{width: "100%"}} />);
+      
+          let telLink = tel == null ? null : "tel:" + tel._text;
+          let telTag = tel == null ? null : 
+            (<a href={telLink}>{tel._text}</a>);
+          let detailButton = (
+            <Button key={contentId} onClick={this_.goDetails.bind(this, contentId, contentTypeId)}>
+             {this_.props.strings.godetails}
+            </Button>);
+          let zipCodeString = zipCode == null ? null : 
+            this_.props.strings.zipcode + " : " + zipCode._text;
+
+          let placeCarouselItem = (
+            <CarouselItem key={carouselKey}>
+              <div style={{height: "35%", padding: "1px 0 0 0", textAlign: "center"}}>
+                <div className="card">
+                  <h2 className="card__title">{title}</h2>
+                  <div className="card__content">
+                    <Row style={{width: "100%"}}>
+                      <Col width="5%">
+                        <Button modifier='quiet' 
+                          onClick={this_.prevItem.bind(this_)} 
+                          style={{width: '10px', padding: "1%"}}>
+                          <Icon icon='md-chevron-left' size={arrowIconSize} />
+                        </Button>
+                      </Col>
+                      <Col width="37%">
+                        <div style={{textAlign: "center", padding: "1%"}}>
+                          {imageSrc}
+                        </div>
+                      </Col>
+                      <Col width="53%">
+                        <div style={{padding: "1%"}}>
+                          <p style={{margin: "1%"}}>{addr}</p>
+                          <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
+                          <p style={{margin: "1%"}}>{telTag}</p>
+                          <div style={{margin: "2%"}}>
+                            {detailButton}
+                          </div>
+                        </div>
+                      </Col>
+                      <Col width="5%">
+                        <Button modifier='quiet' 
+                          onClick={this_.nextItem.bind(this_)} 
+                          style={{width: '10px', padding: "1%"}}>
+                          <Icon icon='md-chevron-right' size={arrowIconSize} />
+                        </Button>
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>);
+
+          placeCarouselItems.push(placeCarouselItem);
+        }
+
         this_.setState({
           items: items, 
           availCategories: availCategories, 
           filterButtons: filterButtons,
-          filterCarouselItems: filterCarouselItems});
+          filterCarouselItems: filterCarouselItems,
+          placeCarouselItems: placeCarouselItems});
 
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
@@ -260,7 +344,6 @@ export default class MapView extends React.Component {
     let change = this.state.itemCarouselIndex + 1 > this.state.items.length - 1 ?
       0 :
       this.state.itemCarouselIndex + 1;
-    console.log(change);
     this.setState({itemCarouselIndex: change});
   }
 
@@ -302,99 +385,24 @@ export default class MapView extends React.Component {
       margin: '1px'
     };
 
-    const arrowIconSize = {
-      default: 30,
-      material: 28
-    };
 
-    let filterCarousel = this.state.filterCarouselItems == null ? null : 
+    let fullWidth = window.innerWidth + "px";
+
+    let filterCarousel = this.state.filterCarouselItems <= 0 ? "Loading..." : 
       (<Carousel
+         style={{width: fullWidth}}
          index={this.state.filterCarouselIndex} 
          swipeable autoScroll overscrollable>
          {this.state.filterCarouselItems}
        </Carousel>);
 
-    let itemsToDisplay = [];
-    let placeCarouselItems = [];
-    for(let i = 0; i < this.state.items.length; i++) {
-      let item = this.state.items[i];
-      let mapX = item.getElementsByTagName("mapx")[0].value;
-      let mapY = item.getElementsByTagName("mapy")[0].value;
-      let addr = item.getElementsByTagName("addr1")[0].value;
-      let title = item.getElementsByTagName("title")[0].value;
-      let tel = item.getElementsByTagName("tel");
-      let image = item.getElementsByTagName("firstimage");
-      let zipCode = item.getElementsByTagName("zipcode");
-      let contentId = item.getElementsByTagName("contentid")[0].value;
-      let contentTypeId = item.getElementsByTagName("contenttypeid")[0].value;
 
-      let carouselKey = "carousel-" + contentId;
-
-      let imageSrc = image.length == 0 ? 
-        (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
-        (<img src={image[0].value} style={{width: "100%"}} />);
-
-      
-      let telLink = tel.length == 0 ? null : "tel:" + tel[0].value;
-      let telTag = tel.length == 0 ? null : 
-        (<a href={telLink}>{tel[0].value}</a>);
-      let detailButton = (
-        <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
-         {this.props.strings.godetails}
-        </Button>);
-      let zipCodeString = zipCode.length == 0 ? null : 
-        this.props.strings.zipcode + " : " + zipCode[0].value;
-
-      let placeCarouselItem = (
-        <CarouselItem key={carouselKey} style={{backgroundColor: item}}>
-          <div style={{height: "35%", padding: "1px 0 0 0"}}>
-            <div className="card">
-              <h2 className="card__title">{title}</h2>
-              <div className="card__content">
-                <Row style={{width: "100%"}}>
-                  <Col width="5%">
-                    <Button modifier='quiet' 
-                      onClick={this.prevItem.bind(this)} 
-                      style={{width: '10px', padding: "1%"}}>
-                      <Icon icon='md-chevron-left' size={arrowIconSize} />
-                    </Button>
-                  </Col>
-                  <Col width="37%">
-                    <div style={{textAligh: "center", padding: "1%"}}>
-                      {imageSrc}
-                    </div>
-                  </Col>
-                  <Col width="53%">
-                    <div style={{padding: "1%"}}>
-                      <p style={{margin: "1%"}}>{addr}</p>
-                      <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
-                      <p style={{margin: "1%"}}>{telTag}</p>
-                      <div style={{margin: "2%"}}>
-                        {detailButton}
-                      </div>
-                    </div>
-                  </Col>
-                  <Col width="5%">
-                    <Button modifier='quiet' 
-                      onClick={this.nextItem.bind(this)} 
-                      style={{width: '10px', padding: "1%"}}>
-                      <Icon icon='md-chevron-right' size={arrowIconSize} />
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </div>
-        </CarouselItem>);
-
-      placeCarouselItems.push(placeCarouselItem);
-    }
-
-    let placeCarousel = this.state.items == null ? <Icon spin icon='md-spinner' /> :
+    let placeCarousel = this.state.items.length <= 0 ? (<ProgressCircular indeterminate />) :
       (<Carousel
+         style={{width: fullWidth}}
          index = {this.state.itemCarouselIndex}
          swipeable autoScroll overscrollable>
-         {placeCarouselItems}
+         {this.state.placeCarouselItems}
        </Carousel>);
 
     return (
