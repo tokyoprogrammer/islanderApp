@@ -4,6 +4,8 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchI
 
 import MapContainer from './MapContainer'
 
+import DetailView from './DetailView';
+
 export default class MapView extends React.Component {
   constructor(props) {
     super(props);
