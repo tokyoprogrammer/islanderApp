@@ -4,7 +4,7 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchI
 
 import LocalizedStrings from 'react-localization';
 
-import MapContainer from './MapContainer'
+import MapContainer from './MapContainer';
 
 import DetailView from './DetailView';
 
@@ -419,6 +419,12 @@ export default class MapView extends React.Component {
 
   goDetails(contentId, contentTypeId) {
     console.log(contentId + " : " + contentTypeId + " pressed");
+    localStorage.setItem("contentId", contentId);
+    localStorage.setItem("contentTypeId", contentTypeId);
+    this.props.navigator.pushPage({ 
+      component: DetailView 
+    });
+
   }
 
   renderToolbar() {
