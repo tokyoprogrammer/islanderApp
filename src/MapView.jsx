@@ -39,13 +39,14 @@ export default class MapView extends React.Component {
       segmentIndex: 0,
       itemCarouselIndex: 0,
       items: [],
+      numOfDrawnItems: 0,
       placeCarouselItems: [],
       availCategories: [],
       filterCarouselIndex: 0,
-      filterButtons: [],
       filterCarouselItems: null,
       strings: strings,
-      favorites: favorites
+      favorites: favorites,
+      filtered: []
     };
     strings.setLanguage(lang);
 
@@ -74,13 +75,15 @@ export default class MapView extends React.Component {
       favoritesCopy.splice(indexToRemove, 1);
     }
     localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
-    let placeCarouselItems = this.drawItemCarousel(this.state.items, this, favoritesCopy);
+    let placeCarouselItems = 
+      this.drawItemCarousel(this.state.items, this, favoritesCopy, this.state.filtered);
     this.setState({
       favorites: favoritesCopy, 
-      placeCarouselItems : placeCarouselItems});
+      placeCarouselItems : placeCarouselItems,
+      numOfDrawnItem: placeCarouselItems.length});
   }
 
-  drawItemCarousel(items, this_, favorites) {
+  drawItemCarousel(items, this_, favorites, filtered) {
     const arrowIconSize = {
       default: 30,
       material: 28
@@ -94,16 +97,33 @@ export default class MapView extends React.Component {
     let placeCarouselItems = [];
     for(let i = 0; i < items.length; i++) {
       let item = items[i];
-      let mapX = item.mapx._text;
-      let mapY = item.mapy._text;
-      let addr = item.addr1._text;
-      let title = item.title._text;
+      let proceed = false;
+      if(filtered.length >= 1) {
+        let cat3 = item.cat3 == null ? "" : item.cat3._text;
+
+        for(let j = 0; j < filtered.length; j++) {
+          let filter = filtered[j];
+          if(filter == cat3) { // check whether this item's category is in the filter or not 
+            proceed = true;
+            break;
+          }
+        }
+      }
+      if(!proceed && filtered.length >= 1) continue;
+      let mapX = item.mapx == null ? null : item.mapx._text;
+      let mapY = item.mapy == null ? null : item.mapy._text;
+      let addr = item.addr1 == null ? "" : item.addr1._text;
+      let title = item.title == null ? "" : item.title._text;
       let tel = item.tel;
       let image = item.firstimage;
       let zipCode = item.zipcode;
-      let contentId = item.contentid._text;
-      let contentTypeId = item.contenttypeid._text;
+      let contentId = item.contentid == null ? null : item.contentid._text;
+      let contentTypeId = item.contenttypeid == null ? null : item.contenttypeid._text;
+      if(contentId == null || contentTypeId == null) {
+        continue;
+      }
 
+      
       let carouselKey = "carousel-" + contentId;
 
       let imageSrc = image == null ? 
@@ -191,6 +211,99 @@ export default class MapView extends React.Component {
     return placeCarouselItems; 
   }
 
+  drawCategoryCarousel(availCategories, this_, filtered) {
+    /* make category filter buttons */
+    const filterButtonStyle = {
+      width: '22%', // draw 4 buttons on single carousel
+      margin: '1%',
+      height: '30px',
+      fontSize: '0.7em',
+      padding: '1px'
+    };
+
+    let buttonStyle = {
+      width: '2%',
+      padding: '0px',
+      height: '30px',
+      fontSize: '0.7em'
+    };
+
+    const innerDivStyle = {
+      textAlign: "center",
+      margin: '0%',
+      height: '30px'
+    };
+
+    /* prev button for carousel */
+    let backButton = (
+      <Button modifier='quiet' style={buttonStyle} onClick={this_.goPrevFilterCarousel.bind(this_)}>
+        <div style={innerDivStyle}>&lt;</div>
+      </Button>);
+
+    /* next button for carousel */
+    let nextButton =(
+      <Button modifier='quiet' style={buttonStyle} onClick={this_.goNextFilterCarousel.bind(this_)}>
+        <div style={innerDivStyle}>&gt;</div>
+      </Button>); 
+    
+    let filterCarouselItems = [];
+    // four buttons in a row, so make length / 4 size of carousel item
+    for(let i = 0; i < availCategories.length / 4; i++) {
+      // four buttons in a row
+      let start = i * 4;
+      let end = start + 4;
+      // four buttons will be grouped in a buttonGroup array and then stored into a carousel item.
+      let buttonGroup = [];
+      // add prev button at first
+      buttonGroup.push(backButton);
+      for(let j = start; j < end; j++) {
+        // if a item with index is not null or not undefined, make that into button with key.
+        if(availCategories[j] != null) {
+          let category = availCategories[j];
+          let modifier = 'outline'; // default inactive button style is outline.
+          if(filtered.length <= 0) {
+            if(j == 0) modifier = null;
+          }
+          else {
+            for(let fi = 0; fi < filtered.length; fi++) {
+              if(filtered[fi] == category.key) {
+                modifier = null;
+                break;
+              }
+            }
+          }
+
+          // the first button is button for no filter. so let us make this button in active.
+          let button = (
+            <Button key={category.key} style={filterButtonStyle} modifier={modifier}
+              onClick={this_.toggleFilterStatus.bind(this_, category.key)}>
+              <div style={innerDivStyle}>
+                {category.value}
+              </div>
+            </Button>);
+          buttonGroup.push(button);
+        } else {
+          // make dummy button. if there is no proper item.
+          let button = (<Button 
+            style={{width:'21%', margin: '1%', height: '30px'}} modifier='quiet' disabled={true}>
+            <div style={innerDivStyle}>
+            </div></Button>);
+          buttonGroup.push(button);
+        }
+      }
+      // add next button at first
+      buttonGroup.push(nextButton);
+      // make carousel item with grouped buttons.
+      let carouselItem = (<CarouselItem key={i}>
+        <div style={{textAlign: "left"}}>{buttonGroup}</div></CarouselItem>);
+      // and add it.
+      filterCarouselItems.push(carouselItem);
+    }
+
+    return filterCarouselItems;
+  }
+
+
   readLists(code) {
     var this_ = this;
     console.log(this.state.urlForContentBase + code + this.state.urlForContentRemain);
@@ -201,7 +314,6 @@ export default class MapView extends React.Component {
         var convert = require('xml-js');
         var options = {compact: true, ignoreComment: true, spaces: 4};
         var xml = convert.xml2js(xhr.responseText, options);
-        console.log(xml);
         var items = xml.response.body.items.item;
         console.log(items);
         var availCategorySet = new Set();
@@ -241,92 +353,17 @@ export default class MapView extends React.Component {
           }
         }
 
-        /* make category filter buttons */
-        const filterButtonStyle = {
-          width: '22%', // draw 4 buttons on single carousel
-          margin: '1%',
-          height: '30px',
-          fontSize: '0.7em',
-          padding: '1px'
-        };
+        let filterCarouselItems = this_.drawCategoryCarousel(availCategories, this_, []);
+        let placeCarouselItems = 
+          this_.drawItemCarousel(items, this_, this_.state.favorites, []);
 
-        let buttonStyle = {
-          width: '2%',
-          padding: '0px',
-          height: '30px',
-          fontSize: '0.7em'
-        };
-
-        const innerDivStyle = {
-          textAlign: "center",
-          margin: '0%',
-          height: '30px'
-        };
-
-        /* prev button for carousel */
-        let backButton = (
-          <Button modifier='quiet' style={buttonStyle} onClick={this_.goPrevFilterCarousel.bind(this_)}>
-            <div style={innerDivStyle}>&lt;</div>
-          </Button>);
-
-        /* next button for carousel */
-        let nextButton =(
-          <Button modifier='quiet' style={buttonStyle} onClick={this_.goNextFilterCarousel.bind(this_)}>
-            <div style={innerDivStyle}>&gt;</div>
-          </Button>); 
-        
-        let filterButtons = [];
-        let filterCarouselItems = [];
-        // four buttons in a row, so make length / 4 size of carousel item
-        for(let i = 0; i < availCategories.length / 4; i++) {
-          // four buttons in a row
-          let start = i * 4;
-          let end = start + 4;
-          // four buttons will be grouped in a buttonGroup array and then stored into a carousel item.
-          let buttonGroup = [];
-          // add prev button at first
-          buttonGroup.push(backButton);
-          for(let j = start; j < end; j++) {
-            // if a item with index is not null or not undefined, make that into button with key.
-            if(availCategories[j] != null) {
-              let category = availCategories[j];
-              let modifier = 'outline'; // default inactive button style is outline.
-              if(j == 0) modifier = null; 
-              // the first button is button for no filter. so let us make this button in active.
-              let button = (
-                <Button key={category.key} style={filterButtonStyle} modifier={modifier}
-                  onClick={this_.toggleFilterStatus.bind(this_, category.key)}>
-                  <div style={innerDivStyle}>
-                    {category.value}
-                  </div>
-                </Button>);
-              buttonGroup.push(button);
-            } else {
-              // make dummy button. if there is no proper item.
-              let button = (<Button 
-                style={{width:'21%', margin: '1%', height: '30px'}} modifier='quiet' disabled={true}>
-                <div style={innerDivStyle}>
-                </div></Button>);
-              buttonGroup.push(button);
-            }
-          }
-          // add next button at first
-          buttonGroup.push(nextButton);
-          filterButtons.push(buttonGroup);
-          // make carousel item with grouped buttons.
-          let carouselItem = (<CarouselItem key={i}>
-            <div style={{textAlign: "left"}}>{buttonGroup}</div></CarouselItem>);
-          // and add it.
-          filterCarouselItems.push(carouselItem);
-        }
-
-        let placeCarouselItems = this_.drawItemCarousel(items, this_, this_.state.favorites);
         this_.setState({
           items: items, 
           availCategories: availCategories, 
-          filterButtons: filterButtons,
           filterCarouselItems: filterCarouselItems,
-          placeCarouselItems: placeCarouselItems});
+          placeCarouselItems: placeCarouselItems,
+          numOfDrawnItem: placeCarouselItems.length,
+          filtered: []});
 
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
@@ -339,64 +376,49 @@ export default class MapView extends React.Component {
   }
 
   toggleFilterStatus(key) {
-    let newArray = this.state.filterButtons.slice(); // copy the array
-    let newCarouselItems = this.state.filterCarouselItems.slice(); // copy the array
-    let indexToToggleI = 0;
-    let indexToToggleJ = 0;
-    let newButton = null;
-
-    const filterButtonStyle = {
-      width: '22%', // draw 4 buttons on single carousel
-      margin: '1%',
-      height: '30px',
-      fontSize: '0.7em',
-      padding: '1px'
-    };
-
-    const innerDivStyle = {
-      textAlign: "center",
-      margin: '0%',
-      height: '30px'
-    };
-
-    /* search desired button in the button group */
-    for(let i = 0; i < newArray.length; i++) {
-      let buttonGroup = newArray[i];
-      for(let j = 0; j < buttonGroup.length; j++) {
-        let button = buttonGroup[j];
-        if(button.key == key) {
-          let modifier = button.props.modifier == 'outline' ? null : 'outline';
-
-          let buttonNew = (
-            <Button key={key} style={filterButtonStyle} modifier={modifier}
-              onClick={this.toggleFilterStatus.bind(this, key)}>
-              <div style={innerDivStyle}>
-                {button.props.children.props.children}
-              </div>
-            </Button>);
-          
-          newArray[i][j] = buttonNew; // replace array with new button
-          let newCarouselItem = (<CarouselItem key={i}>
-            <div style={{textAlign: "left"}}>{newArray[i]}</div></CarouselItem>);
-
-          newCarouselItems[i] = newCarouselItem;
-
-          this.setState({filterButtons: newArray, filterCarouselItems: newCarouselItems}); // and change them.
-          return;
+    let newFiltered = this.state.filtered.slice(); // copy the array
+    if(key == '0') {
+      // When 'All' button is clicked?
+      // Turn on 'All' button.
+      newFiltered = [];
+    }
+    else {
+      let indexToRemove = -1;
+      
+      for(let i = 0; i < newFiltered.length; i++) {
+        let filter = newFiltered[i];
+        if(filter == key) {
+          indexToRemove = i;
+          break;
         }
       }
+      if(indexToRemove == -1)
+      {
+        newFiltered.push(key);
+      } else {
+        newFiltered.splice(indexToRemove, 1);
+      }
     }
+    
+    let filterCarouselItems = this.drawCategoryCarousel(this.state.availCategories, this, newFiltered);
+    let placeCarouselItems = this.drawItemCarousel(this.state.items, this, this.state.favorites, newFiltered);
+    this.setState({
+      filterCarouselItems: filterCarouselItems,
+      filtered: newFiltered,
+      placeCarouselItems: placeCarouselItems,
+      numOfDrawnItem: placeCarouselItems.length});
   }
 
   goPrevFilterCarousel() {
     let change = this.state.filterCarouselIndex - 1 < 0 ? 
-      this.state.filterButtons.length - 1 : 
+      Math.round(this.state.availCategories.length / 4) - 1 : 
       this.state.filterCarouselIndex - 1;
+
     this.setState({filterCarouselIndex: change});
   }
 
   goNextFilterCarousel() {
-    let change = this.state.filterCarouselIndex + 1 > this.state.filterButtons.length - 1 ? 
+    let change = this.state.filterCarouselIndex + 1 > Math.round(this.state.availCategories.length / 4) - 1 ? 
       0 : 
       this.state.filterCarouselIndex + 1;
 
@@ -405,20 +427,19 @@ export default class MapView extends React.Component {
 
   prevItem() {
     let change = this.state.itemCarouselIndex - 1 < 0 ?
-      this.state.items.length - 1 :
+      this.state.numOfDrawnItem - 1 :
       this.state.itemCarouselIndex - 1;
     this.setState({itemCarouselIndex: change});
   }
 
   nextItem() {
-    let change = this.state.itemCarouselIndex + 1 > this.state.items.length - 1 ?
+    let change = this.state.itemCarouselIndex + 1 > this.state.numOfDrawnItem - 1 ?
       0 :
       this.state.itemCarouselIndex + 1;
     this.setState({itemCarouselIndex: change});
   }
 
   goDetails(contentId, contentTypeId) {
-    console.log(contentId + " : " + contentTypeId + " pressed");
     localStorage.setItem("contentId", contentId);
     localStorage.setItem("contentTypeId", contentTypeId);
     this.props.navigator.pushPage({ 
@@ -468,7 +489,7 @@ export default class MapView extends React.Component {
       (<Carousel
          style={{width: fullWidth}}
          index={this.state.filterCarouselIndex} 
-         swipeable autoScroll overscrollable>
+         autoScroll overscrollable>
          {this.state.filterCarouselItems}
        </Carousel>);
 
@@ -477,7 +498,7 @@ export default class MapView extends React.Component {
       (<Carousel
          style={{width: fullWidth}}
          index = {this.state.itemCarouselIndex}
-         swipeable autoScroll overscrollable>
+         autoScroll overscrollable>
          {this.state.placeCarouselItems}
        </Carousel>);
 
