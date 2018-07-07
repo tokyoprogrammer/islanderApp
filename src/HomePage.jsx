@@ -10,12 +10,10 @@ export default class HomePage extends React.Component {
   }
 
   pushPage(code) {
+    console.log("pushPage called");
+    localStorage.setItem("code", code);
     this.props.navigator.pushPage({ 
-      component: MapView, 
-      props: { 
-        key: MapView.name, 
-        code: code, 
-        strings:this.props.strings } 
+      component: MapView 
     });
   }
 
@@ -37,7 +35,7 @@ export default class HomePage extends React.Component {
 
   renderToolbar() {
     const imgStyle = {
-      height: '35%',
+      height: '15px',
       marginTop: '5%'
     };
     

@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular} from 'react-onsenui';
 
+import LocalizedStrings from 'react-localization';
+
 import MapContainer from './MapContainer'
 
 import DetailView from './DetailView';
@@ -11,13 +13,19 @@ export default class MapView extends React.Component {
     super(props);
 
     let serviceLang = "";
-    let lang = this.props.strings.getLanguage();
+    let lang = localStorage.getItem("lang");
     if(lang == 'kr') {
       serviceLang = "KorService";
     } else {
       serviceLang = "EngService";
     }
-   
+  
+    let favorites = JSON.parse(localStorage.getItem('favorites'));
+    if(favorites == null) favorites = [];
+  
+    let langFile = require('public/str/langPack.json'); /* load lang pack */
+    let strings = new LocalizedStrings(langFile);
+
     const fixedAreaCode = 39; /* jeju island area code */
     const serviceKey = 
       "XU3%2BCzeg%2BV5ML42ythVLdLSe05DgiBqmS1wCZJfnhdpQ6X5y%2BB5W%2BJ3E%2B98cXaALAMFCqZQxlMdzLYrSy4fUrw%3D%3D";
@@ -35,14 +43,152 @@ export default class MapView extends React.Component {
       availCategories: [],
       filterCarouselIndex: 0,
       filterButtons: [],
-      filterCarouselItems: null
+      filterCarouselItems: null,
+      strings: strings,
+      favorites: favorites
     };
-    
-    this.readLists(this.props.code);
+    strings.setLanguage(lang);
+
+    let selectedCode = localStorage.getItem("code");   
+    this.readLists(selectedCode);
   }
 
   showMenu() {
     this.props.showMenu();
+  }
+
+  toggleFavorite(key) {
+    let favoritesCopy = this.state.favorites.slice(0); // copy array
+    let indexToRemove = -1;
+    for(let i = 0; i < favoritesCopy.length; i++) {
+      let favorite = favoritesCopy[i];
+      if(favorite == key) {
+        indexToRemove = i;
+        break;
+      }     
+    }
+    if(indexToRemove == -1)
+    {
+      favoritesCopy.push(key);
+    } else {
+      favoritesCopy.splice(indexToRemove, 1);
+    }
+    localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
+    let placeCarouselItems = this.drawItemCarousel(this.state.items, this, favoritesCopy);
+    this.setState({
+      favorites: favoritesCopy, 
+      placeCarouselItems : placeCarouselItems});
+  }
+
+  drawItemCarousel(items, this_, favorites) {
+    const arrowIconSize = {
+      default: 30,
+      material: 28
+    };
+
+    const starIconSize = {
+      default: 30,
+      material: 28
+    };
+
+    let placeCarouselItems = [];
+    for(let i = 0; i < items.length; i++) {
+      let item = items[i];
+      let mapX = item.mapx._text;
+      let mapY = item.mapy._text;
+      let addr = item.addr1._text;
+      let title = item.title._text;
+      let tel = item.tel;
+      let image = item.firstimage;
+      let zipCode = item.zipcode;
+      let contentId = item.contentid._text;
+      let contentTypeId = item.contenttypeid._text;
+
+      let carouselKey = "carousel-" + contentId;
+
+      let imageSrc = image == null ? 
+        (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
+        (<img src={image._text} style={{width: "100%"}} />);
+  
+      let telLink = tel == null ? null : "tel:" + tel._text;
+      let telTag = tel == null ? null : 
+        (<a href={telLink}>{tel._text}</a>);
+      let detailButton = (
+        <Button key={contentId} onClick={this_.goDetails.bind(this, contentId, contentTypeId)}>
+         {this_.state.strings.godetails}
+        </Button>);
+      let zipCodeString = zipCode == null ? null : 
+        this_.state.strings.zipcode + " : " + zipCode._text;
+      let grayColor = "#D3D3D3";
+      let goldColor = "#FFD700";
+      let starColor = grayColor;
+      for(let j = 0; j < favorites.length; j++) {
+        if(favorites[j] == contentId) {
+          starColor = goldColor;
+          break;
+        }
+      }
+
+      let placeCarouselItem = (
+        <CarouselItem key={carouselKey}>
+          <div style={{height: "35%", padding: "1px 0 0 0", textAlign: "center"}}>
+            <div className="card">
+              <div className="card__title">
+                <Row>
+                  <Col width="80%">
+                    <h2 style={{margin: "1%"}}>{title}</h2>
+                  </Col>
+                  <Col width="20%">
+                    <div style={{textAligh: "center"}}>
+                      <Button modifier='quiet' 
+                        style={{width: '100%', textAlign: "center", color: starColor}}
+                        onClick={this_.toggleFavorite.bind(this_, contentId)}>
+                        <Icon icon='md-star' size={starIconSize}/>
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+              <div className="card__content">
+                <Row style={{width: "100%"}}>
+                  <Col width="5%">
+                    <Button modifier='quiet' 
+                      onClick={this_.prevItem.bind(this_)} 
+                      style={{width: '100%', padding: "5%"}}>
+                      <Icon icon='md-chevron-left' size={arrowIconSize} />
+                    </Button>
+                  </Col>
+                  <Col width="37%">
+                    <div style={{textAlign: "center", padding: "1%"}}>
+                      {imageSrc}
+                    </div>
+                  </Col>
+                  <Col width="53%">
+                    <div style={{padding: "1%"}}>
+                      <p style={{margin: "1%"}}>{addr}</p>
+                      <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
+                      <p style={{margin: "1%"}}>{telTag}</p>
+                      <div style={{margin: "2%"}}>
+                        {detailButton}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col width="5%">
+                    <Button modifier='quiet' 
+                      onClick={this_.nextItem.bind(this_)} 
+                      style={{width: '100%', padding: "5%"}}>
+                      <Icon icon='md-chevron-right' size={arrowIconSize} />
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          </div>
+        </CarouselItem>);
+
+      placeCarouselItems.push(placeCarouselItem);
+    }
+    return placeCarouselItems; 
   }
 
   readLists(code) {
@@ -75,7 +221,7 @@ export default class MapView extends React.Component {
         let categoryAll = {key: "0", value: "전체"};
         let allCategories = null;
 
-        let lang = this_.props.strings.getLanguage();
+        let lang = this_.state.strings.getLanguage();
         if(lang == 'kr') {
           allCategories = categories_kr;
         } else {
@@ -174,85 +320,7 @@ export default class MapView extends React.Component {
           filterCarouselItems.push(carouselItem);
         }
 
-        const arrowIconSize = {
-          default: 30,
-          material: 28
-        };
-
-        let placeCarouselItems = [];
-        for(let i = 0; i < items.length; i++) {
-          let item = items[i];
-          let mapX = item.mapx._text;
-          let mapY = item.mapy._text;
-          let addr = item.addr1._text;
-          let title = item.title._text;
-          let tel = item.tel;
-          let image = item.firstimage;
-          let zipCode = item.zipcode;
-          let contentId = item.contentid._text;
-          let contentTypeId = item.contenttypeid._text;
-
-          let carouselKey = "carousel-" + contentId;
-
-          let imageSrc = image == null ? 
-            (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
-            (<img src={image._text} style={{width: "100%"}} />);
-      
-          let telLink = tel == null ? null : "tel:" + tel._text;
-          let telTag = tel == null ? null : 
-            (<a href={telLink}>{tel._text}</a>);
-          let detailButton = (
-            <Button key={contentId} onClick={this_.goDetails.bind(this, contentId, contentTypeId)}>
-             {this_.props.strings.godetails}
-            </Button>);
-          let zipCodeString = zipCode == null ? null : 
-            this_.props.strings.zipcode + " : " + zipCode._text;
-
-          let placeCarouselItem = (
-            <CarouselItem key={carouselKey}>
-              <div style={{height: "35%", padding: "1px 0 0 0", textAlign: "center"}}>
-                <div className="card">
-                  <h2 className="card__title">{title}</h2>
-                  <div className="card__content">
-                    <Row style={{width: "100%"}}>
-                      <Col width="5%">
-                        <Button modifier='quiet' 
-                          onClick={this_.prevItem.bind(this_)} 
-                          style={{width: '10px', padding: "1%"}}>
-                          <Icon icon='md-chevron-left' size={arrowIconSize} />
-                        </Button>
-                      </Col>
-                      <Col width="37%">
-                        <div style={{textAlign: "center", padding: "1%"}}>
-                          {imageSrc}
-                        </div>
-                      </Col>
-                      <Col width="53%">
-                        <div style={{padding: "1%"}}>
-                          <p style={{margin: "1%"}}>{addr}</p>
-                          <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
-                          <p style={{margin: "1%"}}>{telTag}</p>
-                          <div style={{margin: "2%"}}>
-                            {detailButton}
-                          </div>
-                        </div>
-                      </Col>
-                      <Col width="5%">
-                        <Button modifier='quiet' 
-                          onClick={this_.nextItem.bind(this_)} 
-                          style={{width: '10px', padding: "1%"}}>
-                          <Icon icon='md-chevron-right' size={arrowIconSize} />
-                        </Button>
-                      </Col>
-                    </Row>
-                  </div>
-                </div>
-              </div>
-            </CarouselItem>);
-
-          placeCarouselItems.push(placeCarouselItem);
-        }
-
+        let placeCarouselItems = this_.drawItemCarousel(items, this_, this_.state.favorites);
         this_.setState({
           items: items, 
           availCategories: availCategories, 
@@ -355,7 +423,7 @@ export default class MapView extends React.Component {
 
   renderToolbar() {
     const imgStyle= {
-      height: '35%',
+      height: '15px',
       marginTop: '5%'
     };
 
@@ -413,9 +481,9 @@ export default class MapView extends React.Component {
           <div style={innerDiv}>
             <Segment index={this.state.segmentIndex} 
               onPostChange={() => this.setState({segmentIndex: event.index})} style={{ width: '55%' }}>
-              <Button>{this.props.strings.all}</Button>
-              <Button>{this.props.strings.seoguipo}</Button>
-              <Button>{this.props.strings.jeju}</Button>
+              <Button>{this.state.strings.all}</Button>
+              <Button>{this.state.strings.seoguipo}</Button>
+              <Button>{this.state.strings.jeju}</Button>
             </Segment>
           </div>
           <div style={innerDiv}>
