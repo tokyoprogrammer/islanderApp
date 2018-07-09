@@ -27,6 +27,8 @@ jobs:
           - v1-dependencies-
 
       - run: npm install
+      - run: npm install -g monaca
+      - run: npm install onsenui --save
 
       - save_cache:
           paths:
