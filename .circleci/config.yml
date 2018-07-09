@@ -34,7 +34,7 @@ jobs:
           command: npm install onsenui --save # install onsen ui
       - run:
           name: create dummy project for cordova
-          command: cp -r .cordoca ~/
+          command: cp -r .cordova ~/
       - run: ls -al ~/
       - run: 
           name: Make build directory
