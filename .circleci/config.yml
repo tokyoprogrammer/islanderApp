@@ -35,6 +35,9 @@ jobs:
       - run: 
           name: Install cordova
           command: sudo npm install -g cordova # to install webpack? does this really necessary?
+      - run:
+          name: create dummy project for cordova
+          command: cordova create ehllo com.example.hello HelloWorld
       - run: 
           name: Make build directory
           command: mkdir ~/repo/www # make directory for build
