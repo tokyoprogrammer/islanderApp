@@ -26,10 +26,10 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
       
-      - run: npm install # install npm packages
       - run: sudo npm install -g monaca # install monaca
       - run: npm install onsenui --save # install onsen ui
       - run: mkdir ~/repo/www # make directory for build
+      - run: npm install # install npm packages
 
       - save_cache:
           paths:
