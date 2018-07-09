@@ -28,6 +28,7 @@ jobs:
       
       - run: sudo npm install -g monaca # install monaca
       - run: npm install onsenui --save # install onsen ui
+      - run: npm install webpack # install webpack? does this really necessary?
       - run: mkdir ~/repo/www # make directory for build
       - run: npm install # install npm packages
 
