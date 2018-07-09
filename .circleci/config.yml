@@ -26,11 +26,21 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
       
-      - run: sudo npm install -g monaca # install monaca
-      - run: npm install onsenui --save # install onsen ui
-      - run: npm install webpack # install webpack? does this really necessary?
-      - run: mkdir ~/repo/www # make directory for build
-      - run: npm install # install npm packages
+      - run: 
+          name: Install monaca
+          command: sudo npm install -g monaca # install monaca
+      - run: 
+          name: Install Onsen UI
+          command: npm install onsenui --save # install onsen ui
+      - run: 
+          name: Install cordova
+          command: sudo npm install -g cordova # to install webpack? does this really necessary?
+      - run: 
+          name: Make build directory
+          command: mkdir ~/repo/www # make directory for build
+      - run: 
+          name: Install node modules
+          command: npm install # install npm packages
 
       - save_cache:
           paths:
