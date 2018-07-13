@@ -19,7 +19,7 @@ export default class App extends React.Component {
 
     let lang = localStorage.getItem('lang');
     if(lang == null) {
-      localStorage.setItem('lang', 'kr');
+      localStorage.setItem('lang', 'kr'); // default kr
       strings.setLanguage("kr");
     } else {
       strings.setLanguage(lang);

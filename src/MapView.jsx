@@ -22,6 +22,7 @@ export default class MapView extends React.Component {
   
     let favorites = JSON.parse(localStorage.getItem('favorites'));
     if(favorites == null) favorites = [];
+    // make or read favorite list
   
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
@@ -46,7 +47,8 @@ export default class MapView extends React.Component {
       filterCarouselItems: null,
       strings: strings,
       favorites: favorites,
-      filtered: []
+      filtered: [],
+      sigunguCode: 0
     };
     strings.setLanguage(lang);
 
@@ -76,14 +78,14 @@ export default class MapView extends React.Component {
     }
     localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
     let placeCarouselItems = 
-      this.drawItemCarousel(this.state.items, this, favoritesCopy, this.state.filtered);
+      this.drawItemCarousel(this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
     this.setState({
       favorites: favoritesCopy, 
       placeCarouselItems : placeCarouselItems,
       numOfDrawnItem: placeCarouselItems.length});
   }
 
-  drawItemCarousel(items, this_, favorites, filtered) {
+  drawItemCarousel(items, favorites, filtered, sigunguCode) {
     const arrowIconSize = {
       default: 30,
       material: 28
@@ -98,6 +100,9 @@ export default class MapView extends React.Component {
     for(let i = 0; i < items.length; i++) {
       let item = items[i];
       let proceed = false;
+      let sigunguCodeOfItem = item.sigungucode == null ? null : item.sigungucode._text;
+      if(sigunguCode != 0 && sigunguCodeOfItem != sigunguCode) continue;
+
       if(filtered.length >= 1) {
         let cat3 = item.cat3 == null ? "" : item.cat3._text;
 
@@ -109,7 +114,9 @@ export default class MapView extends React.Component {
           }
         }
       }
-      if(!proceed && filtered.length >= 1) continue;
+
+      if(!proceed && filtered.length >= 1) continue; // if filter activated && not proceed,
+
       let mapX = item.mapx == null ? null : item.mapx._text;
       let mapY = item.mapy == null ? null : item.mapy._text;
       let addr = item.addr1 == null ? "" : item.addr1._text;
@@ -119,7 +126,9 @@ export default class MapView extends React.Component {
       let zipCode = item.zipcode;
       let contentId = item.contentid == null ? null : item.contentid._text;
       let contentTypeId = item.contenttypeid == null ? null : item.contenttypeid._text;
-      if(contentId == null || contentTypeId == null) {
+
+      if(contentId == null || contentTypeId == null || mapX == null || mapY == null) {
+        // not proper content, skip it.
         continue;
       }
 
@@ -127,24 +136,26 @@ export default class MapView extends React.Component {
       let carouselKey = "carousel-" + contentId;
 
       let imageSrc = image == null ? 
-        (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
+        (<img src="img/noimage.png" style={{width: "100%"}} />) : 
         (<img src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;
       let telTag = tel == null ? null : 
         (<a href={telLink}>{tel._text}</a>);
       let detailButton = (
-        <Button key={contentId} onClick={this_.goDetails.bind(this, contentId, contentTypeId)}>
-         {this_.state.strings.godetails}
+        <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
+         {this.state.strings.godetails}
         </Button>);
       let zipCodeString = zipCode == null ? null : 
-        this_.state.strings.zipcode + " : " + zipCode._text;
+        this.state.strings.zipcode + " : " + zipCode._text;
       let grayColor = "#D3D3D3";
       let goldColor = "#FFD700";
+
       let starColor = grayColor;
+
       for(let j = 0; j < favorites.length; j++) {
         if(favorites[j] == contentId) {
-          starColor = goldColor;
+          starColor = goldColor; // change star color
           break;
         }
       }
@@ -162,7 +173,7 @@ export default class MapView extends React.Component {
                     <div style={{textAligh: "center"}}>
                       <Button modifier='quiet' 
                         style={{width: '100%', textAlign: "center", color: starColor}}
-                        onClick={this_.toggleFavorite.bind(this_, contentId)}>
+                        onClick={this.toggleFavorite.bind(this, contentId)}>
                         <Icon icon='md-star' size={starIconSize}/>
                       </Button>
                     </div>
@@ -173,7 +184,7 @@ export default class MapView extends React.Component {
                 <Row style={{width: "100%"}}>
                   <Col width="5%">
                     <Button modifier='quiet' 
-                      onClick={this_.prevItem.bind(this_)} 
+                      onClick={this.prevItem.bind(this)} 
                       style={{width: '100%', padding: "5%"}}>
                       <Icon icon='md-chevron-left' size={arrowIconSize} />
                     </Button>
@@ -195,7 +206,7 @@ export default class MapView extends React.Component {
                   </Col>
                   <Col width="5%">
                     <Button modifier='quiet' 
-                      onClick={this_.nextItem.bind(this_)} 
+                      onClick={this.nextItem.bind(this)} 
                       style={{width: '100%', padding: "5%"}}>
                       <Icon icon='md-chevron-right' size={arrowIconSize} />
                     </Button>
@@ -211,7 +222,7 @@ export default class MapView extends React.Component {
     return placeCarouselItems; 
   }
 
-  drawCategoryCarousel(availCategories, this_, filtered) {
+  drawCategoryCarousel(availCategories, filtered) {
     /* make category filter buttons */
     const filterButtonStyle = {
       width: '22%', // draw 4 buttons on single carousel
@@ -236,13 +247,13 @@ export default class MapView extends React.Component {
 
     /* prev button for carousel */
     let backButton = (
-      <Button modifier='quiet' style={buttonStyle} onClick={this_.goPrevFilterCarousel.bind(this_)}>
+      <Button modifier='quiet' style={buttonStyle} onClick={this.goPrevFilterCarousel.bind(this)}>
         <div style={innerDivStyle}>&lt;</div>
       </Button>);
 
     /* next button for carousel */
     let nextButton =(
-      <Button modifier='quiet' style={buttonStyle} onClick={this_.goNextFilterCarousel.bind(this_)}>
+      <Button modifier='quiet' style={buttonStyle} onClick={this.goNextFilterCarousel.bind(this)}>
         <div style={innerDivStyle}>&gt;</div>
       </Button>); 
     
@@ -276,7 +287,7 @@ export default class MapView extends React.Component {
           // the first button is button for no filter. so let us make this button in active.
           let button = (
             <Button key={category.key} style={filterButtonStyle} modifier={modifier}
-              onClick={this_.toggleFilterStatus.bind(this_, category.key)}>
+              onClick={this.toggleFilterStatus.bind(this, category.key)}>
               <div style={innerDivStyle}>
                 {category.value}
               </div>
@@ -353,9 +364,9 @@ export default class MapView extends React.Component {
           }
         }
 
-        let filterCarouselItems = this_.drawCategoryCarousel(availCategories, this_, []);
+        let filterCarouselItems = this_.drawCategoryCarousel(availCategories, []);
         let placeCarouselItems = 
-          this_.drawItemCarousel(items, this_, this_.state.favorites, []);
+          this_.drawItemCarousel(items, this_.state.favorites, [], this_.state.sigunguCode);
 
         this_.setState({
           items: items, 
@@ -400,8 +411,9 @@ export default class MapView extends React.Component {
       }
     }
     
-    let filterCarouselItems = this.drawCategoryCarousel(this.state.availCategories, this, newFiltered);
-    let placeCarouselItems = this.drawItemCarousel(this.state.items, this, this.state.favorites, newFiltered);
+    let filterCarouselItems = this.drawCategoryCarousel(this.state.availCategories, newFiltered);
+    let placeCarouselItems = 
+      this.drawItemCarousel(this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode);
     this.setState({
       filterCarouselItems: filterCarouselItems,
       filtered: newFiltered,
@@ -469,6 +481,33 @@ export default class MapView extends React.Component {
     );
   }
 
+  handleCategoryChange(e) {
+    this.setState({filterCarouselIndex: e.activeIndex});
+  }
+
+  handlePlaceChange(e) {
+    this.setState({itemCarouselIndex: e.activeIndex});
+  }
+
+  handleAddressFilter(e) {
+    let sigunguCode = 0;
+    if (e.index == 0) sigunguCode = 0; // 0 means all
+    else if(e.index == 1) sigunguCode = 3; // seoguipo code == 3 
+    else if(e.index == 2) sigunguCode = 4; // jeju code == 4
+    else {
+      console.log("Unknown index of button selected.");
+      sigunguCode = 0; // default all
+    }
+    
+    let placeCarouselItems = 
+      this.drawItemCarousel(this.state.items, this.state.favorites, this.state.filtered, sigunguCode);
+    this.setState({
+      placeCarouselItems: placeCarouselItems,
+      numOfDrawnItem: placeCarouselItems.length,
+      sigunguCode: sigunguCode,
+      segmentIndex: e.index});
+  }
+
   render() {
     const centerDiv = {
       textAlign: 'center'
@@ -488,17 +527,18 @@ export default class MapView extends React.Component {
     let filterCarousel = this.state.filterCarouselItems <= 0 ? "Loading..." : 
       (<Carousel
          style={{width: fullWidth}}
+         onPostChange={this.handleCategoryChange.bind(this)} 
          index={this.state.filterCarouselIndex} 
-         autoScroll overscrollable>
+         autoScroll overscrollable swipeable>
          {this.state.filterCarouselItems}
        </Carousel>);
-
 
     let placeCarousel = this.state.items.length <= 0 ? (<ProgressCircular indeterminate />) :
       (<Carousel
          style={{width: fullWidth}}
+         onPostChange={this.handlePlaceChange.bind(this)} 
          index = {this.state.itemCarouselIndex}
-         autoScroll overscrollable>
+         autoScroll overscrollable swipeable>
          {this.state.placeCarouselItems}
        </Carousel>);
 
@@ -507,7 +547,7 @@ export default class MapView extends React.Component {
         <div style={centerDiv}>
           <div style={innerDiv}>
             <Segment index={this.state.segmentIndex} 
-              onPostChange={() => this.setState({segmentIndex: event.index})} style={{ width: '55%' }}>
+              onPostChange={this.handleAddressFilter.bind(this)} style={{ width: '55%' }}>
               <Button>{this.state.strings.all}</Button>
               <Button>{this.state.strings.seoguipo}</Button>
               <Button>{this.state.strings.jeju}</Button>
