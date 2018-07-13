@@ -8,6 +8,8 @@ import MapContainer from './MapContainer';
 
 import DetailView from './DetailView';
 
+import Marker from './Marker';
+
 export default class MapView extends React.Component {
   constructor(props) {
     super(props);
@@ -44,11 +46,13 @@ export default class MapView extends React.Component {
       placeCarouselItems: [],
       availCategories: [],
       filterCarouselIndex: 0,
-      filterCarouselItems: null,
+      filterCarouselItems: [],
       strings: strings,
       favorites: favorites,
       filtered: [],
-      sigunguCode: 0
+      sigunguCode: 0,
+      lang: lang,
+      markers: []
     };
     strings.setLanguage(lang);
 
@@ -77,15 +81,16 @@ export default class MapView extends React.Component {
       favoritesCopy.splice(indexToRemove, 1);
     }
     localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
-    let placeCarouselItems = 
-      this.drawItemCarousel(this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
     this.setState({
       favorites: favoritesCopy, 
       placeCarouselItems : placeCarouselItems,
+      markers: markers,
       numOfDrawnItem: placeCarouselItems.length});
   }
 
-  drawItemCarousel(items, favorites, filtered, sigunguCode) {
+  makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode) {
     const arrowIconSize = {
       default: 30,
       material: 28
@@ -96,7 +101,9 @@ export default class MapView extends React.Component {
       material: 28
     };
 
-    let placeCarouselItems = [];
+    let placeCarouselItems = []; // carousel items
+    let markers = [];
+
     for(let i = 0; i < items.length; i++) {
       let item = items[i];
       let proceed = false;
@@ -131,8 +138,10 @@ export default class MapView extends React.Component {
         // not proper content, skip it.
         continue;
       }
-
       
+      let marker = (<Marker position = {{lat: mapY, lng: mapX}} />);
+      markers.push(marker);
+
       let carouselKey = "carousel-" + contentId;
 
       let imageSrc = image == null ? 
@@ -219,7 +228,7 @@ export default class MapView extends React.Component {
 
       placeCarouselItems.push(placeCarouselItem);
     }
-    return placeCarouselItems; 
+    return {placeCarouselItems: placeCarouselItems, markers: markers}; 
   }
 
   drawCategoryCarousel(availCategories, filtered) {
@@ -365,14 +374,15 @@ export default class MapView extends React.Component {
         }
 
         let filterCarouselItems = this_.drawCategoryCarousel(availCategories, []);
-        let placeCarouselItems = 
-          this_.drawItemCarousel(items, this_.state.favorites, [], this_.state.sigunguCode);
+        let {placeCarouselItems, markers} = 
+          this_.makeItemCarouselAndMarkers(items, this_.state.favorites, [], this_.state.sigunguCode);
 
         this_.setState({
           items: items, 
           availCategories: availCategories, 
           filterCarouselItems: filterCarouselItems,
           placeCarouselItems: placeCarouselItems,
+          markers: markers,
           numOfDrawnItem: placeCarouselItems.length,
           filtered: []});
 
@@ -412,12 +422,13 @@ export default class MapView extends React.Component {
     }
     
     let filterCarouselItems = this.drawCategoryCarousel(this.state.availCategories, newFiltered);
-    let placeCarouselItems = 
-      this.drawItemCarousel(this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode);
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode);
     this.setState({
       filterCarouselItems: filterCarouselItems,
       filtered: newFiltered,
       placeCarouselItems: placeCarouselItems,
+      markers: markers,
       numOfDrawnItem: placeCarouselItems.length});
   }
 
@@ -499,10 +510,11 @@ export default class MapView extends React.Component {
       sigunguCode = 0; // default all
     }
     
-    let placeCarouselItems = 
-      this.drawItemCarousel(this.state.items, this.state.favorites, this.state.filtered, sigunguCode);
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(this.state.items, this.state.favorites, this.state.filtered, sigunguCode);
     this.setState({
       placeCarouselItems: placeCarouselItems,
+      markers: markers,
       numOfDrawnItem: placeCarouselItems.length,
       sigunguCode: sigunguCode,
       segmentIndex: e.index});
@@ -524,7 +536,7 @@ export default class MapView extends React.Component {
 
     let fullWidth = window.innerWidth + "px";
 
-    let filterCarousel = this.state.filterCarouselItems <= 0 ? "Loading..." : 
+    let filterCarousel = this.state.filterCarouselItems.length <= 0 ? "Loading..." : 
       (<Carousel
          style={{width: fullWidth}}
          onPostChange={this.handleCategoryChange.bind(this)} 
@@ -542,6 +554,23 @@ export default class MapView extends React.Component {
          {this.state.placeCarouselItems}
        </Carousel>);
 
+    const mapCenter = {
+      lat: 33.356432,
+      lng: 126.5268767
+    };
+
+    const mapZoom = 9;
+
+    let marker = this.state.markers.length <= 0 ? 
+      null : 
+      this.state.markers[this.state.itemCarouselIndex] == null ? null :
+      this.state.markers[this.state.itemCarouselIndex];
+
+    let map = (
+      <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google}>
+        {marker}
+      </MapContainer>);
+
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div style={centerDiv}>
@@ -557,7 +586,7 @@ export default class MapView extends React.Component {
             <SearchInput placeholder='Search...' onChange={(e) => console.log(e.target.value)} />
           </div>
           <div style={{marginTop: '1%', marginBottom: '1%'}}>
-            <MapContainer google={this.props.google} />
+            {map}
           </div>
           <div>
             <hr style={hrStyle}/>
