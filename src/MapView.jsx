@@ -541,6 +541,7 @@ export default class MapView extends React.Component {
          style={{width: fullWidth}}
          onPostChange={this.handleCategoryChange.bind(this)} 
          index={this.state.filterCarouselIndex} 
+         autoScrollRatio={0.3} 
          autoScroll overscrollable swipeable>
          {this.state.filterCarouselItems}
        </Carousel>);
@@ -550,6 +551,7 @@ export default class MapView extends React.Component {
          style={{width: fullWidth}}
          onPostChange={this.handlePlaceChange.bind(this)} 
          index = {this.state.itemCarouselIndex}
+         autoScrollRatio={0.3}
          autoScroll overscrollable swipeable>
          {this.state.placeCarouselItems}
        </Carousel>);
