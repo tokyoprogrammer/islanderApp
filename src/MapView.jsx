@@ -28,6 +28,7 @@ export default class MapView extends React.Component {
   
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
+    strings.setLanguage(lang);
 
     const fixedAreaCode = 39; /* jeju island area code */
     const serviceKey = 
@@ -52,12 +53,48 @@ export default class MapView extends React.Component {
       filtered: [],
       sigunguCode: 0,
       lang: lang,
-      markers: []
+      markers: [],
+      searchString: ""
     };
-    strings.setLanguage(lang);
+    // initialize states.
 
-    let selectedCode = localStorage.getItem("code");   
-    this.readLists(selectedCode);
+    let selectedCode = localStorage.getItem("code");
+    let cache = JSON.parse(localStorage.getItem("items" + selectedCode));
+    let useCache = false;
+    if(cache != null) {
+      let cacheValidUntil = new Date(cache.createdDateTime);
+      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+      // cache will be valid until + 1 day of the created day.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        // compare and if cache is fresh
+        useCache = true;
+      }
+    }
+
+    if(useCache) {
+      var this_ = this;
+      const sleepTime = 500;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        let ret = this_.makeContents(cache.items, favorites, 0);
+        setTimeout(resolve, sleepTime, ret); // set some timeout to render page first
+      }).then(function(result) {
+        // success callback
+        let {availCategories, filterCarouselItems, placeCarouselItems, markers} = result; 
+        this_.setState({
+          items: cache.items, 
+          availCategories: availCategories, 
+          filterCarouselItems: filterCarouselItems,
+          placeCarouselItems: placeCarouselItems,
+          markers: markers,
+          numOfDrawnItem: placeCarouselItems.length,
+          filtered: []});
+      });
+    } else {
+      // if cache is not valid then read from web
+      this.readListsFromWebAndMakeContents(selectedCode);
+    }
   }
 
   showMenu() {
@@ -82,7 +119,9 @@ export default class MapView extends React.Component {
     }
     localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
+      this.makeItemCarouselAndMarkers(
+        this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode, this.state.searchString);
+
     this.setState({
       favorites: favoritesCopy, 
       placeCarouselItems : placeCarouselItems,
@@ -90,7 +129,7 @@ export default class MapView extends React.Component {
       numOfDrawnItem: placeCarouselItems.length});
   }
 
-  makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode) {
+  makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode, searchString) {
     const arrowIconSize = {
       default: 30,
       material: 28
@@ -100,6 +139,9 @@ export default class MapView extends React.Component {
       default: 30,
       material: 28
     };
+
+    const grayColor = "#D3D3D3";
+    const goldColor = "#FFD700";
 
     let placeCarouselItems = []; // carousel items
     let markers = [];
@@ -138,9 +180,13 @@ export default class MapView extends React.Component {
         // not proper content, skip it.
         continue;
       }
+
+      if(searchString.length > 1 && title.includes(searchString) == false) continue;
+      // if it is not searched one, skip
       
       let marker = (<Marker position = {{lat: mapY, lng: mapX}} />);
       markers.push(marker);
+      // make markers on the map and push it in the array
 
       let carouselKey = "carousel-" + contentId;
 
@@ -157,8 +203,6 @@ export default class MapView extends React.Component {
         </Button>);
       let zipCodeString = zipCode == null ? null : 
         this.state.strings.zipcode + " : " + zipCode._text;
-      let grayColor = "#D3D3D3";
-      let goldColor = "#FFD700";
 
       let starColor = grayColor;
 
@@ -324,58 +368,89 @@ export default class MapView extends React.Component {
   }
 
 
-  readLists(code) {
+  makeAvailCategoryListFromItems(items) {
+    var availCategorySet = new Set();
+
+    /* read available category from API and store them into a set*/
+    for(let i = 0; i < items.length; i++) {
+      let item = items[i];
+      let cat3 = item.cat3;
+      if(cat3 != null) {
+        let cat3Code = cat3._text;
+        availCategorySet.add(cat3Code)
+      }
+    }
+
+    let categories_kr = require('public/category/category_kr.json'); /* load all category pack (kr) */
+    let categories_en = require('public/category/category_en.json'); /* load all category pack (kr) */
+    let categoryAll = {key: "0", value: "전체"};
+    let allCategories = null;
+
+    let lang = this.state.strings.getLanguage();
+    if(lang == 'kr') {
+      allCategories = categories_kr;
+    } else {
+      allCategories = categories_en;
+      categoryAll = {key: "0", value: "All"};
+    }
+ 
+    let availCategories = [];
+    availCategories.push(categoryAll);
+
+    /* compare all category and set item and if the category is available one, 
+     * push it into availCategories */
+    for(let i = 0; i < allCategories.length; i++) {
+      let category = allCategories[i];
+      if(availCategorySet.has(category.key)) {
+        availCategories.push(category);
+      }
+    }
+
+    return availCategories;
+  }
+
+  makeContents(items, favorites, sigunguCode) {
+    let emptyFilter = [];
+
+    let availCategories = this.makeAvailCategoryListFromItems(items);
+    let filterCarouselItems = this.drawCategoryCarousel(availCategories, emptyFilter);
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(items, favorites, emptyFilter, sigunguCode, "");
+
+    return {
+      availCategories: availCategories,
+      filterCarouselItems: filterCarouselItems,
+      placeCarouselItems: placeCarouselItems,
+      markers: markers
+    };
+  }
+
+  readItemsFromResponseText(responseText) {
+    var convert = require('xml-js');
+    var options = {compact: true, ignoreComment: true, spaces: 4};
+    var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
+    var items = xml.response.body.items.item;
+    console.log(items);
+    return items;
+  } 
+
+  writeItemCache(code, items) {
+    let cacheName = "items" + code;
+    let cacheCreatedDateTime = new Date();
+    let cacheValue = {createdDateTime: cacheCreatedDateTime, items: items};
+    localStorage.setItem(cacheName, JSON.stringify(cacheValue));
+  }
+
+  readListsFromWebAndMakeContents(code) {
     var this_ = this;
-    console.log(this.state.urlForContentBase + code + this.state.urlForContentRemain);
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
+        let items = this_.readItemsFromResponseText(xhr.responseText);
+        this_.writeItemCache(code, items); // write cache to manage # of calls of API
 
-        var convert = require('xml-js');
-        var options = {compact: true, ignoreComment: true, spaces: 4};
-        var xml = convert.xml2js(xhr.responseText, options);
-        var items = xml.response.body.items.item;
-        console.log(items);
-        var availCategorySet = new Set();
-
-        /* read available category from API and store them into a set*/
-        for(let i = 0; i < items.length; i++) {
-          let item = items[i];
-          let cat3 = item.cat3;
-          if(cat3 != null) {
-            let cat3Code = cat3._text;
-            availCategorySet.add(cat3Code)
-          }
-        }
-
-        let categories_kr = require('public/category/category_kr.json'); /* load all category pack (kr) */
-        let categories_en = require('public/category/category_en.json'); /* load all category pack (kr) */
-        let categoryAll = {key: "0", value: "전체"};
-        let allCategories = null;
-
-        let lang = this_.state.strings.getLanguage();
-        if(lang == 'kr') {
-          allCategories = categories_kr;
-        } else {
-          allCategories = categories_en;
-          categoryAll = {key: "0", value: "All"};
-        }
- 
-        let availCategories = [];
-        availCategories.push(categoryAll);
-
-        /* compare all category and set item and if the category is available one, 
-         * push it into availCategories */
-        for(let i = 0; i < allCategories.length; i++) {
-          let category = allCategories[i];
-          if(availCategorySet.has(category.key)) {
-            availCategories.push(category);
-          }
-        }
-
-        let filterCarouselItems = this_.drawCategoryCarousel(availCategories, []);
-        let {placeCarouselItems, markers} = 
-          this_.makeItemCarouselAndMarkers(items, this_.state.favorites, [], this_.state.sigunguCode);
+        let {availCategories, filterCarouselItems, placeCarouselItems, markers} = 
+          this_.makeContents(items, this_.state.favorites, this_.state.sigunguCode);
 
         this_.setState({
           items: items, 
@@ -399,8 +474,8 @@ export default class MapView extends React.Component {
   toggleFilterStatus(key) {
     let newFiltered = this.state.filtered.slice(); // copy the array
     if(key == '0') {
-      // When 'All' button is clicked?
-      // Turn on 'All' button.
+      // When 'All' button(key: 0) is clicked?
+      // Turn on 'All' button. And clear filter.
       newFiltered = [];
     }
     else {
@@ -417,13 +492,15 @@ export default class MapView extends React.Component {
       {
         newFiltered.push(key);
       } else {
-        newFiltered.splice(indexToRemove, 1);
+        newFiltered.splice(indexToRemove, 1); // remove item
       }
     }
     
     let filterCarouselItems = this.drawCategoryCarousel(this.state.availCategories, newFiltered);
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode);
+      this.makeItemCarouselAndMarkers(
+        this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode, this.state.searchString);
+
     this.setState({
       filterCarouselItems: filterCarouselItems,
       filtered: newFiltered,
@@ -502,6 +579,7 @@ export default class MapView extends React.Component {
 
   handleAddressFilter(e) {
     let sigunguCode = 0;
+
     if (e.index == 0) sigunguCode = 0; // 0 means all
     else if(e.index == 1) sigunguCode = 3; // seoguipo code == 3 
     else if(e.index == 2) sigunguCode = 4; // jeju code == 4
@@ -511,13 +589,39 @@ export default class MapView extends React.Component {
     }
     
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(this.state.items, this.state.favorites, this.state.filtered, sigunguCode);
+      this.makeItemCarouselAndMarkers(
+        this.state.items, this.state.favorites, this.state.filtered, sigunguCode, this.state.searchString);
+
     this.setState({
       placeCarouselItems: placeCarouselItems,
       markers: markers,
       numOfDrawnItem: placeCarouselItems.length,
       sigunguCode: sigunguCode,
       segmentIndex: e.index});
+  }
+
+  handleSearchBox(e) {
+    let searchString = e.target.value;
+    if(searchString.length <= 0) {
+      // clear search
+      this.searchUsingSearchString("");
+    }
+    this.setState({searchString: searchString});
+  }
+  
+  searchUsingSearchString(string) {
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(
+        this.state.items, this.state.favorites, this.state.filtered, this.state.sigunguCode, string);
+
+    this.setState({
+      placeCarouselItems: placeCarouselItems,
+      markers: markers,
+      numOfDrawnItem: placeCarouselItems.length});
+  } 
+ 
+  handleSearchButton() {
+    this.searchUsingSearchString(this.state.searchString);
   }
 
   render() {
@@ -585,7 +689,11 @@ export default class MapView extends React.Component {
             </Segment>
           </div>
           <div style={innerDiv}>
-            <SearchInput placeholder='Search...' onChange={(e) => console.log(e.target.value)} />
+            <SearchInput placeholder='Search...' onChange={this.handleSearchBox.bind(this)} />
+            <Button onClick={this.handleSearchButton.bind(this)} 
+              modifier='quiet' style={{margin: '1px', padding: '2px'}}>
+              <Icon icon='md-search' />
+            </Button>
           </div>
           <div style={{marginTop: '1%', marginBottom: '1%'}}>
             {map}
