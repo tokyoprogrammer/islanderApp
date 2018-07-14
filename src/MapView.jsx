@@ -53,7 +53,8 @@ export default class MapView extends React.Component {
       filtered: [],
       sigunguCode: 0,
       lang: lang,
-      markers: []
+      markers: [],
+      searchString: ""
     };
     // initialize states.
 
@@ -91,6 +92,7 @@ export default class MapView extends React.Component {
           filtered: []});
       });
     } else {
+      // if cache is not valid then read from web
       this.readListsFromWebAndMakeContents(selectedCode);
     }
   }
@@ -118,7 +120,8 @@ export default class MapView extends React.Component {
     localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
     let {placeCarouselItems, markers} = 
       this.makeItemCarouselAndMarkers(
-        this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
+        this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode, this.state.searchString);
+
     this.setState({
       favorites: favoritesCopy, 
       placeCarouselItems : placeCarouselItems,
@@ -126,7 +129,7 @@ export default class MapView extends React.Component {
       numOfDrawnItem: placeCarouselItems.length});
   }
 
-  makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode) {
+  makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode, searchString) {
     const arrowIconSize = {
       default: 30,
       material: 28
@@ -136,6 +139,9 @@ export default class MapView extends React.Component {
       default: 30,
       material: 28
     };
+
+    const grayColor = "#D3D3D3";
+    const goldColor = "#FFD700";
 
     let placeCarouselItems = []; // carousel items
     let markers = [];
@@ -174,9 +180,13 @@ export default class MapView extends React.Component {
         // not proper content, skip it.
         continue;
       }
+
+      if(searchString.length > 1 && title.includes(searchString) == false) continue;
+      // if it is not searched one, skip
       
       let marker = (<Marker position = {{lat: mapY, lng: mapX}} />);
       markers.push(marker);
+      // make markers on the map and push it in the array
 
       let carouselKey = "carousel-" + contentId;
 
@@ -193,8 +203,6 @@ export default class MapView extends React.Component {
         </Button>);
       let zipCodeString = zipCode == null ? null : 
         this.state.strings.zipcode + " : " + zipCode._text;
-      let grayColor = "#D3D3D3";
-      let goldColor = "#FFD700";
 
       let starColor = grayColor;
 
@@ -403,10 +411,11 @@ export default class MapView extends React.Component {
 
   makeContents(items, favorites, sigunguCode) {
     let emptyFilter = [];
+
     let availCategories = this.makeAvailCategoryListFromItems(items);
     let filterCarouselItems = this.drawCategoryCarousel(availCategories, emptyFilter);
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(items, favorites, emptyFilter, sigunguCode);
+      this.makeItemCarouselAndMarkers(items, favorites, emptyFilter, sigunguCode, "");
 
     return {
       availCategories: availCategories,
@@ -451,6 +460,7 @@ export default class MapView extends React.Component {
           markers: markers,
           numOfDrawnItem: placeCarouselItems.length,
           filtered: []});
+
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
@@ -464,8 +474,8 @@ export default class MapView extends React.Component {
   toggleFilterStatus(key) {
     let newFiltered = this.state.filtered.slice(); // copy the array
     if(key == '0') {
-      // When 'All' button is clicked?
-      // Turn on 'All' button.
+      // When 'All' button(key: 0) is clicked?
+      // Turn on 'All' button. And clear filter.
       newFiltered = [];
     }
     else {
@@ -482,13 +492,15 @@ export default class MapView extends React.Component {
       {
         newFiltered.push(key);
       } else {
-        newFiltered.splice(indexToRemove, 1);
+        newFiltered.splice(indexToRemove, 1); // remove item
       }
     }
     
     let filterCarouselItems = this.drawCategoryCarousel(this.state.availCategories, newFiltered);
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode);
+      this.makeItemCarouselAndMarkers(
+        this.state.items, this.state.favorites, newFiltered, this.state.sigunguCode, this.state.searchString);
+
     this.setState({
       filterCarouselItems: filterCarouselItems,
       filtered: newFiltered,
@@ -567,6 +579,7 @@ export default class MapView extends React.Component {
 
   handleAddressFilter(e) {
     let sigunguCode = 0;
+
     if (e.index == 0) sigunguCode = 0; // 0 means all
     else if(e.index == 1) sigunguCode = 3; // seoguipo code == 3 
     else if(e.index == 2) sigunguCode = 4; // jeju code == 4
@@ -576,13 +589,39 @@ export default class MapView extends React.Component {
     }
     
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(this.state.items, this.state.favorites, this.state.filtered, sigunguCode);
+      this.makeItemCarouselAndMarkers(
+        this.state.items, this.state.favorites, this.state.filtered, sigunguCode, this.state.searchString);
+
     this.setState({
       placeCarouselItems: placeCarouselItems,
       markers: markers,
       numOfDrawnItem: placeCarouselItems.length,
       sigunguCode: sigunguCode,
       segmentIndex: e.index});
+  }
+
+  handleSearchBox(e) {
+    let searchString = e.target.value;
+    if(searchString.length <= 0) {
+      // clear search
+      this.searchUsingSearchString("");
+    }
+    this.setState({searchString: searchString});
+  }
+  
+  searchUsingSearchString(string) {
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(
+        this.state.items, this.state.favorites, this.state.filtered, this.state.sigunguCode, string);
+
+    this.setState({
+      placeCarouselItems: placeCarouselItems,
+      markers: markers,
+      numOfDrawnItem: placeCarouselItems.length});
+  } 
+ 
+  handleSearchButton() {
+    this.searchUsingSearchString(this.state.searchString);
   }
 
   render() {
@@ -650,7 +689,11 @@ export default class MapView extends React.Component {
             </Segment>
           </div>
           <div style={innerDiv}>
-            <SearchInput placeholder='Search...' onChange={(e) => console.log(e.target.value)} />
+            <SearchInput placeholder='Search...' onChange={this.handleSearchBox.bind(this)} />
+            <Button onClick={this.handleSearchButton.bind(this)} 
+              modifier='quiet' style={{margin: '1px', padding: '2px'}}>
+              <Icon icon='md-search' />
+            </Button>
           </div>
           <div style={{marginTop: '1%', marginBottom: '1%'}}>
             {map}
