@@ -28,6 +28,7 @@ export default class MapView extends React.Component {
   
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
+    strings.setLanguage(lang);
 
     const fixedAreaCode = 39; /* jeju island area code */
     const serviceKey = 
@@ -54,10 +55,44 @@ export default class MapView extends React.Component {
       lang: lang,
       markers: []
     };
-    strings.setLanguage(lang);
+    // initialize states.
 
-    let selectedCode = localStorage.getItem("code");   
-    this.readLists(selectedCode);
+    let selectedCode = localStorage.getItem("code");
+    let cache = JSON.parse(localStorage.getItem("items" + selectedCode));
+    let useCache = false;
+    if(cache != null) {
+      let cacheValidUntil = new Date(cache.createdDateTime);
+      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+      // cache will be valid until + 1 day of the created day.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        // compare and if cache is fresh
+        useCache = true;
+      }
+    }
+
+    if(useCache) {
+      var this_ = this;
+      const sleepTime = 500;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        let ret = this_.makeContents(cache.items, favorites, 0);
+        setTimeout(resolve, sleepTime, ret); // set some timeout to render page first
+      }).then(function(result) {
+        // success callback
+        let {availCategories, filterCarouselItems, placeCarouselItems, markers} = result; 
+        this_.setState({
+          items: cache.items, 
+          availCategories: availCategories, 
+          filterCarouselItems: filterCarouselItems,
+          placeCarouselItems: placeCarouselItems,
+          markers: markers,
+          numOfDrawnItem: placeCarouselItems.length,
+          filtered: []});
+      });
+    } else {
+      this.readListsFromWebAndMakeContents(selectedCode);
+    }
   }
 
   showMenu() {
@@ -82,7 +117,8 @@ export default class MapView extends React.Component {
     }
     localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
     let {placeCarouselItems, markers} = 
-      this.makeItemCarouselAndMarkers(this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
+      this.makeItemCarouselAndMarkers(
+        this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode);
     this.setState({
       favorites: favoritesCopy, 
       placeCarouselItems : placeCarouselItems,
@@ -324,58 +360,88 @@ export default class MapView extends React.Component {
   }
 
 
-  readLists(code) {
+  makeAvailCategoryListFromItems(items) {
+    var availCategorySet = new Set();
+
+    /* read available category from API and store them into a set*/
+    for(let i = 0; i < items.length; i++) {
+      let item = items[i];
+      let cat3 = item.cat3;
+      if(cat3 != null) {
+        let cat3Code = cat3._text;
+        availCategorySet.add(cat3Code)
+      }
+    }
+
+    let categories_kr = require('public/category/category_kr.json'); /* load all category pack (kr) */
+    let categories_en = require('public/category/category_en.json'); /* load all category pack (kr) */
+    let categoryAll = {key: "0", value: "전체"};
+    let allCategories = null;
+
+    let lang = this.state.strings.getLanguage();
+    if(lang == 'kr') {
+      allCategories = categories_kr;
+    } else {
+      allCategories = categories_en;
+      categoryAll = {key: "0", value: "All"};
+    }
+ 
+    let availCategories = [];
+    availCategories.push(categoryAll);
+
+    /* compare all category and set item and if the category is available one, 
+     * push it into availCategories */
+    for(let i = 0; i < allCategories.length; i++) {
+      let category = allCategories[i];
+      if(availCategorySet.has(category.key)) {
+        availCategories.push(category);
+      }
+    }
+
+    return availCategories;
+  }
+
+  makeContents(items, favorites, sigunguCode) {
+    let emptyFilter = [];
+    let availCategories = this.makeAvailCategoryListFromItems(items);
+    let filterCarouselItems = this.drawCategoryCarousel(availCategories, emptyFilter);
+    let {placeCarouselItems, markers} = 
+      this.makeItemCarouselAndMarkers(items, favorites, emptyFilter, sigunguCode);
+
+    return {
+      availCategories: availCategories,
+      filterCarouselItems: filterCarouselItems,
+      placeCarouselItems: placeCarouselItems,
+      markers: markers
+    };
+  }
+
+  readItemsFromResponseText(responseText) {
+    var convert = require('xml-js');
+    var options = {compact: true, ignoreComment: true, spaces: 4};
+    var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
+    var items = xml.response.body.items.item;
+    console.log(items);
+    return items;
+  } 
+
+  writeItemCache(code, items) {
+    let cacheName = "items" + code;
+    let cacheCreatedDateTime = new Date();
+    let cacheValue = {createdDateTime: cacheCreatedDateTime, items: items};
+    localStorage.setItem(cacheName, JSON.stringify(cacheValue));
+  }
+
+  readListsFromWebAndMakeContents(code) {
     var this_ = this;
-    console.log(this.state.urlForContentBase + code + this.state.urlForContentRemain);
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
+        let items = this_.readItemsFromResponseText(xhr.responseText);
+        this_.writeItemCache(code, items); // write cache to manage # of calls of API
 
-        var convert = require('xml-js');
-        var options = {compact: true, ignoreComment: true, spaces: 4};
-        var xml = convert.xml2js(xhr.responseText, options);
-        var items = xml.response.body.items.item;
-        console.log(items);
-        var availCategorySet = new Set();
-
-        /* read available category from API and store them into a set*/
-        for(let i = 0; i < items.length; i++) {
-          let item = items[i];
-          let cat3 = item.cat3;
-          if(cat3 != null) {
-            let cat3Code = cat3._text;
-            availCategorySet.add(cat3Code)
-          }
-        }
-
-        let categories_kr = require('public/category/category_kr.json'); /* load all category pack (kr) */
-        let categories_en = require('public/category/category_en.json'); /* load all category pack (kr) */
-        let categoryAll = {key: "0", value: "전체"};
-        let allCategories = null;
-
-        let lang = this_.state.strings.getLanguage();
-        if(lang == 'kr') {
-          allCategories = categories_kr;
-        } else {
-          allCategories = categories_en;
-          categoryAll = {key: "0", value: "All"};
-        }
- 
-        let availCategories = [];
-        availCategories.push(categoryAll);
-
-        /* compare all category and set item and if the category is available one, 
-         * push it into availCategories */
-        for(let i = 0; i < allCategories.length; i++) {
-          let category = allCategories[i];
-          if(availCategorySet.has(category.key)) {
-            availCategories.push(category);
-          }
-        }
-
-        let filterCarouselItems = this_.drawCategoryCarousel(availCategories, []);
-        let {placeCarouselItems, markers} = 
-          this_.makeItemCarouselAndMarkers(items, this_.state.favorites, [], this_.state.sigunguCode);
+        let {availCategories, filterCarouselItems, placeCarouselItems, markers} = 
+          this_.makeContents(items, this_.state.favorites, this_.state.sigunguCode);
 
         this_.setState({
           items: items, 
@@ -385,7 +451,6 @@ export default class MapView extends React.Component {
           markers: markers,
           numOfDrawnItem: placeCarouselItems.length,
           filtered: []});
-
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
