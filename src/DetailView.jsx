@@ -27,7 +27,7 @@ export default class DetailView extends React.Component {
     let contentTypeId = localStorage.getItem("contentTypeId");
  
     this.state = {
-      urlForContentBase: "http://api.visitkorea.or.kr/openapi/service/rest/" + 
+      urlForContentBase: "https://api.visitkorea.or.kr/openapi/service/rest/" + 
         serviceLang + "/detailCommon?ServiceKey=" + 
         serviceKey + "&contentTypeId=" + contentTypeId + "&contentId=" + contentId + 
         "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y" + 
@@ -67,7 +67,7 @@ export default class DetailView extends React.Component {
 
   renderToolbar() {
     const imgStyle= {
-      height: '35%',
+      height: '15px',
       marginTop: '5%'
     };
 
