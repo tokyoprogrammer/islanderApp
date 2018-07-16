@@ -5,9 +5,8 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchI
 import LocalizedStrings from 'react-localization';
 
 import MapContainer from './MapContainer';
-
 import DetailView from './DetailView';
-
+import ListView from './ListView';
 import Marker from './Marker';
 
 export default class MapView extends React.Component {
@@ -571,7 +570,9 @@ export default class MapView extends React.Component {
   }
   
   loadListView() {
-    console.log("list view button clicked!");
+   this.props.navigator.pushPage({ 
+      component: ListView
+    });
   }
 
   handleCategoryChange(e) {
