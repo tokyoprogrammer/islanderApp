@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular, Fab} from 'react-onsenui';
 
 import LocalizedStrings from 'react-localization';
 
@@ -113,11 +113,12 @@ export default class MapView extends React.Component {
     }
     if(indexToRemove == -1)
     {
-      favoritesCopy.push(key);
+      favoritesCopy.push(key); // push to favorite list
     } else {
-      favoritesCopy.splice(indexToRemove, 1);
+      favoritesCopy.splice(indexToRemove, 1); // remove untoggled favorate
     }
-    localStorage.setItem("favorites", JSON.stringify(favoritesCopy));
+    localStorage.setItem("favorites", JSON.stringify(favoritesCopy)); // change favorite list and save it.
+
     let {placeCarouselItems, markers} = 
       this.makeItemCarouselAndMarkers(
         this.state.items, favoritesCopy, this.state.filtered, this.state.sigunguCode, this.state.searchString);
@@ -568,6 +569,10 @@ export default class MapView extends React.Component {
      </Toolbar>
     );
   }
+  
+  loadListView() {
+    console.log("list view button clicked!");
+  }
 
   handleCategoryChange(e) {
     this.setState({filterCarouselIndex: e.activeIndex});
@@ -746,6 +751,9 @@ export default class MapView extends React.Component {
             {placeCarousel}
           </div>
         </div>
+        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '5%', right: '10px', position: 'fixed'}}>
+          <Icon icon='fa-bars' />
+        </Fab>
       </Page>
     );
   }
