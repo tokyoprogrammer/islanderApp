@@ -184,7 +184,7 @@ export default class MapView extends React.Component {
       if(searchString.length > 1 && title.includes(searchString) == false) continue;
       // if it is not searched one, skip
       
-      let marker = (<Marker position = {{lat: mapY, lng: mapX}} />);
+      let marker = {lat: mapY, lng: mapX};
       markers.push(marker);
       // make markers on the map and push it in the array
 
@@ -624,6 +624,15 @@ export default class MapView extends React.Component {
     this.searchUsingSearchString(this.state.searchString);
   }
 
+  markerClicked(e, id) {
+    this.setState({itemCarouselIndex: id});
+  }
+
+  drawSingleMarker(lat, lng, color, zIndex, id) {
+    return (<Marker position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
+             onClick = {this.markerClicked.bind(this)} />);
+  }
+
   render() {
     const centerDiv = {
       textAlign: 'center'
@@ -666,16 +675,45 @@ export default class MapView extends React.Component {
     };
 
     const mapZoom = 9;
+    const markerGray = 'C0C0C0';
+    const markerChrimsonRed = 'DC134C'
 
-    let marker = this.state.markers.length <= 0 ? 
+    let itemCarouselIndex = this.state.itemCarouselIndex;
+    let markersInfo = this.state.markers.length <= 0 ? 
       null : 
-      this.state.markers[this.state.itemCarouselIndex] == null ? null :
-      this.state.markers[this.state.itemCarouselIndex];
+      this.state.markers;
+
+    let markers = [];
+    const topMost = 9999;
+
+    if(markersInfo != null) {
+      if(this.state.filtered.length > 0) {
+        for(let i = 0; i < markersInfo.length; i++) {
+          let markerInfo = markersInfo[i];
+          let marker = null;
+          if(i == itemCarouselIndex) {
+            marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerChrimsonRed, topMost, i);
+          }
+          else {
+            marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerGray, i, i);
+          }
+          markers.push(marker);
+        }
+      } else {
+        let markerInfo = markersInfo[itemCarouselIndex];
+        markers.push(this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerChrimsonRed, 9999));
+      }
+    }
 
     let map = (
       <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google}>
-        {marker}
+        {markers}
       </MapContainer>);
+
+    const searchIconSize = {
+      default: 24,
+      material: 22
+    };
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
@@ -689,10 +727,11 @@ export default class MapView extends React.Component {
             </Segment>
           </div>
           <div style={innerDiv}>
-            <SearchInput placeholder='Search...' onChange={this.handleSearchBox.bind(this)} />
+            <SearchInput
+              placeholder='Search...' onChange={this.handleSearchBox.bind(this)} />
             <Button onClick={this.handleSearchButton.bind(this)} 
-              modifier='quiet' style={{margin: '1px', padding: '2px'}}>
-              <Icon icon='md-search' />
+              modifier='quiet' style={{margin: '2px', padding: '2px'}}>
+              <Icon icon='md-search' size={searchIconSize} />
             </Button>
           </div>
           <div style={{marginTop: '1%', marginBottom: '1%'}}>
