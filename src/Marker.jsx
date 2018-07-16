@@ -29,19 +29,27 @@ export default class Marker extends React.Component {
 
   renderMarker() {
     let {
-      map, google, position, mapCenter
+      map, google, position, mapCenter, color, zIndex, onClick, id
     } = this.props;
     
     let pos = position || mapCenter;
     position = new google.maps.LatLng(pos.lat, pos.lng);
 
+    let image = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
+
     const pref = {
       map: map,
-      position: position
+      position: position,
+      icon: image,
+      zIndex: zIndex
     };
     this.marker = new google.maps.Marker(pref);
+    
+    this.marker.addListener('click', function(e) {
+      onClick(e, id);
+    });
   }
-
+  
   render() {
     return null;
   }
@@ -49,5 +57,9 @@ export default class Marker extends React.Component {
 
 Marker.propTypes = {
   positon: React.PropTypes.object,
-  map: React.PropTypes.object
+  map: React.PropTypes.object,
+  color: React.PropTypes.string,
+  zIndex: React.PropTypes.number,
+  id: React.PropTypes.number,
+  onClick: React.PropTypes.func
 }
