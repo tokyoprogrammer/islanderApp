@@ -52,7 +52,7 @@ export class MapContainer extends React.Component {
   render() {
     const style = { 
       width: '100vw',
-      height: '45vh'
+      height: '40vh'
     }
 
     return ( 
