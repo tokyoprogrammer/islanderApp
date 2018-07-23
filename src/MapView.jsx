@@ -149,10 +149,9 @@ export default class MapView extends React.Component {
       let proceed = false;
       let sigunguCodeOfItem = item.sigungucode == null ? null : item.sigungucode._text;
       if(sigunguCode != 0 && sigunguCodeOfItem != sigunguCode) continue;
+      let cat3 = item.cat3 == null ? "" : item.cat3._text;
 
       if(filtered.length >= 1) {
-        let cat3 = item.cat3 == null ? "" : item.cat3._text;
-
         for(let j = 0; j < filtered.length; j++) {
           let filter = filtered[j];
           if(filter == cat3) { // check whether this item's category is in the filter or not 
@@ -539,7 +538,7 @@ export default class MapView extends React.Component {
             {placeCarousel}
           </div>
         </div>
-        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '5%', right: '10px', position: 'fixed'}}>
+        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '10%', right: '10px', position: 'fixed'}}>
           <Icon icon='fa-bars' />
         </Fab>
       </Page>
