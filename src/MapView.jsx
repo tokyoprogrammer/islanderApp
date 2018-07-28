@@ -289,7 +289,6 @@ export default class MapView extends React.Component {
     var options = {compact: true, ignoreComment: true, spaces: 4};
     var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
     var items = xml.response.body.items.item;
-    console.log(items);
     return items;
   } 
 
@@ -395,12 +394,12 @@ export default class MapView extends React.Component {
     this.setState({itemCarouselIndex: e.activeIndex});
   }
 
-  handleAddressFilter(e) {
+  handleAddressFilter(index) {
     let sigunguCode = 0;
 
-    if (e.index == 0) sigunguCode = 0; // 0 means all
-    else if(e.index == 1) sigunguCode = 3; // seoguipo code == 3 
-    else if(e.index == 2) sigunguCode = 4; // jeju code == 4
+    if (index == 0) sigunguCode = 0; // 0 means all
+    else if(index == 1) sigunguCode = 3; // seoguipo code == 3 
+    else if(index == 2) sigunguCode = 4; // jeju code == 4
     else {
       console.log("Unknown index of button selected.");
       sigunguCode = 0; // default all
@@ -415,7 +414,7 @@ export default class MapView extends React.Component {
       markers: markers,
       numOfDrawnItem: placeCarouselItems.length,
       sigunguCode: sigunguCode,
-      segmentIndex: e.index});
+      segmentIndex: index});
   }
 
   handleSearchBox(e) {

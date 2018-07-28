@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-import {ProgressCircular} from 'react-onsenui';
-
 import {GoogleApiWrapper} from 'google-maps-react';
 
 export class MapContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      map: null
+    };
   }
 
   componentDidMount() {
@@ -17,7 +18,7 @@ export class MapContainer extends React.Component {
   loadMap() {
     if (this.props && this.props.google) { 
       const {google} = this.props;
-      const maps = google.maps; 
+      const maps = google.maps;
 
       const mapRef = this.refs.map; 
       const node = ReactDOM.findDOMNode(mapRef); 
@@ -32,6 +33,7 @@ export class MapContainer extends React.Component {
       })
 
       this.map = new maps.Map(node, mapConfig); 
+      this.setState({map: map});
     }
   }
 
