@@ -11,6 +11,7 @@ import Marker from './Marker';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
+import GooglePlaceImageContainer from './GooglePlaceImageContainer'
 
 export default class MapView extends React.Component {
   constructor(props) {
@@ -144,6 +145,8 @@ export default class MapView extends React.Component {
     let placeCarouselItems = []; // carousel items
     let markers = [];
 
+    let realIndex = 0;
+
     for(let i = 0; i < items.length; i++) {
       let item = items[i];
       let proceed = false;
@@ -186,10 +189,12 @@ export default class MapView extends React.Component {
       // make markers on the map and push it in the array
 
       let carouselKey = "carousel-" + contentId;
+      let imageKey = "image-" + realIndex;
+      let titleKey = "title-" + realIndex++;
 
       let imageSrc = image == null ? 
-        (<img src="img/noimage.png" style={{width: "100%"}} />) : 
-        (<img src={image._text} style={{width: "100%"}} />);
+        (<img id={imageKey} src="img/noimage.png" style={{width: "100%"}} />) : 
+        (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;
       let telTag = tel == null ? null : 
@@ -217,7 +222,7 @@ export default class MapView extends React.Component {
               <div className="card__title">
                 <Row>
                   <Col width="80%">
-                    <h2 style={{margin: "1%"}}>{title}</h2>
+                    <h2 id={titleKey} style={{margin: "1%"}}>{title}</h2>
                   </Col>
                   <Col width="20%">
                     <div style={{textAligh: "center"}}>
@@ -446,8 +451,15 @@ export default class MapView extends React.Component {
   }
 
   drawSingleMarker(lat, lng, color, zIndex, id) {
-    return (<Marker position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
+    let markerKey = "marker-" + id;
+    return (<Marker key = {markerKey} 
+             position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
              onClick = {this.markerClicked.bind(this)} />);
+  }
+
+  onImageFound(url, curImageId) {
+    let imageDOM = document.getElementById(curImageId);
+    imageDOM.setAttribute("src", url);
   }
 
   render() {
@@ -470,6 +482,23 @@ export default class MapView extends React.Component {
          autoScroll overscrollable swipeable>
          {this.state.placeCarouselItems}
        </Carousel>);
+
+    let place = null;
+    if(this.state.placeCarouselItems.length > 0) {
+      const curImageId = 'image-' + this.state.itemCarouselIndex;
+      let imageDOM = document.getElementById(curImageId);
+      let imgSrc = imageDOM == null ? null : imageDOM.getAttribute("src");
+
+      const curTitleId = 'title-' + this.state.itemCarouselIndex;
+      let titleDOM = document.getElementById(curTitleId);
+      let title = titleDOM == null ? null : titleDOM.innerText;
+      
+      if(imgSrc == "img/noimage.png") {
+        place = (
+          <GooglePlaceImageContainer maxWidth = {400} maxHeight = {400} placeTitle = {title} 
+            imageId = {curImageId} onFound = {this.onImageFound.bind(this)} />);
+      }
+    }
 
     const mapCenter = {
       lat: 33.356432,
@@ -508,8 +537,10 @@ export default class MapView extends React.Component {
     }
 
     let map = (
-      <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google}>
+      <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+        width = "100vw" height = "35vh">
         {markers}
+        {place}
       </MapContainer>);
 
     return (

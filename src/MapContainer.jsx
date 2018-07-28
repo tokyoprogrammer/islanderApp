@@ -6,9 +6,6 @@ import {GoogleApiWrapper} from 'google-maps-react';
 export class MapContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      map: null
-    };
   }
 
   componentDidMount() {
@@ -33,7 +30,6 @@ export class MapContainer extends React.Component {
       })
 
       this.map = new maps.Map(node, mapConfig); 
-      this.setState({map: map});
     }
   }
 
@@ -43,6 +39,7 @@ export class MapContainer extends React.Component {
     if(!children) return;
 
     return React.Children.map(children, c => {
+      if(c == null) return;
       return React.cloneElement(c, {
         map: this.map,
         google: this.props.google,
@@ -53,8 +50,8 @@ export class MapContainer extends React.Component {
 
   render() {
     const style = { 
-      width: '100vw',
-      height: '35vh'
+      width: this.props.width,
+      height: this.props.height
     }
 
     return ( 
@@ -68,7 +65,9 @@ export class MapContainer extends React.Component {
 MapContainer.propTypes = {
   google: React.PropTypes.object,
   zoom: React.PropTypes.number,
-  initialCenter: React.PropTypes.object
+  initialCenter: React.PropTypes.object,
+  width: React.PropTypes.string,
+  height: React.PropTypes.string
 }
 MapContainer.defaultProps = {
   zoom: 9,

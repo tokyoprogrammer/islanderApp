@@ -7,10 +7,13 @@ import LocalizedStrings from 'react-localization';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
+import MapContainer from './MapContainer';
+import GooglePlaceImageContainer from './GooglePlaceImageContainer'
 
 export default class ListView extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
 
     let serviceLang = "";
     let lang = localStorage.getItem("lang");
@@ -26,7 +29,7 @@ export default class ListView extends React.Component {
     let selectedCode = localStorage.getItem("code");
     let cache = JSON.parse(localStorage.getItem("items" + selectedCode));
     
-    this.listItemHeight = 110;
+    this.listItemHeight = 130;
  
     this.state = {
       items: cache.items,
@@ -175,6 +178,11 @@ export default class ListView extends React.Component {
 
     return filteredItems;
   }
+ 
+  onImageFound(url, curImageId) {
+    let imageDOM = document.getElementById(curImageId);
+    imageDOM.setAttribute("src", url);
+  }
 
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
@@ -200,14 +208,36 @@ export default class ListView extends React.Component {
     let addr = itemInfo.addr1 == null ? "" : itemInfo.addr1._text;
     if(contentId == null || contentTypeId == null || mapX == null || mapY == null) return null;
     
+    let imageKey = "list-image-" + index;
     let itemImage = itemInfo.firstimage == null ? 
-      (<img src="img/noimage.png" style={imageStyle} />) :
-      (<img src={itemInfo.firstimage._text} style={imageStyle} />);
+      (<img id = {imageKey} src="img/noimage.png" style={imageStyle} />) :
+      (<img id = {imageKey} src={itemInfo.firstimage._text} style={imageStyle} />);
+
     let title = itemInfo.title == null ? "" : itemInfo.title._text;
     let tel = itemInfo.tel;
     let telLink = tel == null ? null : "tel:" + tel._text;
     let telTag = tel == null ? null : 
       (<a href={telLink}>{tel._text}</a>);
+
+    let mapImageContainer = null;
+/*
+    if(itemInfo.firstimage == null) {
+      let place = (
+        <GooglePlaceImageContainer maxWidth = {400} maxHeight = {400} placeTitle = {title}
+          imageId = {imageKey} onFound = {this.onImageFound.bind(this) }/>);
+
+      const mapCenter = {
+        lat: 33.356432,
+        lng: 126.5268767
+      };
+      const mapZoom = 9;
+      mapImageContainer = (
+        <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+          width = "1px" height = "1px">
+          {place}
+        </MapContainer>);
+    }
+*/
 
     let starColor = grayColor;
     let favorites = this.state.favorites;
@@ -220,12 +250,13 @@ export default class ListView extends React.Component {
     }
 
     return (
-      <ListItem key={contentId} style={listItemStyle}>
+      <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable>
         <div className='left'>{itemImage}</div>
         <div className='center' style = {{paddingTop: '2px', paddingBottom: '2px'}}>
           <h3 style={{margin:"1px"}}>{title}</h3>
           <p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>
           {telTag}
+          {mapImageContainer}
         </div>
         <div className='right'>
           <Button modifier='quiet' 
@@ -252,9 +283,6 @@ export default class ListView extends React.Component {
       textAlign: 'center', 
       width: fullWidth, 
       margin: '0px',
-      position: 'fixed',
-      height: "135px",
-      zIndex: "99",
       backgroundColor: "#efeff4"
     };
 
@@ -279,12 +307,12 @@ export default class ListView extends React.Component {
             <hr style={hrStyle}/>
           </div>
         </div>
-        <div className="content" style={{textAlign: 'center', width: fullWidth, marginTop: "136px"}}>
+        <div className="content" style={{textAlign: 'center', width: fullWidth}}>
           <LazyList length={this.state.filteredItems.length} 
             renderRow={this.renderRow.bind(this)} 
             calculateItemHeight={() => this.listItemHeight} />
         </div>
-        <Fab onClick={this.goTopScroll.bind(this)} style={{bottom: '5%', right: '10px', position: 'fixed'}}>
+        <Fab onClick={this.goTopScroll.bind(this)} position = "bottom right">
           <Icon icon='md-format-valign-top' />
         </Fab>
       </Page>
