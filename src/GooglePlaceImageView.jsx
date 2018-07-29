@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-export default class GooglePlaceImageContainer extends React.Component {
+import {GoogleApiWrapper} from 'google-maps-react';
+
+export class GooglePlaceImageView extends React.Component {
   constructor(props) {
     super(props);
     let cached = JSON.parse(localStorage.getItem("google-image-cached"));
@@ -12,7 +14,7 @@ export default class GooglePlaceImageContainer extends React.Component {
 
     this.state = {
       cached: cached,
-      url: ""
+      url: "img/noimage.png",
     }
   }
 
@@ -20,32 +22,29 @@ export default class GooglePlaceImageContainer extends React.Component {
     this.loadImage(); 
   }
   
-  componentDidUpdate() {
-    this.loadImage();
-  }
-
   loadImageUsingGoogleAPI() {
-    const {map, google, placeTitle} = this.props;
-
+    const {placeTitle, google} = this.props;
     var request = {
       query: placeTitle,
       fields: ['photos']
     };
-    
-    var service = new google.maps.places.PlacesService(map);
-    service.findPlaceFromQuery(request, this.searchDone.bind(this));
+    const mapRef = this.refs.map; 
+    const node = ReactDOM.findDOMNode(mapRef); 
+ 
+    var service = new google.maps.places.PlacesService(node);
+    service.findPlaceFromQuery(request, this.searchDone.bind(this)); 
   }
 
   loadImage() {
     if (this.props && this.props.google) {
-      const {map, google, placeTitle} = this.props;
+      const placeTitle = this.props.placeTitle;
       let cached = this.state.cached;
       // find cache first
       for(let i = 0 ; i < cached.length; i++) {
         let cacheItem = cached[i];
         if(placeTitle == cacheItem.title) {
           // found
-          this.props.onFound(cacheItem.url, this.props.imageId);
+          this.setState({url: cacheItem.url});
           return;
         }
       }
@@ -53,11 +52,11 @@ export default class GooglePlaceImageContainer extends React.Component {
       this.loadImageUsingGoogleAPI();
     }
   }
-  
+
   searchDone(results, status) {
     let google = this.props.google;
     if(status == google.maps.places.PlacesServiceStatus.OK) {
-      for(let i = 0; i < results.length; i++) {
+     for(let i = 0; i < results.length; i++) {
         let place = results[i];
         let photos = place.photos;
         if(!photos) return;
@@ -68,29 +67,42 @@ export default class GooglePlaceImageContainer extends React.Component {
           let cached = this.state.cached.slice(0);
           cached.push({title: this.props.placeTitle, url: url});
           localStorage.setItem("google-image-cached", JSON.stringify(cached));
+ 
           this.setState({cached: cached, url: url});
           
-          this.props.onFound(url, this.props.imageId);
           return;
         }
       }
+      this.setState({});
+    } else if(status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+      // store into cache
+      let cached = this.state.cached.slice(0);
+      cached.push({title: this.props.placeTitle, url: "img/noimage.png"});
+      localStorage.setItem("google-image-cached", JSON.stringify(cached));
+ 
+      this.setState({cached: cached, url: "img/noimage.png"});
+      return;
+    } else {
+      console.log(status);
+      this.setState({});
     }
   }
   
   render() {
-    if(this.state.url != "") {
-      return (<img src = {this.state.url} style={{width: "100%"}} />);
-    }
-    return null;
+    return (
+      <div ref="map" style={{width: "100%", height: "100%"}}>
+        <img src = {this.state.url} style={{width: this.props.maxWidth}} />
+      </div>
+    );
   }
 }
 
-GooglePlaceImageContainer.propTypes = {
-  map: React.PropTypes.object,
-  google: React.PropTypes.object,
+GooglePlaceImageView.propTypes = {
   maxWidth: React.PropTypes.number,
   maxHeight: React.PropTypes.number,
   placeTitle: React.PropTypes.string,
-  imageId: React.PropTypes.string,
-  onFound: React.PropTypes.func
 }
+
+export default GoogleApiWrapper((props) => ({
+  apiKey: 'AIzaSyDQlA7ERwcmbPVr8iFH-QGV8uS-_B6c2jQ',
+}))(GooglePlaceImageView)

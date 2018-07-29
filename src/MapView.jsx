@@ -11,7 +11,7 @@ import Marker from './Marker';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
-import GooglePlaceImageContainer from './GooglePlaceImageContainer'
+import GooglePlaceImageView from './GooglePlaceImageView'
 
 export default class MapView extends React.Component {
   constructor(props) {
@@ -193,7 +193,8 @@ export default class MapView extends React.Component {
       let titleKey = "title-" + realIndex++;
 
       let imageSrc = image == null ? 
-        (<img id={imageKey} src="img/noimage.png" style={{width: "100%"}} />) : 
+        (<GooglePlaceImageView maxWidth = {100} maxHeight = {100} 
+          placeTitle = {title} />) :
         (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;
@@ -457,11 +458,6 @@ export default class MapView extends React.Component {
              onClick = {this.markerClicked.bind(this)} />);
   }
 
-  onImageFound(url, curImageId) {
-    let imageDOM = document.getElementById(curImageId);
-    imageDOM.setAttribute("src", url);
-  }
-
   render() {
     const centerDiv = {
       textAlign: 'center'
@@ -482,24 +478,7 @@ export default class MapView extends React.Component {
          autoScroll overscrollable swipeable>
          {this.state.placeCarouselItems}
        </Carousel>);
-
-    let place = null;
-    if(this.state.placeCarouselItems.length > 0) {
-      const curImageId = 'image-' + this.state.itemCarouselIndex;
-      let imageDOM = document.getElementById(curImageId);
-      let imgSrc = imageDOM == null ? null : imageDOM.getAttribute("src");
-
-      const curTitleId = 'title-' + this.state.itemCarouselIndex;
-      let titleDOM = document.getElementById(curTitleId);
-      let title = titleDOM == null ? null : titleDOM.innerText;
-      
-      if(imgSrc == "img/noimage.png") {
-        place = (
-          <GooglePlaceImageContainer maxWidth = {400} maxHeight = {400} placeTitle = {title} 
-            imageId = {curImageId} onFound = {this.onImageFound.bind(this)} />);
-      }
-    }
-
+    
     const mapCenter = {
       lat: 33.356432,
       lng: 126.5268767
@@ -540,7 +519,6 @@ export default class MapView extends React.Component {
       <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
         width = "100vw" height = "35vh">
         {markers}
-        {place}
       </MapContainer>);
 
     return (

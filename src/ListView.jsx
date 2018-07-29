@@ -7,8 +7,7 @@ import LocalizedStrings from 'react-localization';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
-import MapContainer from './MapContainer';
-import GooglePlaceImageContainer from './GooglePlaceImageContainer'
+import GooglePlaceImageView from './GooglePlaceImageView';
 
 export default class ListView extends React.Component {
   constructor(props) {
@@ -179,14 +178,10 @@ export default class ListView extends React.Component {
     return filteredItems;
   }
  
-  onImageFound(url, curImageId) {
-    let imageDOM = document.getElementById(curImageId);
-    imageDOM.setAttribute("src", url);
-  }
-
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
-    const imageStyle = {width: "60px"};
+    const imageWidth = 60;
+    const imageStyle = {width: imageWidth + "px"};
     const grayColor = "#D3D3D3";
     const goldColor = "#FFD700";
     const starIconSize = {
@@ -207,37 +202,18 @@ export default class ListView extends React.Component {
     let contentTypeId = itemInfo.contenttypeid == null ? null : itemInfo.contenttypeid._text;
     let addr = itemInfo.addr1 == null ? "" : itemInfo.addr1._text;
     if(contentId == null || contentTypeId == null || mapX == null || mapY == null) return null;
-    
-    let imageKey = "list-image-" + index;
-    let itemImage = itemInfo.firstimage == null ? 
-      (<img id = {imageKey} src="img/noimage.png" style={imageStyle} />) :
-      (<img id = {imageKey} src={itemInfo.firstimage._text} style={imageStyle} />);
-
+ 
     let title = itemInfo.title == null ? "" : itemInfo.title._text;
+    
+    let itemImage = itemInfo.firstimage == null ? 
+      (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {this.listItemHeight} 
+        placeTitle = {title} style={imageStyle} />) :
+      (<img src={itemInfo.firstimage._text} style={imageStyle} />);
+
     let tel = itemInfo.tel;
     let telLink = tel == null ? null : "tel:" + tel._text;
     let telTag = tel == null ? null : 
       (<a href={telLink}>{tel._text}</a>);
-
-    let mapImageContainer = null;
-/*
-    if(itemInfo.firstimage == null) {
-      let place = (
-        <GooglePlaceImageContainer maxWidth = {400} maxHeight = {400} placeTitle = {title}
-          imageId = {imageKey} onFound = {this.onImageFound.bind(this) }/>);
-
-      const mapCenter = {
-        lat: 33.356432,
-        lng: 126.5268767
-      };
-      const mapZoom = 9;
-      mapImageContainer = (
-        <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
-          width = "1px" height = "1px">
-          {place}
-        </MapContainer>);
-    }
-*/
 
     let starColor = grayColor;
     let favorites = this.state.favorites;
@@ -256,7 +232,6 @@ export default class ListView extends React.Component {
           <h3 style={{margin:"1px"}}>{title}</h3>
           <p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>
           {telTag}
-          {mapImageContainer}
         </div>
         <div className='right'>
           <Button modifier='quiet' 
