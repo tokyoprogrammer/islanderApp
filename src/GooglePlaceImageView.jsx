@@ -21,7 +21,7 @@ export class GooglePlaceImageView extends React.Component {
   componentDidMount() {
     this.loadImage(); 
   }
-  
+ 
   loadImageUsingGoogleAPI() {
     const {placeTitle, google} = this.props;
     var request = {
@@ -53,45 +53,58 @@ export class GooglePlaceImageView extends React.Component {
     }
   }
 
+  storeIntoCache(title, url) {
+    let cached = this.state.cached.slice(0);
+    cached.push({title: title, url: url});
+    localStorage.setItem("google-image-cached", JSON.stringify(cached));
+    return cached;
+  }
+
   searchDone(results, status) {
     let google = this.props.google;
     if(status == google.maps.places.PlacesServiceStatus.OK) {
      for(let i = 0; i < results.length; i++) {
         let place = results[i];
         let photos = place.photos;
-        if(!photos) return;
+        if(!photos) {
+          // in this case, may be able to be updated later.
+          this.setState({url: "img/noimage.png"});
+          return;
+        }
         let {maxWidth, maxHeight} = this.props;
         let url = photos[0].getUrl({'maxWidth': maxWidth, 'maxHeight': maxHeight});
         if(url) {
           // store into cache
-          let cached = this.state.cached.slice(0);
-          cached.push({title: this.props.placeTitle, url: url});
-          localStorage.setItem("google-image-cached", JSON.stringify(cached));
- 
+          let cached = this.storeIntoCache(this.props.placeTitle, url);
           this.setState({cached: cached, url: url});
           
           return;
+        } else {
+          // no reason. maybe we can try it later
+          this.setState({url: "img/noimage.png"});
+          return;
         }
       }
-      this.setState({});
+      // okay but no results?
+      this.setState({url: "img/noimage.png"});
     } else if(status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-      // store into cache
-      let cached = this.state.cached.slice(0);
-      cached.push({title: this.props.placeTitle, url: "img/noimage.png"});
-      localStorage.setItem("google-image-cached", JSON.stringify(cached));
- 
+      // cannot find results. This place is not stored in the google map. 
+      // store into cache with no image
+      let cached = this.storeIntoCache(this.props.placeTitle, "img/noimage.png");
       this.setState({cached: cached, url: "img/noimage.png"});
       return;
     } else {
+      // unknown status
       console.log(status);
-      this.setState({});
+      this.setState({url: "img/noimage.png"});
     }
   }
   
   render() {
     return (
-      <div ref="map" style={{width: "100%", height: "100%"}}>
-        <img src = {this.state.url} style={{width: this.props.maxWidth}} />
+      <div style={{width: "100%", height: "100%"}}>
+        <div ref="map"></div>
+        <div><img src = {this.state.url} style={{width: this.props.maxWidth}} /></div>
       </div>
     );
   }
