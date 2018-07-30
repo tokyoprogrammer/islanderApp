@@ -193,7 +193,7 @@ export default class MapView extends React.Component {
       let titleKey = "title-" + realIndex++;
 
       let imageSrc = image == null ? 
-        (<GooglePlaceImageView maxWidth = {100} maxHeight = {100} 
+        (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
           placeTitle = {title} />) :
         (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   

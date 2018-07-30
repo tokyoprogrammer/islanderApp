@@ -104,7 +104,7 @@ export class GooglePlaceImageView extends React.Component {
     return (
       <div style={{width: "100%", height: "100%"}}>
         <div ref="map"></div>
-        <div><img src = {this.state.url} style={{width: this.props.maxWidth}} /></div>
+        <div><img src = {this.state.url} style={{width: "100%"}} /></div>
       </div>
     );
   }
