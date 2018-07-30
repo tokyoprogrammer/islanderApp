@@ -481,9 +481,7 @@ export default class MapView extends React.Component {
                <div>
                  <Card>
                    <div className="title center">Loading...</div>
-                   <div className="content">
-                     <ProgressCircular indeterminate style={{marginTop: "15%"}}/>
-                   </div>
+                   <div className="content">Please wait...</div>
                  </Card>
                </div>}
            </CarouselItem>
