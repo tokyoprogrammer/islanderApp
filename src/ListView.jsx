@@ -4,6 +4,7 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchI
 
 import LocalizedStrings from 'react-localization';
 
+import DetailView from './DetailView';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
@@ -226,7 +227,8 @@ export default class ListView extends React.Component {
     }
 
     return (
-      <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable>
+      <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable
+        onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
         <div className='left'>{itemImage}</div>
         <div className='center' style = {{paddingTop: '2px', paddingBottom: '2px'}}>
           <h3 style={{margin:"1px"}}>{title}</h3>
@@ -241,6 +243,14 @@ export default class ListView extends React.Component {
           </Button>
         </div>
       </ListItem>);
+  }
+
+  goDetails(contentId, contentTypeId) {
+    localStorage.setItem("contentId", contentId);
+    localStorage.setItem("contentTypeId", contentTypeId);
+    this.props.navigator.pushPage({ 
+      component: DetailView 
+    });
   }
 
   goTopScroll() {
