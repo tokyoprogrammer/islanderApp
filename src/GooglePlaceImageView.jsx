@@ -101,10 +101,14 @@ export class GooglePlaceImageView extends React.Component {
   }
   
   render() {
+    let imgTag = this.props.listThumbnail == true ? 
+      (<img src = {this.state.url} 
+        style={{width: this.props.maxWidth + "px", maxHeight: this.props.maxHeight + "px"}} />) :
+      (<img src = {this.state.url} style={{width: "100%"} }/>);
     return (
       <div style={{width: "100%", height: "100%"}}>
         <div ref="map"></div>
-        <div><img src = {this.state.url} style={{width: "100%"}} /></div>
+        <div>{imgTag}</div>
       </div>
     );
   }
@@ -114,6 +118,7 @@ GooglePlaceImageView.propTypes = {
   maxWidth: React.PropTypes.number,
   maxHeight: React.PropTypes.number,
   placeTitle: React.PropTypes.string,
+  listThumbnail: React.PropTypes.bool
 }
 
 export default GoogleApiWrapper((props) => ({

@@ -194,7 +194,7 @@ export default class MapView extends React.Component {
 
       let imageSrc = image == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-          placeTitle = {title} />) :
+          placeTitle = {title} listThumbnail = {false} />) :
         (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;
@@ -477,7 +477,8 @@ export default class MapView extends React.Component {
          autoScroll overscrollable swipeable>
          {this.state.placeCarouselItems.map((item, index) => (
            <CarouselItem key={"carousel-" + index}>
-             {this.state.itemCarouselIndex == index ? <div>{item}</div> : 
+             {this.state.itemCarouselIndex - 1 <= index && this.state.itemCarouselIndex + 1 >= index ?
+               <div>{item}</div> : 
                <div>
                  <Card>
                    <div className="title center">Loading...</div>

@@ -181,8 +181,8 @@ export default class ListView extends React.Component {
  
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
-    const imageWidth = 60;
-    const imageStyle = {width: imageWidth + "px"};
+    const imageWidth = 100;
+    const imageStyle = {width: imageWidth + "px", maxHeight: this.listItemHeight + "px"};
     const grayColor = "#D3D3D3";
     const goldColor = "#FFD700";
     const starIconSize = {
@@ -208,7 +208,7 @@ export default class ListView extends React.Component {
     
     let itemImage = itemInfo.firstimage == null ? 
       (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {this.listItemHeight} 
-        placeTitle = {title} style={imageStyle} />) :
+        placeTitle = {title} listThumbnail = {true} />) :
       (<img src={itemInfo.firstimage._text} style={imageStyle} />);
 
     let tel = itemInfo.tel;
