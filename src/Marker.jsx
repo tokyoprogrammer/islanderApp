@@ -58,6 +58,8 @@ export default class Marker extends React.Component {
 Marker.propTypes = {
   positon: React.PropTypes.object,
   map: React.PropTypes.object,
+  google: React.PropTypes.object,
+  mapCenter: React.PropTypes.object,
   color: React.PropTypes.string,
   zIndex: React.PropTypes.number,
   id: React.PropTypes.number,

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular, Fab} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular, Fab, Card} from 'react-onsenui';
 
 import LocalizedStrings from 'react-localization';
 
@@ -11,6 +11,7 @@ import Marker from './Marker';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
+import GooglePlaceImageView from './GooglePlaceImageView'
 
 export default class MapView extends React.Component {
   constructor(props) {
@@ -144,15 +145,16 @@ export default class MapView extends React.Component {
     let placeCarouselItems = []; // carousel items
     let markers = [];
 
+    let realIndex = 0;
+
     for(let i = 0; i < items.length; i++) {
       let item = items[i];
       let proceed = false;
       let sigunguCodeOfItem = item.sigungucode == null ? null : item.sigungucode._text;
       if(sigunguCode != 0 && sigunguCodeOfItem != sigunguCode) continue;
+      let cat3 = item.cat3 == null ? "" : item.cat3._text;
 
       if(filtered.length >= 1) {
-        let cat3 = item.cat3 == null ? "" : item.cat3._text;
-
         for(let j = 0; j < filtered.length; j++) {
           let filter = filtered[j];
           if(filter == cat3) { // check whether this item's category is in the filter or not 
@@ -187,10 +189,13 @@ export default class MapView extends React.Component {
       // make markers on the map and push it in the array
 
       let carouselKey = "carousel-" + contentId;
+      let imageKey = "image-" + realIndex;
+      let titleKey = "title-" + realIndex++;
 
       let imageSrc = image == null ? 
-        (<img src="img/noimage.png" style={{width: "100%"}} />) : 
-        (<img src={image._text} style={{width: "100%"}} />);
+        (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
+          placeTitle = {title} listThumbnail = {false} />) :
+        (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;
       let telTag = tel == null ? null : 
@@ -212,61 +217,60 @@ export default class MapView extends React.Component {
       }
 
       let placeCarouselItem = (
-        <CarouselItem key={carouselKey}>
-          <div style={{height: "35%", padding: "1px 0 0 0", textAlign: "center"}}>
-            <div className="card">
-              <div className="card__title">
-                <Row>
-                  <Col width="80%">
-                    <h2 style={{margin: "1%"}}>{title}</h2>
-                  </Col>
-                  <Col width="20%">
-                    <div style={{textAligh: "center"}}>
-                      <Button modifier='quiet' 
-                        style={{width: '100%', textAlign: "center", color: starColor}}
-                        onClick={this.toggleFavorite.bind(this, contentId)}>
-                        <Icon icon='md-star' size={starIconSize}/>
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-              <div className="card__content">
-                <Row style={{width: "100%"}}>
-                  <Col width="5%">
+        <div style={{height: "35%", padding: "1px 0 0 0", textAlign: "center"}}>
+          <div className="card">
+            <div className="card__title">
+              <Row>
+                <Col width="80%">
+                  <h2 id={titleKey} style={{margin: "1%"}}>{title}</h2>
+                </Col>
+                <Col width="20%">
+                  <div style={{textAligh: "center"}}>
                     <Button modifier='quiet' 
-                      onClick={this.prevItem.bind(this)} 
-                      style={{width: '100%', padding: "5%"}}>
-                      <Icon icon='md-chevron-left' size={arrowIconSize} />
+                      style={{width: '100%', textAlign: "center", color: starColor}}
+                      onClick={this.toggleFavorite.bind(this, contentId)}>
+                      <Icon icon='md-star' size={starIconSize}/>
                     </Button>
-                  </Col>
-                  <Col width="37%">
-                    <div style={{textAlign: "center", padding: "1%"}}>
-                      {imageSrc}
+                  </div>
+                </Col>
+              </Row>
+            </div>
+            <div className="card__content">
+              <Row style={{width: "100%"}}>
+                <Col width="5%">
+                  <Button modifier='quiet' 
+                    onClick={this.prevItem.bind(this)} 
+                    style={{width: '100%', padding: "5%"}}>
+                    <Icon icon='md-chevron-left' size={arrowIconSize} />
+                  </Button>
+                </Col>
+                <Col width="37%">
+                  <div style={{textAlign: "center", padding: "1%"}}>
+                    {imageSrc}
+                  </div>
+                </Col>
+                <Col width="53%">
+                  <div style={{padding: "1%"}}>
+                    <p style={{margin: "1%"}}>{addr}</p>
+                    <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
+                    <p style={{margin: "1%"}}>{telTag}</p>
+                    <div style={{margin: "2%"}}>
+                      {detailButton}
                     </div>
-                  </Col>
-                  <Col width="53%">
-                    <div style={{padding: "1%"}}>
-                      <p style={{margin: "1%"}}>{addr}</p>
-                      <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
-                      <p style={{margin: "1%"}}>{telTag}</p>
-                      <div style={{margin: "2%"}}>
-                        {detailButton}
-                      </div>
-                    </div>
-                  </Col>
-                  <Col width="5%">
-                    <Button modifier='quiet' 
-                      onClick={this.nextItem.bind(this)} 
-                      style={{width: '100%', padding: "5%"}}>
-                      <Icon icon='md-chevron-right' size={arrowIconSize} />
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
+                  </div>
+                </Col>
+                <Col width="5%">
+                  <Button modifier='quiet' 
+                    onClick={this.nextItem.bind(this)} 
+                    style={{width: '100%', padding: "5%"}}>
+                    <Icon icon='md-chevron-right' size={arrowIconSize} />
+                  </Button>
+                </Col>
+              </Row>
             </div>
           </div>
-        </CarouselItem>);
+        </div>
+      );
 
       placeCarouselItems.push(placeCarouselItem);
     }
@@ -290,7 +294,6 @@ export default class MapView extends React.Component {
     var options = {compact: true, ignoreComment: true, spaces: 4};
     var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
     var items = xml.response.body.items.item;
-    console.log(items);
     return items;
   } 
 
@@ -396,12 +399,12 @@ export default class MapView extends React.Component {
     this.setState({itemCarouselIndex: e.activeIndex});
   }
 
-  handleAddressFilter(e) {
+  handleAddressFilter(index) {
     let sigunguCode = 0;
 
-    if (e.index == 0) sigunguCode = 0; // 0 means all
-    else if(e.index == 1) sigunguCode = 3; // seoguipo code == 3 
-    else if(e.index == 2) sigunguCode = 4; // jeju code == 4
+    if (index == 0) sigunguCode = 0; // 0 means all
+    else if(index == 1) sigunguCode = 3; // seoguipo code == 3 
+    else if(index == 2) sigunguCode = 4; // jeju code == 4
     else {
       console.log("Unknown index of button selected.");
       sigunguCode = 0; // default all
@@ -416,7 +419,7 @@ export default class MapView extends React.Component {
       markers: markers,
       numOfDrawnItem: placeCarouselItems.length,
       sigunguCode: sigunguCode,
-      segmentIndex: e.index});
+      segmentIndex: index});
   }
 
   handleSearchBox(e) {
@@ -448,7 +451,9 @@ export default class MapView extends React.Component {
   }
 
   drawSingleMarker(lat, lng, color, zIndex, id) {
-    return (<Marker position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
+    let markerKey = "marker-" + id;
+    return (<Marker key = {markerKey} 
+             position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
              onClick = {this.markerClicked.bind(this)} />);
   }
 
@@ -462,7 +467,7 @@ export default class MapView extends React.Component {
     };
 
     let fullWidth = window.innerWidth + "px";
-
+    
     let placeCarousel = this.state.items.length <= 0 ? (<ProgressCircular indeterminate />) :
       (<Carousel
          style={{width: fullWidth}}
@@ -470,9 +475,20 @@ export default class MapView extends React.Component {
          index = {this.state.itemCarouselIndex}
          autoScrollRatio={0.3}
          autoScroll overscrollable swipeable>
-         {this.state.placeCarouselItems}
+         {this.state.placeCarouselItems.map((item, index) => (
+           <CarouselItem key={"carousel-" + index}>
+             {this.state.itemCarouselIndex - 1 <= index && this.state.itemCarouselIndex + 1 >= index ?
+               <div>{item}</div> : 
+               <div>
+                 <Card>
+                   <div className="title center">Loading...</div>
+                   <div className="content">Please wait...</div>
+                 </Card>
+               </div>}
+           </CarouselItem>
+         ))}
        </Carousel>);
-
+    
     const mapCenter = {
       lat: 33.356432,
       lng: 126.5268767
@@ -510,7 +526,8 @@ export default class MapView extends React.Component {
     }
 
     let map = (
-      <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google}>
+      <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+        width = "100vw" height = "35vh">
         {markers}
       </MapContainer>);
 
@@ -539,7 +556,7 @@ export default class MapView extends React.Component {
             {placeCarousel}
           </div>
         </div>
-        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '5%', right: '10px', position: 'fixed'}}>
+        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '10%', right: '10px', position: 'fixed'}}>
           <Icon icon='fa-bars' />
         </Fab>
       </Page>

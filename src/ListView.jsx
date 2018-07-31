@@ -4,13 +4,16 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchI
 
 import LocalizedStrings from 'react-localization';
 
+import DetailView from './DetailView';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
+import GooglePlaceImageView from './GooglePlaceImageView';
 
 export default class ListView extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
 
     let serviceLang = "";
     let lang = localStorage.getItem("lang");
@@ -26,10 +29,11 @@ export default class ListView extends React.Component {
     let selectedCode = localStorage.getItem("code");
     let cache = JSON.parse(localStorage.getItem("items" + selectedCode));
     
-    this.listItemHeight = 110;
+    this.listItemHeight = 130;
  
     this.state = {
       items: cache.items,
+      filteredItems: cache.items,
       favorites: favorites,
       strings: strings,
       filtered: [],
@@ -45,7 +49,9 @@ export default class ListView extends React.Component {
   }
 
   toggleFilterStatus(newFilteredList) {
+    let filteredItems = this.processFilter(this.state.sigunguCode, newFilteredList)
     this.setState({
+      filteredItems: filteredItems,
       filtered: newFilteredList});
   }
 
@@ -93,6 +99,21 @@ export default class ListView extends React.Component {
   }
 
   searchUsingSearchString(string) {
+    let filteredItems = this.processFilter(this.state.sigunguCode, this.state.filtered)
+    let searchedItems = [];
+
+    if(string.length > 1) {
+      for(let i = 0; i < filteredItems.length; i++) {
+        let item = filteredItems[i];
+        let title = item.title == null ? "" : item.title._text;
+        if(string.length > 1 && title.includes(string) == false) continue;
+        searchedItems.push(item);
+      }
+    } else {
+      searchedItems = filteredItems;
+    }
+
+    this.setState({filteredItems: searchedItems});
     console.log(string);
   } 
  
@@ -103,10 +124,6 @@ export default class ListView extends React.Component {
       this.searchUsingSearchString("");
     }
     this.setState({searchString: searchString});
-  }
- 
-  handleCategoryChange(e) {
-    this.setState({filterCarouselIndex: e.activeIndex});
   }
 
   handleAddressFilter(e) {
@@ -120,7 +137,10 @@ export default class ListView extends React.Component {
       sigunguCode = 0; // default all
     }
 
+    let filteredItems = this.processFilter(sigunguCode, this.state.filtered)
+
     this.setState({
+      filteredItems: filteredItems,
       sigunguCode: sigunguCode,
       segmentIndex: e.index});
   }
@@ -129,8 +149,40 @@ export default class ListView extends React.Component {
     this.searchUsingSearchString(this.state.searchString);
   }
   
+  processFilter(sigunguCode, filtered) {
+    let filteredItems = [];
+
+    for(let i = 0; i < this.state.items.length; i++) {
+      let item = this.state.items[i];
+      let sigunguCodeOfItem = item.sigungucode == null ? null : item.sigungucode._text;
+      let proceed = false;
+
+      if(sigunguCode != 0 && sigunguCodeOfItem != sigunguCode) continue;
+
+      if(filtered.length >= 1) {
+        let cat3 = item.cat3 == null ? "" : item.cat3._text;
+
+        for(let j = 0; j < filtered.length; j++) {
+          let filter = filtered[j];
+          if(filter == cat3) { // check whether this item's category is in the filter or not 
+            proceed = true;
+            break;
+          }
+        }
+      }
+
+      if(!proceed && filtered.length >= 1) continue; // if filter activated && not proceed,
+
+      filteredItems.push(item);
+    }
+
+    return filteredItems;
+  }
+ 
   renderRow(index) {
-    const imageStyle = {width: "60px"};
+    if(index >= this.state.filteredItems.length) return;
+    const imageWidth = 100;
+    const imageStyle = {width: imageWidth + "px", maxHeight: this.listItemHeight + "px"};
     const grayColor = "#D3D3D3";
     const goldColor = "#FFD700";
     const starIconSize = {
@@ -143,7 +195,7 @@ export default class ListView extends React.Component {
       paddingBottom: "2px"
     };
 
-    let itemInfo = this.state.items[index];
+    let itemInfo = this.state.filteredItems[index];
 
     let contentId = itemInfo.contentid == null ? null : itemInfo.contentid._text;
     let mapX = itemInfo.mapx == null ? null : itemInfo.mapx._text;
@@ -151,11 +203,14 @@ export default class ListView extends React.Component {
     let contentTypeId = itemInfo.contenttypeid == null ? null : itemInfo.contenttypeid._text;
     let addr = itemInfo.addr1 == null ? "" : itemInfo.addr1._text;
     if(contentId == null || contentTypeId == null || mapX == null || mapY == null) return null;
+ 
+    let title = itemInfo.title == null ? "" : itemInfo.title._text;
     
     let itemImage = itemInfo.firstimage == null ? 
-      (<img src="img/noimage.png" style={imageStyle} />) :
+      (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {this.listItemHeight} 
+        placeTitle = {title} listThumbnail = {true} />) :
       (<img src={itemInfo.firstimage._text} style={imageStyle} />);
-    let title = itemInfo.title == null ? "" : itemInfo.title._text;
+
     let tel = itemInfo.tel;
     let telLink = tel == null ? null : "tel:" + tel._text;
     let telTag = tel == null ? null : 
@@ -172,7 +227,8 @@ export default class ListView extends React.Component {
     }
 
     return (
-      <ListItem key={contentId} style={listItemStyle}>
+      <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable
+        onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
         <div className='left'>{itemImage}</div>
         <div className='center' style = {{paddingTop: '2px', paddingBottom: '2px'}}>
           <h3 style={{margin:"1px"}}>{title}</h3>
@@ -189,7 +245,21 @@ export default class ListView extends React.Component {
       </ListItem>);
   }
 
+  goDetails(contentId, contentTypeId) {
+    localStorage.setItem("contentId", contentId);
+    localStorage.setItem("contentTypeId", contentTypeId);
+    this.props.navigator.pushPage({ 
+      component: DetailView 
+    });
+  }
+
+  goTopScroll() {
+    window.scrollTo(0, 0);
+  }
+
   render() {
+    let fullHeight = window.innerHeight;
+    const imageHeight = (fullHeight * 0.4) + "px"; // 40%
     const hrStyle = {
       margin: '1px'
     };
@@ -197,7 +267,9 @@ export default class ListView extends React.Component {
     const styleToolbar = {
       textAlign: 'center', 
       width: fullWidth, 
-      margin: '0px'};
+      margin: '0px',
+      backgroundColor: "#efeff4"
+    };
 
     let fullWidth = window.innerWidth + "px";
 
@@ -220,11 +292,14 @@ export default class ListView extends React.Component {
             <hr style={hrStyle}/>
           </div>
         </div>
-        <div style={{textAlign: 'center', width: fullWidth, top: '190px'}}>
-          <LazyList length={this.state.items.length} 
+        <div className="content" style={{textAlign: 'center', width: fullWidth}}>
+          <LazyList length={this.state.filteredItems.length} 
             renderRow={this.renderRow.bind(this)} 
             calculateItemHeight={() => this.listItemHeight} />
         </div>
+        <Fab onClick={this.goTopScroll.bind(this)} position = "bottom right">
+          <Icon icon='md-format-valign-top' />
+        </Fab>
       </Page>
     );
   }

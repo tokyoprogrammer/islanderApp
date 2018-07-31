@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-import {ProgressCircular} from 'react-onsenui';
-
 import {GoogleApiWrapper} from 'google-maps-react';
 
 export class MapContainer extends React.Component {
@@ -17,7 +15,7 @@ export class MapContainer extends React.Component {
   loadMap() {
     if (this.props && this.props.google) { 
       const {google} = this.props;
-      const maps = google.maps; 
+      const maps = google.maps;
 
       const mapRef = this.refs.map; 
       const node = ReactDOM.findDOMNode(mapRef); 
@@ -41,6 +39,7 @@ export class MapContainer extends React.Component {
     if(!children) return;
 
     return React.Children.map(children, c => {
+      if(c == null) return;
       return React.cloneElement(c, {
         map: this.map,
         google: this.props.google,
@@ -51,8 +50,8 @@ export class MapContainer extends React.Component {
 
   render() {
     const style = { 
-      width: '100vw',
-      height: '40vh'
+      width: this.props.width,
+      height: this.props.height
     }
 
     return ( 
@@ -66,7 +65,9 @@ export class MapContainer extends React.Component {
 MapContainer.propTypes = {
   google: React.PropTypes.object,
   zoom: React.PropTypes.number,
-  initialCenter: React.PropTypes.object
+  initialCenter: React.PropTypes.object,
+  width: React.PropTypes.string,
+  height: React.PropTypes.string
 }
 MapContainer.defaultProps = {
   zoom: 9,
