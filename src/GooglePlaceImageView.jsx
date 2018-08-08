@@ -6,10 +6,28 @@ import {GoogleApiWrapper} from 'google-maps-react';
 export class GooglePlaceImageView extends React.Component {
   constructor(props) {
     super(props);
-    let cached = JSON.parse(localStorage.getItem("google-image-cached"));
-    if(!cached) {
-      cached = [];
-      localStorage.setItem("google-image-cached", JSON.stringify(cached));
+    let currentCache = JSON.parse(localStorage.getItem("google-image-cached"));
+    let cacheValidUntil = new Date();
+    cacheValidUntil.setDate(cacheValidUntil.getDate() + 1);
+    // default
+    let cached = {
+      createdDateTime: cacheValidUntil,
+      data: []
+    };
+ 
+    if(currentCache != null) {
+      let cacheValidUntil = new Date(currentCache.createdDateTime);
+      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+      // cache will be valid until + 1 day of the created day.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        // compare and if cache is fresh
+        cached = currentCache;
+      } else {
+        localStorage.getItem("google-image-cached", JSON.stringify(cached));
+      }
+    } else {
+      localStorage.getItem("google-image-cached", JSON.stringify(cached));
     }
 
     this.state = {
@@ -22,6 +40,13 @@ export class GooglePlaceImageView extends React.Component {
     this.loadImage(); 
   }
  
+  componentDidUpdate(prevProps) {
+    if(this.props.placeTitle != prevProps.placeTitle) {
+      console.log("update");
+      this.loadImage();
+    }   
+  }
+
   loadImageUsingGoogleAPI() {
     const {placeTitle, google} = this.props;
     var request = {
@@ -36,28 +61,38 @@ export class GooglePlaceImageView extends React.Component {
   }
 
   loadImage() {
-    if (this.props && this.props.google) {
+    console.log(this.props);
+    if (this.props) {
+      console.log("called2");
       const placeTitle = this.props.placeTitle;
-      let cached = this.state.cached;
+      let cached = this.state.cached.data;
       // find cache first
       for(let i = 0 ; i < cached.length; i++) {
         let cacheItem = cached[i];
         if(placeTitle == cacheItem.title) {
           // found
+          console.log("Found")
           this.setState({url: cacheItem.url});
           return;
         }
       }
-      // if not found, load image using google api
-      this.loadImageUsingGoogleAPI();
+      if(this.props.google) {
+        // if not found, load image using google api
+        this.loadImageUsingGoogleAPI();
+      }
     }
   }
 
   storeIntoCache(title, url) {
-    let cached = this.state.cached.slice(0);
+    let cached = this.state.cached.data.slice(0);
     cached.push({title: title, url: url});
-    localStorage.setItem("google-image-cached", JSON.stringify(cached));
-    return cached;
+    let cachedToStore = {
+      createdDateTime: this.state.cached.createdDateTime,
+      data: cached
+    };
+      
+    localStorage.setItem("google-image-cached", JSON.stringify(cachedToStore));
+    return cachedToStore;
   }
 
   searchDone(results, status) {
@@ -115,12 +150,13 @@ export class GooglePlaceImageView extends React.Component {
 }
 
 GooglePlaceImageView.propTypes = {
+  google: React.PropTypes.object,
   maxWidth: React.PropTypes.number,
   maxHeight: React.PropTypes.number,
   placeTitle: React.PropTypes.string,
   listThumbnail: React.PropTypes.bool
 }
 
-export default GoogleApiWrapper((props) => ({
-  apiKey: 'AIzaSyDQlA7ERwcmbPVr8iFH-QGV8uS-_B6c2jQ',
-}))(GooglePlaceImageView)
+export default GoogleApiWrapper({
+  apiKey: 'AIzaSyDQlA7ERwcmbPVr8iFH-QGV8uS-_B6c2jQ'
+})(GooglePlaceImageView)
