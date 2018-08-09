@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom';
 
 import LocalizedStrings from 'react-localization';
 
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular, ListHeader, ListItem, List, Card} from 'react-onsenui';
+
+import GooglePlaceImageView from './GooglePlaceImageView';
+import MapContainer from './MapContainer';
+import Marker from './Marker';
 
 export default class DetailView extends React.Component {
   constructor(props) {
@@ -40,8 +44,8 @@ export default class DetailView extends React.Component {
 
 
       strings: strings,
-      itemDetailCommon: {},
-      itemDetailIntro: {},
+      itemDetailCommon: null,
+      itemDetailIntro: null,
     };
     
     strings.setLanguage(lang);
@@ -113,86 +117,167 @@ export default class DetailView extends React.Component {
     );
   }
 
-  
+  markerClicked(e, id) {
+  }
+
+  renderCommon() {
+    if(this.state.itemDetailCommon != null) {
+      let title = this.state.itemDetailCommon.title == null ? 
+        "" : this.state.itemDetailCommon.title._text;
+      let overview = this.state.itemDetailCommon.overview == null ? 
+        "" : this.state.itemDetailCommon.overview._text;
+
+      let commonField = (
+        <div>
+          <Card>
+            <div className="title left">{title}</div>
+            <div className="content">
+              <div><p>{overview}</p></div>
+           </div>
+          </Card>
+        </div>
+      );
+      
+      let listField = this.renderDetail();
+
+      let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
+        (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
+           placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} />) : 
+        (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} />);
+      let map = null;
+
+      if(this.state.itemDetailCommon.mapy != null && this.state.itemDetailCommon.mapx != null) {
+        let lat = this.state.itemDetailCommon.mapy._text;
+        let lng = this.state.itemDetailCommon.mapx._text;
+      
+        const mapCenter = {
+          lat: lat,
+          lng: lng
+        };
+        const mapZoom = 15;
+        const markerChrimsonRed = 'DC134C'
+
+        let marker = (
+          <Marker key = {"marker"} position = {mapCenter} color = {markerChrimsonRed} zIndex = {1}
+            id = {1} onClick = {this.markerClicked.bind(this)} />);
+
+        map = (
+          <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+            width = "100vw" height = "20vh">
+            {marker}
+          </MapContainer>);
+      }
+ 
+      return {commonField: commonField, listField: listField, imageSrc: imageSrc, map: map};
+    }
+    else return {commonField: null, listField: null, imageSrc: null, map: null};
+  }
+
+  renderDetail() {
+    if(this.state.itemDetailIntro != null && this.state.itemDetailCommon != null) {
+      let address = this.state.itemDetailCommon.addr1 == null ? 
+        null : 
+        (<ListItem> 
+          <b>{this.state.strings.address + " : "}</b><p>{this.state.itemDetailCommon.addr1._text}</p> 
+        </ListItem>);
+      let telephone = this.state.itemDetailCommon.tel == null ? 
+        null : 
+        (<ListItem> 
+          <b>{this.state.strings.phonenum + " : "}</b><p>{this.state.itemDetailCommon.tel._text}</p>
+        </ListItem>);
+      let worktime = this.state.itemDetailIntro.opentimefood ==null ? 
+        null : 
+        (<ListItem>
+          <b>{this.state.strings.workingtime + " : " }</b><p>{this.state.itemDetailIntro.opentimefood._text}</p>
+        </ListItem>);
+      let holiday = this.state.itemDetailIntro.restdatefood ==null ? 
+        null : 
+        (<ListItem>
+          <b>{this.state.strings.holiday + " : "}</b><p>{this.state.itemDetailIntro.restdatefood._text}</p>
+        </ListItem>);
+      let firstmenu = this.state.itemDetailIntro.firstmenu ==null ? 
+        null : 
+        (<ListItem>
+          <b>{this.state.strings.firstmenu + " : "}</b><p>{this.state.itemDetailIntro.firstmenu._text}</p>
+        </ListItem>);
+      let treatmenu = this.state.itemDetailIntro.treatmenu ==null ? 
+        null : 
+        (<ListItem>
+          <b>{this.state.strings.treatmenu + " : "}</b><p>{this.state.itemDetailIntro.treatmenu._text}</p>
+        </ListItem>);
+      
+      let iconSize={width: "50px", height : "50px", margin: '1%'};
+      let smoking = this.state.itemDetailIntro.smoking ==null ? 
+        null : 
+        this.state.itemDetailIntro.smoking._text;
+      let smokingIcon = smoking != null && (smoking.includes("Non") || smoking.includes("금연")) ? 
+        (<img src="img/smoking-ban.png" style={iconSize}/>) : (<img src="img/smoking.png" style={iconSize}/>);
+
+      let creditcard = this.state.itemDetailIntro.chkcreditcardfood ==null ? 
+        null : 
+        this.state.itemDetailIntro.chkcreditcardfood._text;
+      let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
+        (<img src="img/card.png" style={iconSize} />) : null;
+      
+      let parking = this.state.itemDetailIntro.parkingfood ==null ? 
+        null : 
+        this.state.itemDetailIntro.parkingfood._text;
+      let parkingIcon = parking != null && 
+        (parking.includes("가능") || parking.includes("주차") || 
+         parking.includes("Available") || parking.includes("spaces")) ?
+        (<img src="img/parking.png" style={iconSize} />) : null;
+
+      let reservation = this.state.itemDetailIntro.reservationfood ==null ? 
+        null : 
+        this.state.itemDetailIntro.reservationfood._text;
+
+      let etc = (
+        <ListItem>
+          {smokingIcon}
+          {creditCardIcon}
+          {parkingIcon}
+        </ListItem>
+      );
+
+      return (
+        <List>
+          {telephone}
+          {address}
+          {worktime}
+          {holiday}
+          {firstmenu}
+          {treatmenu}
+          {etc}
+        </List>
+      );
+    }
+    else return null;
+  } 
 
   render() {
     const centerDiv = {
       textAlign: 'center'
     };
 
-  let textStyle = {
-    margin: '5px',
-  };
-
-    let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
-      (<img src="img/noimage.png" style={{width: "100%"}}/>) : 
-      (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} />);
-
-    let title = this.state.itemDetailCommon.title == null ? "" : this.state.itemDetailCommon.title._text;
-    let overview = this.state.itemDetailCommon.overview == null ? "" : this.state.itemDetailCommon.overview._text;
-    let address = this.state.itemDetailCommon.addr1 == null ? "" : this.state.itemDetailCommon.addr1._text;
-    let telephone = this.state.itemDetailCommon.tel == null ? "" : this.state.itemDetailCommon.tel._text;
-
-    let worktime = this.state.itemDetailIntro.opentimefood ==null ? "" : this.state.itemDetailIntro.opentimefood._text;
-    let holiday	= this.state.itemDetailIntro.restdatefood ==null ? "" : this.state.itemDetailIntro.restdatefood._text;
-    let firstmenu = this.state.itemDetailIntro.firstmenu ==null ? "" : this.state.itemDetailIntro.firstmenu._text;
-    let treatmenu = this.state.itemDetailIntro.treatmenu ==null ? "" : this.state.itemDetailIntro.treatmenu._text;
-    let smoking = this.state.itemDetailIntro.smoking ==null ? "" : this.state.itemDetailIntro.smoking._text;
-    let parking = this.state.itemDetailIntro.parkingfood ==null ? "" : this.state.itemDetailIntro.parkingfood._text;
-    let creditcard = this.state.itemDetailIntro.chkcreditcardfood ==null ? "" : this.state.itemDetailIntro.chkcreditcardfood._text;
-    let reservation = this.state.itemDetailIntro.reservationfood ==null ? "" : this.state.itemDetailIntro.reservationfood._text;
+    let textStyle = {
+      margin: '5px',
+    };
     
+    let {commonField, listField, imageSrc, map} = this.renderCommon();
+
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={{marginTop: '1%', marginBottom: '1%'}}>
+        <div style={{margin: '1%'}}>
           {imageSrc}
         </div>
-        <ons-list>
-          <ons-list-header>
-            <div style={{marginLeft:'10px', marginRight:'10px', marginTop:'10px',marginBottom:'10px'}}><h1>{title}</h1></div>
-          </ons-list-header>
-          <ons-list-item>
-            <div style={{fontSize:'4px', margin: '5px'}}>{overview}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>{address}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>연락처 {telephone}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>영업시간 {worktime}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>쉬는날  {holiday}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>대표메뉴  {firstmenu}</div>
-          </ons-list-item>
-	    <div style={textStyle}>취급메뉴  {treatmenu}</div>
-          <ons-list-item>
-            <div style={textStyle}>예약안내  {reservation}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>신용카드  {creditcard}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>주차시설  {parking}</div>
-          </ons-list-item>
-          <ons-list-item>
-            <div style={textStyle}>금연/흡연  {smoking}</div>
-          </ons-list-item>
-
-
-
-
-
-
-
-
-
-        </ons-list>
-     </Page>
+        <div>
+          <div style={{margin: '1%'}}><h4>{this.state.strings.overview}</h4></div>
+          {commonField}
+          <div style={{margin: '1%'}}><h4>{this.state.strings.godetails}</h4></div>
+          {map}
+          {listField}
+        </div>
+      </Page>
     );
   }
 }

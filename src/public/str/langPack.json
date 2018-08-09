@@ -12,7 +12,15 @@
     "seoguipo": "서귀포",
     "jeju": "제주",
     "godetails": "상세정보",
-    "zipcode": "우편번호"
+    "zipcode": "우편번호",
+    "overview": "기본정보",
+    "phonenum": "전화번호",
+    "address": "주소",
+    "workingtime": "영업시간",
+    "holiday": "휴일",
+    "firstmenu": "추천메뉴",
+    "treatmenu": "취급메뉴",
+    "parking": "주차장"
   },
   "en": {
     "home": "Home",
@@ -27,6 +35,14 @@
     "seoguipo": "Seoguipo",
     "jeju": "Jeju",
     "godetails": "Details",
-    "zipcode": "Zip Code"
+    "zipcode": "Zip Code",
+    "overview": "Overview",
+    "phonenum": "Phone Number",
+    "address": "Address",
+    "workingtime": "Working Hour",
+    "holiday": "Holiday",
+    "firstmenu": "Recommend",
+    "treatmenu": "Treat Menu",
+    "parking": "parking"
   }
 }
