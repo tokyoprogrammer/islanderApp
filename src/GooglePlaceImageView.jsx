@@ -61,9 +61,7 @@ export class GooglePlaceImageView extends React.Component {
   }
 
   loadImage() {
-    console.log(this.props);
     if (this.props) {
-      console.log("called2");
       const placeTitle = this.props.placeTitle;
       let cached = this.state.cached.data;
       // find cache first
@@ -71,7 +69,6 @@ export class GooglePlaceImageView extends React.Component {
         let cacheItem = cached[i];
         if(placeTitle == cacheItem.title) {
           // found
-          console.log("Found")
           this.setState({url: cacheItem.url});
           return;
         }
@@ -106,8 +103,9 @@ export class GooglePlaceImageView extends React.Component {
           this.setState({url: "img/noimage.png"});
           return;
         }
-        let {maxWidth, maxHeight} = this.props;
-        let url = photos[0].getUrl({'maxWidth': maxWidth, 'maxHeight': maxHeight});
+        const width = 800;
+        const height = 800;
+        let url = photos[0].getUrl({'maxWidth': width, 'maxHeight': height});
         if(url) {
           // store into cache
           let cached = this.storeIntoCache(this.props.placeTitle, url);
