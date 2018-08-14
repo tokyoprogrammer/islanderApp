@@ -35,12 +35,10 @@ export default class DetailView extends React.Component {
         "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&firstImageYN=Y" + 
         "&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&" +
         "overviewYN=Y&transGuideYN=Y",
-      urlForContentDetailIntro: "http://api.visitkorea.or.kr/openapi/service/rest/" + 
+      urlForContentDetailIntro: "https://api.visitkorea.or.kr/openapi/service/rest/" + 
         serviceLang + "/detailIntro?ServiceKey=" +
         serviceKey + "&contentTypeId=" + contentTypeId + "&contentId=" + contentId +
         "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&introYN=Y",
-
-
       strings: strings,
       itemDetailCommon: null,
       itemDetailIntro: null,
