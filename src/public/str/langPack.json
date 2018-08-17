@@ -20,7 +20,10 @@
     "holiday": "휴일",
     "firstmenu": "추천메뉴",
     "treatmenu": "취급메뉴",
-    "parking": "주차장"
+    "parking": "주차장",
+    "infocenter": "문의정보",
+    "expguide": "체험안내",
+    "expagerange": "체험가능연령"
   },
   "en": {
     "home": "Home",
@@ -43,6 +46,9 @@
     "holiday": "Holiday",
     "firstmenu": "Recommend",
     "treatmenu": "Treat Menu",
-    "parking": "parking"
+    "parking": "parking",
+    "infocenter": "Information",
+    "expguide": "Experience Guide",
+    "expagerange": "Available age"
   }
 }

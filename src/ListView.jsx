@@ -126,12 +126,12 @@ export default class ListView extends React.Component {
     this.setState({searchString: searchString});
   }
 
-  handleAddressFilter(e) {
+  handleAddressFilter(index) {
     let sigunguCode = 0;
 
-    if (e.index == 0) sigunguCode = 0; // 0 means all
-    else if(e.index == 1) sigunguCode = 3; // seoguipo code == 3 
-    else if(e.index == 2) sigunguCode = 4; // jeju code == 4
+    if (index == 0) sigunguCode = 0; // 0 means all
+    else if(index == 1) sigunguCode = 3; // seoguipo code == 3 
+    else if(index == 2) sigunguCode = 4; // jeju code == 4
     else {
       console.log("Unknown index of button selected.");
       sigunguCode = 0; // default all
@@ -142,7 +142,7 @@ export default class ListView extends React.Component {
     this.setState({
       filteredItems: filteredItems,
       sigunguCode: sigunguCode,
-      segmentIndex: e.index});
+      segmentIndex: index});
   }
  
   handleSearchButton() {
