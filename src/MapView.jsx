@@ -439,6 +439,7 @@ export default class MapView extends React.Component {
     this.setState({
       placeCarouselItems: placeCarouselItems,
       markers: markers,
+      itemCarouselIndex: 0,
       numOfDrawnItem: placeCarouselItems.length});
   } 
  

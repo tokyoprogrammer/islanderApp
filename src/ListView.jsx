@@ -182,7 +182,8 @@ export default class ListView extends React.Component {
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
     const imageWidth = 100;
-    const imageStyle = {width: imageWidth + "px", maxHeight: this.listItemHeight + "px"};
+    const imageHeight = this.listItemHeight - 10;
+    const imageStyle = {width: imageWidth + "px", maxHeight: imageHeight + "px"};
     const grayColor = "#D3D3D3";
     const goldColor = "#FFD700";
     const starIconSize = {
@@ -207,7 +208,7 @@ export default class ListView extends React.Component {
     let title = itemInfo.title == null ? "" : itemInfo.title._text;
     
     let itemImage = itemInfo.firstimage == null ? 
-      (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {this.listItemHeight} 
+      (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {imageHeight} 
         placeTitle = {title} listThumbnail = {true} />) :
       (<img src={itemInfo.firstimage._text} style={imageStyle} />);
 
@@ -254,7 +255,8 @@ export default class ListView extends React.Component {
   }
 
   goTopScroll() {
-    window.scrollTo(0, 0);
+    let elmnt = document.getElementById("top");
+    elmnt.scrollIntoView(); 
   }
 
   render() {
@@ -275,7 +277,7 @@ export default class ListView extends React.Component {
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={styleToolbar}>
+        <div style={styleToolbar} id="top">
           <TopToggleView index = {this.state.segmentIndex}
             onPostChange = {this.handleAddressFilter.bind(this)}
             strings = {this.state.strings} />
@@ -297,7 +299,8 @@ export default class ListView extends React.Component {
             renderRow={this.renderRow.bind(this)} 
             calculateItemHeight={() => this.listItemHeight} />
         </div>
-        <Fab onClick={this.goTopScroll.bind(this)} position = "bottom right">
+        <Fab onClick={this.goTopScroll.bind(this)} 
+          style = {{ position: "fixed", bottom: '10%', right: '10px'}}>
           <Icon icon='md-format-valign-top' />
         </Fab>
       </Page>
