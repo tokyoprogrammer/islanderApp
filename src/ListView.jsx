@@ -209,7 +209,7 @@ export default class ListView extends React.Component {
     
     let itemImage = itemInfo.firstimage == null ? 
       (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {imageHeight} 
-        placeTitle = {title} listThumbnail = {true} />) :
+        placeTitle = {title} listThumbnail = {true} multi = {false} />) :
       (<img src={itemInfo.firstimage._text} style={imageStyle} />);
 
     let tel = itemInfo.tel;

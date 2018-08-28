@@ -194,7 +194,7 @@ export default class MapView extends React.Component {
 
       let imageSrc = image == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-          placeTitle = {title} listThumbnail = {false} />) :
+          placeTitle = {title} listThumbnail = {false} multi = {false} />) :
         (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;

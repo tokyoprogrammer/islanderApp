@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
-
+import {Carousel, CarouselItem} from 'react-onsenui';
 import {GoogleApiWrapper} from 'google-maps-react';
 
 export class GooglePlaceImageView extends React.Component {
@@ -33,6 +33,8 @@ export class GooglePlaceImageView extends React.Component {
     this.state = {
       cached: cached,
       url: "img/noimage.png",
+      urls: [],
+      counter: 0
     }
   }
 
@@ -69,7 +71,7 @@ export class GooglePlaceImageView extends React.Component {
         let cacheItem = cached[i];
         if(placeTitle == cacheItem.title) {
           // found
-          this.setState({url: cacheItem.url});
+          this.setState({url: cacheItem.url, urls: cacheItem.urls});
           return;
         }
       }
@@ -80,9 +82,9 @@ export class GooglePlaceImageView extends React.Component {
     }
   }
 
-  storeIntoCache(title, url) {
+  storeIntoCache(title, url, urls) {
     let cached = this.state.cached.data.slice(0);
-    cached.push({title: title, url: url});
+    cached.push({title: title, url: url, urls: urls});
     let cachedToStore = {
       createdDateTime: this.state.cached.createdDateTime,
       data: cached
@@ -96,48 +98,82 @@ export class GooglePlaceImageView extends React.Component {
     let google = this.props.google;
     if(status == google.maps.places.PlacesServiceStatus.OK) {
      for(let i = 0; i < results.length; i++) {
+        console.log(results);
         let place = results[i];
         let photos = place.photos;
         if(!photos) {
           // in this case, may be able to be updated later.
-          this.setState({url: "img/noimage.png"});
+          this.setState({url: "img/noimage.png", urls: ["img/noimage.png"]});
           return;
         }
         const width = 800;
         const height = 800;
         let url = photos[0].getUrl({'maxWidth': width, 'maxHeight': height});
         if(url) {
+          let urls = [];
+          console.log(photos);
+          for(let j = 0; j < photos.length; j++) {
+            let url = photos[j].getUrl({'maxWidth': width, 'maxHeight': height});
+            console.log(this.props.placeTitle + " : " + url);
+            urls.push(url);
+          }
           // store into cache
-          let cached = this.storeIntoCache(this.props.placeTitle, url);
-          this.setState({cached: cached, url: url});
+          let cached = this.storeIntoCache(this.props.placeTitle, url, urls);
+          this.setState({cached: cached, url: url, urls: urls});
           
           return;
         } else {
           // no reason. maybe we can try it later
-          this.setState({url: "img/noimage.png"});
+          this.setState({url: "img/noimage.png", urls: ["img/noimage.png"]});
           return;
         }
       }
       // okay but no results?
-      this.setState({url: "img/noimage.png"});
+      this.setState({url: "img/noimage.png", urls: ["img/noimage.png"]});
     } else if(status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
       // cannot find results. This place is not stored in the google map. 
       // store into cache with no image
-      let cached = this.storeIntoCache(this.props.placeTitle, "img/noimage.png");
-      this.setState({cached: cached, url: "img/noimage.png"});
+      let cached = this.storeIntoCache(this.props.placeTitle, "img/noimage.png", ["img/noimage.png"]);
+      this.setState({cached: cached, url: "img/noimage.png", urls: ["img/noimage.png"]});
       return;
     } else {
       // unknown status
       console.log(status);
-      this.setState({url: "img/noimage.png"});
+      this.setState({url: "img/noimage.png", urls: ["img/noimage.png"]});
     }
   }
   
+  drawCarousel() {
+    let carouselItems = [];
+    for(let i = 0; i < this.state.urls.length; i++) {
+      let key = "google-img-" + i;
+      let imageSrc = this.state.urls[i];
+      console.log(imageSrc);
+      let carouselItem = (
+        <CarouselItem key={key}>
+          <img src = {imageSrc} style={{width: "100%"}}/>
+        </CarouselItem>
+      );
+      carouselItems.push(carouselItem);
+    }
+
+    return (
+      <Carousel swipeable autoScroll overscrollable autoScrollRatio={0.5}>
+        {carouselItems}
+      </Carousel>
+    );
+  }
+
   render() {
-    let imgTag = this.props.listThumbnail == true ? 
-      (<img src = {this.state.url} 
-        style={{width: this.props.maxWidth + "px", maxHeight: this.props.maxHeight + "px"}} />) :
-      (<img src = {this.state.url} style={{width: "100%"} }/>);
+    let imgTag = null;
+    if(this.props.multi == false) {
+      imgTag = this.props.listThumbnail == true ? 
+        (<img src = {this.state.url} 
+          style={{width: this.props.maxWidth + "px", maxHeight: this.props.maxHeight + "px"}} />) :
+        (<img src = {this.state.url} style={{width: "100%"}}/>);
+    } else {
+      imgTag = this.drawCarousel();
+    }
     return (
       <div style={{width: "100%", height: "100%"}}>
         <div ref="map"></div>
@@ -152,7 +188,8 @@ GooglePlaceImageView.propTypes = {
   maxWidth: React.PropTypes.number,
   maxHeight: React.PropTypes.number,
   placeTitle: React.PropTypes.string,
-  listThumbnail: React.PropTypes.bool
+  listThumbnail: React.PropTypes.bool,
+  multi: React.PropTypes.bool
 }
 
 export default GoogleApiWrapper({

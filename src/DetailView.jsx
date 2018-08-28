@@ -127,7 +127,7 @@ export default class DetailView extends React.Component {
 
       let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-           placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} />) : 
+           placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} multi={true}/>) : 
         (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} />);
 
       let commonField = (
