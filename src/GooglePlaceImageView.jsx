@@ -44,7 +44,6 @@ export class GooglePlaceImageView extends React.Component {
  
   componentDidUpdate(prevProps) {
     if(this.props.placeTitle != prevProps.placeTitle) {
-      console.log("update");
       this.loadImage();
     }   
   }
@@ -98,7 +97,6 @@ export class GooglePlaceImageView extends React.Component {
     let google = this.props.google;
     if(status == google.maps.places.PlacesServiceStatus.OK) {
      for(let i = 0; i < results.length; i++) {
-        console.log(results);
         let place = results[i];
         let photos = place.photos;
         if(!photos) {
@@ -111,10 +109,8 @@ export class GooglePlaceImageView extends React.Component {
         let url = photos[0].getUrl({'maxWidth': width, 'maxHeight': height});
         if(url) {
           let urls = [];
-          console.log(photos);
           for(let j = 0; j < photos.length; j++) {
             let url = photos[j].getUrl({'maxWidth': width, 'maxHeight': height});
-            console.log(this.props.placeTitle + " : " + url);
             urls.push(url);
           }
           // store into cache
@@ -143,22 +139,37 @@ export class GooglePlaceImageView extends React.Component {
     }
   }
   
+  handleChange(e) {
+    this.setState({counter: e.activeIndex});
+  }
+
   drawCarousel() {
     let carouselItems = [];
+
     for(let i = 0; i < this.state.urls.length; i++) {
       let key = "google-img-" + i;
       let imageSrc = this.state.urls[i];
-      console.log(imageSrc);
       let carouselItem = (
         <CarouselItem key={key}>
           <img src = {imageSrc} style={{width: "100%"}}/>
+          <div style={{width: "100%", position: "absolute", textAlign: "center", 
+            fontSize: "10px", top: "5%", left: '0px', right: '0px'}}>
+              {this.state.urls.map((item, index) => (
+                <span key={index} style={{cursor: 'pointer'}}>
+                  {this.state.counter === index ? '\u25CF' : '\u25CB'}
+                </span>
+              ))}
+          </div>
         </CarouselItem>
       );
       carouselItems.push(carouselItem);
     }
 
+
+
     return (
-      <Carousel swipeable autoScroll overscrollable autoScrollRatio={0.5}>
+      <Carousel swipeable autoScroll overscrollable autoScrollRatio={0.5} index={this.state.counter}
+        onPostChange={this.handleChange.bind(this)}>
         {carouselItems}
       </Carousel>
     );
@@ -166,6 +177,7 @@ export class GooglePlaceImageView extends React.Component {
 
   render() {
     let imgTag = null;
+
     if(this.props.multi == false) {
       imgTag = this.props.listThumbnail == true ? 
         (<img src = {this.state.url} 
