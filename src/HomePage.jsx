@@ -10,7 +10,6 @@ export default class HomePage extends React.Component {
   }
 
   pushPage(code) {
-    console.log("pushPage called");
     localStorage.setItem("code", code);
     this.props.navigator.pushPage({ 
       component: MapView 

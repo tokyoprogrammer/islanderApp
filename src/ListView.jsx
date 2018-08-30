@@ -13,7 +13,6 @@ import GooglePlaceImageView from './GooglePlaceImageView';
 export default class ListView extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
 
     let serviceLang = "";
     let lang = localStorage.getItem("lang");
@@ -42,6 +41,7 @@ export default class ListView extends React.Component {
       sigunguCode: 0,
       segmentIndex: 0
     };
+    this.stopPropagation = false;
   }
 
   showMenu() {
@@ -77,7 +77,9 @@ export default class ListView extends React.Component {
     );
   }
 
-  toggleFavorite(key) {
+  toggleFavorite(key, event) {
+    // event.stopPropagation(); // doesn't work.
+    this.stopPropagation = true;
     let favoritesCopy = this.state.favorites.slice(0); // copy array
     let indexToRemove = -1;
     for(let i = 0; i < favoritesCopy.length; i++) {
@@ -239,7 +241,7 @@ export default class ListView extends React.Component {
         <div className='right'>
           <Button modifier='quiet' 
             style={{width: '100%', textAlign: "center", color: starColor}}
-            onClick={this.toggleFavorite.bind(this, contentId)}>
+            onClick={this.toggleFavorite.bind(this, contentId, event)}>
             <Icon icon='md-star' size={starIconSize}/>
           </Button>
         </div>
@@ -247,6 +249,10 @@ export default class ListView extends React.Component {
   }
 
   goDetails(contentId, contentTypeId) {
+    if(this.stopPropagation) {
+      this.stopPropagation = false;
+      return;
+    }
     localStorage.setItem("contentId", contentId);
     localStorage.setItem("contentTypeId", contentTypeId);
     this.props.navigator.pushPage({ 
