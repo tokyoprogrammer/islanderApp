@@ -44,6 +44,15 @@ export default class ListView extends React.Component {
     this.stopPropagation = false;
   }
 
+  componentDidUpdate(prevProps) {
+    let favorites = localStorage.getItem('favorites');
+    if(favorites != JSON.stringify(this.state.favorites)) {
+      favorites = JSON.parse(favorites);
+      
+      this.setState({favorites: favorites});
+    } 
+  }
+
   showMenu() {
     this.props.showMenu();
   }
@@ -54,7 +63,6 @@ export default class ListView extends React.Component {
       filteredItems: filteredItems,
       filtered: newFilteredList});
   }
-
 
   renderToolbar() {
     const imgStyle= {
@@ -77,7 +85,7 @@ export default class ListView extends React.Component {
     );
   }
 
-  toggleFavorite(key, event) {
+  toggleFavorite(key) {
     // event.stopPropagation(); // doesn't work.
     this.stopPropagation = true;
     let favoritesCopy = this.state.favorites.slice(0); // copy array
@@ -241,7 +249,7 @@ export default class ListView extends React.Component {
         <div className='right'>
           <Button modifier='quiet' 
             style={{width: '100%', textAlign: "center", color: starColor}}
-            onClick={this.toggleFavorite.bind(this, contentId, event)}>
+            onClick={this.toggleFavorite.bind(this, contentId)}>
             <Icon icon='md-star' size={starIconSize}/>
           </Button>
         </div>

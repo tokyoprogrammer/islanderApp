@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import LocalizedStrings from 'react-localization';
 
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, ListItem, List, Card} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, ListItem, List, Card, Row, Col} from 'react-onsenui';
 
 import GooglePlaceImageView from './GooglePlaceImageView';
 
@@ -18,6 +18,10 @@ export default class DetailView extends React.Component {
     } else {
       serviceLang = "EngService";
     }
+
+    let favorites = JSON.parse(localStorage.getItem('favorites'));
+    if(favorites == null) favorites = [];
+    // make or read favorite list
  
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
@@ -41,7 +45,9 @@ export default class DetailView extends React.Component {
         "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&introYN=Y",
       strings: strings,
       itemDetailCommon: null,
-      itemDetailIntro: null
+      itemDetailIntro: null,
+      favorites: favorites,
+      contentId: contentId
     };
     
     strings.setLanguage(lang);
@@ -118,6 +124,28 @@ export default class DetailView extends React.Component {
     return {__html: text }; 
   }
 
+  toggleFavorite(key) {
+    this.stopPropagation = true;
+    let favoritesCopy = this.state.favorites.slice(0); // copy array
+    let indexToRemove = -1;
+    for(let i = 0; i < favoritesCopy.length; i++) {
+      let favorite = favoritesCopy[i];
+      if(favorite == key) {
+        indexToRemove = i;
+        break;
+      }     
+    }
+    if(indexToRemove == -1)
+    {
+      favoritesCopy.push(key); // push to favorite list
+    } else {
+      favoritesCopy.splice(indexToRemove, 1); // remove untoggled favorate
+    }
+    localStorage.setItem("favorites", JSON.stringify(favoritesCopy)); // change favorite list and save it.
+
+    this.setState({favorites: favoritesCopy});
+  }
+
   renderCommon() {
     if(this.state.itemDetailCommon != null) {
       let title = this.state.itemDetailCommon.title == null ? 
@@ -130,11 +158,42 @@ export default class DetailView extends React.Component {
            placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} multi={true}/>) : 
         (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} />);
 
+      const grayColor = "#D3D3D3";
+      const goldColor = "#FFD700";
+      const starIconSize = {
+        default: 30,
+        material: 28
+      };
+
+      let contentId = this.state.contentId;
+      let starColor = grayColor;
+      let favorites = this.state.favorites;
+
+      for(let j = 0; j < favorites.length; j++) {
+        if(favorites[j] == contentId) {
+          starColor = goldColor; // change star color
+          break;
+        }
+      }
+
       let commonField = (
         <div>
           <Card>
             <div>{imageSrc}</div>
-            <div className="title left">{title}</div>
+            <div className="title left">
+              <Row>
+                <Col width="80%">  
+                  <h2 style={{margin: "1%"}}>{title}</h2>
+                </Col>
+                <Col width="20%">
+                <Button modifier='quiet' 
+                  style={{width: '100%', textAlign: "center", color: starColor}}
+                  onClick={this.toggleFavorite.bind(this, contentId)}>
+                  <Icon icon='md-star' size={starIconSize}/>
+                </Button>
+                </Col>
+              </Row> 
+            </div>
             <div className="content">
               <div dangerouslySetInnerHTML={this.createMarkup(overview)} />
            </div>
