@@ -59,6 +59,7 @@ export default class MapView extends React.Component {
       markers: [],
       searchString: ""
     };
+    this.overScrolled = false;
     // initialize states.
 
     let selectedCode = localStorage.getItem("code");
@@ -415,7 +416,24 @@ export default class MapView extends React.Component {
   }
 
   handlePlaceChange(e) {
+    if(this.overScrolled) {
+      this.overScrolled = false;
+      this.setState({});
+      return;
+    }
     this.setState({itemCarouselIndex: e.activeIndex});
+  }
+
+  overScroll() {
+    this.overScrolled = true;
+
+    if(this.state.itemCarouselIndex == this.state.numOfDrawnItem - 1) {
+      // reached to the end
+      this.nextItem();
+    } else {
+      // reached to the first
+      this.prevItem();
+    }
   }
 
   handleAddressFilter(index) {
@@ -487,11 +505,11 @@ export default class MapView extends React.Component {
     };
 
     let fullWidth = window.innerWidth + "px";
-    
     let placeCarousel = this.state.items.length <= 0 ? (<ProgressCircular indeterminate />) :
       (<Carousel
          style={{width: fullWidth}}
-         onPostChange={this.handlePlaceChange.bind(this)} 
+         onPostChange={this.handlePlaceChange.bind(this)}
+         onOverscroll={this.overScroll.bind(this)} 
          index = {this.state.itemCarouselIndex}
          autoScrollRatio={0.3}
          autoScroll overscrollable swipeable>

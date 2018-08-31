@@ -175,7 +175,9 @@ export default class DetailView extends React.Component {
     let worktime = this.state.itemDetailIntro.opentimefood == null ? 
       null : 
       (<ListItem key="li-workingtime">
-        <b>{this.state.strings.workingtime + " : " }</b><p>{this.state.itemDetailIntro.opentimefood._text}</p>
+        <b>{this.state.strings.workingtime + " : " }</b>
+        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.opentimefood._text)}>
+        </p>
       </ListItem>);
     ret.push(worktime);
     let holiday = this.state.itemDetailIntro.restdatefood == null ? 

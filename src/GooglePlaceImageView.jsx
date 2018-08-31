@@ -156,7 +156,7 @@ export class GooglePlaceImageView extends React.Component {
             fontSize: "10px", top: "5%", left: '0px', right: '0px'}}>
               {this.state.urls.map((item, index) => (
                 <span key={index} style={{cursor: 'pointer'}}>
-                  {this.state.counter === index && this.state.urls.length > 1 ? '\u25CF' : '\u25CB'}
+                  {this.state.urls.length > 1 ? this.state.counter == index ? '\u25CF' : '\u25CB' : null}
                 </span>
               ))}
           </div>
