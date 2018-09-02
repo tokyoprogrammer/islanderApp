@@ -24,10 +24,10 @@ export class GooglePlaceImageView extends React.Component {
         // compare and if cache is fresh
         cached = currentCache;
       } else {
-        localStorage.getItem("google-image-cached", JSON.stringify(cached));
+        localStorage.setItem("google-image-cached", JSON.stringify(cached));
       }
     } else {
-      localStorage.getItem("google-image-cached", JSON.stringify(cached));
+      localStorage.setItem("google-image-cached", JSON.stringify(cached));
     }
 
     this.state = {

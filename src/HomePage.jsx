@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Page, Toolbar, Icon, ToolbarButton, Button} from 'react-onsenui';
 
-import MapView from './MapView'; 
+import MapView from './MapView';
+import PixabayImage from './PixabayImage';
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -86,6 +87,7 @@ export default class HomePage extends React.Component {
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
+        <PixabayImage />
         <div style={divCenter}>
           <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, sightCode)}>
             <img src="img/sightseeing.png" style={imageStyle} />
