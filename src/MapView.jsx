@@ -26,9 +26,12 @@ export default class MapView extends React.Component {
     }
   
     let favorites = JSON.parse(localStorage.getItem('favorites'));
-    if(favorites == null) favorites = [];
-    // make or read favorite list
-  
+    if(favorites == null) {
+      favorites = [];
+      localStorage.setItem("favorites", JSON.stringify(favorites)); // change favorite list and save it.
+      // make or read favorite list
+    }
+
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
     strings.setLanguage(lang);
@@ -56,6 +59,7 @@ export default class MapView extends React.Component {
       markers: [],
       searchString: ""
     };
+    this.overScrolled = false;
     // initialize states.
 
     let selectedCode = localStorage.getItem("code");
@@ -93,6 +97,22 @@ export default class MapView extends React.Component {
       // if cache is not valid then read from web
       this.readListsFromWebAndMakeContents(selectedCode);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    let favorites = localStorage.getItem('favorites');
+    if(favorites != JSON.stringify(this.state.favorites)) {
+      favorites = JSON.parse(favorites);
+      let {placeCarouselItems, markers} = 
+        this.makeItemCarouselAndMarkers(
+          this.state.items, favorites, this.state.filtered, this.state.sigunguCode, this.state.searchString);
+
+      this.setState({
+        favorites: favorites, 
+        placeCarouselItems: placeCarouselItems,
+        markers: markers,
+        numOfDrawnItem: placeCarouselItems.length});
+    } 
   }
 
   showMenu() {
@@ -194,7 +214,7 @@ export default class MapView extends React.Component {
 
       let imageSrc = image == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-          placeTitle = {title} listThumbnail = {false} />) :
+          placeTitle = {title} listThumbnail = {false} multi = {false} />) :
         (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
       let telLink = tel == null ? null : "tel:" + tel._text;
@@ -396,7 +416,24 @@ export default class MapView extends React.Component {
   }
 
   handlePlaceChange(e) {
+    if(this.overScrolled) {
+      this.overScrolled = false;
+      this.setState({});
+      return;
+    }
     this.setState({itemCarouselIndex: e.activeIndex});
+  }
+
+  overScroll() {
+    this.overScrolled = true;
+
+    if(this.state.itemCarouselIndex == this.state.numOfDrawnItem - 1) {
+      // reached to the end
+      this.nextItem();
+    } else {
+      // reached to the first
+      this.prevItem();
+    }
   }
 
   handleAddressFilter(index) {
@@ -439,6 +476,7 @@ export default class MapView extends React.Component {
     this.setState({
       placeCarouselItems: placeCarouselItems,
       markers: markers,
+      itemCarouselIndex: 0,
       numOfDrawnItem: placeCarouselItems.length});
   } 
  
@@ -467,11 +505,11 @@ export default class MapView extends React.Component {
     };
 
     let fullWidth = window.innerWidth + "px";
-    
     let placeCarousel = this.state.items.length <= 0 ? (<ProgressCircular indeterminate />) :
       (<Carousel
          style={{width: fullWidth}}
-         onPostChange={this.handlePlaceChange.bind(this)} 
+         onPostChange={this.handlePlaceChange.bind(this)}
+         onOverscroll={this.overScroll.bind(this)} 
          index = {this.state.itemCarouselIndex}
          autoScrollRatio={0.3}
          autoScroll overscrollable swipeable>
