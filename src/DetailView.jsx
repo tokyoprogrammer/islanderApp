@@ -163,7 +163,8 @@ export default class DetailView extends React.Component {
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
            placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} multi={true}
            imageOnClick={this.openModal.bind(this)} />) : 
-        (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} />);
+        (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} 
+          onClick={this.openModal.bind(this, this.state.itemDetailCommon.firstimage._text)}/>);
 
       const grayColor = "#D3D3D3";
       const goldColor = "#FFD700";
