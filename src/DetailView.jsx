@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import LocalizedStrings from 'react-localization';
 
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, ListItem, List, Card, Row, Col} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, ListItem, List, Card, Row, Col, Modal} from 'react-onsenui';
 
 import GooglePlaceImageView from './GooglePlaceImageView';
 
@@ -47,7 +47,9 @@ export default class DetailView extends React.Component {
       itemDetailCommon: null,
       itemDetailIntro: null,
       favorites: favorites,
-      contentId: contentId
+      contentId: contentId,
+      isOpen: false,
+      imageForModal: ""
     };
     
     strings.setLanguage(lang);
@@ -146,6 +148,10 @@ export default class DetailView extends React.Component {
     this.setState({favorites: favoritesCopy});
   }
 
+  openModal(imageSrc) {
+    this.setState({isOpen: true, imageForModal: imageSrc});
+  }
+
   renderCommon() {
     if(this.state.itemDetailCommon != null) {
       let title = this.state.itemDetailCommon.title == null ? 
@@ -155,7 +161,8 @@ export default class DetailView extends React.Component {
 
       let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-           placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} multi={true}/>) : 
+           placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} multi={true}
+           imageOnClick={this.openModal.bind(this)} />) : 
         (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} />);
 
       const grayColor = "#D3D3D3";
@@ -459,8 +466,25 @@ export default class DetailView extends React.Component {
         </Card>);
     }
 
+    const closeIconSize = {
+      default: 25,
+      material: 23
+    };
+
     return (
-      <Page renderToolbar={this.renderToolbar.bind(this)}>
+      <Page renderToolbar={this.renderToolbar.bind(this)}
+       renderModal={() => (
+          <Modal
+            isOpen={this.state.isOpen}>
+            <div style={{width: "100%", display: "inline-block", position: "relative"}}>
+              <img src={this.state.imageForModal} style={{width: "100%", }} />
+              <Button modifier='quiet' onClick={() => this.setState({isOpen: false})}
+                style={{position: "absolute", top: "5%", right: "5%", color: "#D3D3D3"}} >
+                <Icon icon="md-close-circle-o" size={closeIconSize} />
+              </Button>
+            </div>
+          </Modal>
+        )}>
         <div>
           <div style={{margin: '1%'}}><h4><b>{this.state.strings.overview}</b></h4></div>
           {commonField}
