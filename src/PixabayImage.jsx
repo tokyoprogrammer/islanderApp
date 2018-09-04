@@ -37,7 +37,6 @@ export default class PixabayImage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("dd");
     this.loadImage(); 
   }
 
@@ -55,7 +54,7 @@ export default class PixabayImage extends React.Component {
     const key = "9995637-0ccd160d0f89b528d825ac3e7";
     const queryURL = "https://pixabay.com/api/?key=" + key + 
       "&q=%EC%A0%9C%EC%A3%BC%EB%8F%84&lang=ko&" + 
-      "image_type=photo&category=nature&safesearch=true&per_page=200" +
+      "image_type=photo&safesearch=true&per_page=200" +
       "editors_choice=true"
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
