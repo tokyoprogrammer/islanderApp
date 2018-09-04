@@ -6,7 +6,7 @@ export default class PixabayImage extends React.Component {
     super(props);
     let currentCache = JSON.parse(localStorage.getItem("pixabay-image-cached"));
     let cacheValidUntil = new Date();
-    cacheValidUntil.setDate(cacheValidUntil.getDate() + 1);
+    cacheValidUntil.setHours(cacheValidUntil.getHours() + 1);
     
     let cached = {
       createdDateTime: cacheValidUntil,
@@ -16,7 +16,7 @@ export default class PixabayImage extends React.Component {
     console.log()
     if(currentCache != null) {
       let cacheValidUntil = new Date(currentCache.createdDateTime);
-      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1);
+      cacheValidUntil.setHours(cacheValidUntil.getHours() + 1);
  
       // cache will be valid until + 1 day of the created day.
       let currentDateTime = new Date();
@@ -93,7 +93,8 @@ export default class PixabayImage extends React.Component {
 
   render() {
     return (
-      <img src={this.state.url} style={{width: "100%"}} />
+      <img src={this.state.url} style={{width: "100%"}} 
+        onError={(e)=>{e.target.src="img/bkground/default.jpg"}} />
     );
   }
 }
