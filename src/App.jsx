@@ -4,6 +4,7 @@ import {Navigator, Splitter, SplitterSide, SplitterContent, Page, Button, List, 
 import LocalizedStrings from 'react-localization';
 
 import HomePage from './HomePage';
+import CourseRecommandationPage from './CourseRecommandationPage';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -26,6 +27,12 @@ export default class App extends React.Component {
     }
   }
 
+  pushPage(page) {
+   this.hide();
+   this.navigator.pushPage({ 
+      component: page
+    });
+  }
 
   loadPage(page) {
     this.hide();
@@ -79,6 +86,22 @@ export default class App extends React.Component {
     const listDiv = {
       height: '20px'
     };
+   
+    let homeMenu = (
+      <ListItem key={App.name} onClick={this.loadPage.bind(this, App)} tappable>
+        <div style={listDiv}>{this.state.strings.home}</div>
+      </ListItem>
+    );
+    let courseMenu = (
+      <ListItem key={CourseRecommandationPage.name} 
+        onClick={this.pushPage.bind(this, CourseRecommandationPage)} tappable>
+        <div style={listDiv}>{this.state.strings.course}</div>
+      </ListItem>
+    ); 
+    
+    let menuList = [];
+    menuList.push(homeMenu);
+    if(this.state.strings.getLanguage() == "kr") menuList.push(courseMenu);
 
     return (
       <Splitter>
@@ -97,9 +120,7 @@ export default class App extends React.Component {
               <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
             </div>
             <List>
-              <ListItem key={App.name} onClick={this.loadPage.bind(this, App)} tappable>
-                <div style={listDiv}>{this.state.strings.home}</div>
-              </ListItem>
+              {menuList}
             </List>
           </Page>
         </SplitterSide>

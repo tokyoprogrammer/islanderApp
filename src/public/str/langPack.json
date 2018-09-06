@@ -1,6 +1,7 @@
 { 
   "kr": { 
-    "home": "홈", 
+    "home": "홈",
+    "course": "여행 코스", 
     "language": "English",
     "sight": "관광지",
     "art": "문화, 예술, 역사",
@@ -23,10 +24,14 @@
     "parking": "주차장",
     "infocenter": "문의정보",
     "expguide": "체험안내",
-    "expagerange": "체험가능연령"
+    "expagerange": "체험가능연령",
+    "oops": "Oops! 뭔가 잘못되었어요. 다시 시도해주세요.",
+    "coursedistance": "총 거리",
+    "coursetime": "예상 소요 시간"
   },
   "en": {
     "home": "Home",
+    "course": "Traveling Courses",
     "language": "한국어",
     "sight": "Sight seeing",
     "art": "Art, History",
@@ -49,6 +54,9 @@
     "parking": "parking",
     "infocenter": "Information",
     "expguide": "Experience Guide",
-    "expagerange": "Available age"
+    "expagerange": "Available age",
+    "opps": "Oops! Something went wrong. Please try it again.",
+    "coursedistance": "distance",
+    "coursetime": "Required time"
   }
 }

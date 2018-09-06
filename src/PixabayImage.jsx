@@ -62,9 +62,7 @@ export default class PixabayImage extends React.Component {
         let data = JSON.parse(xhr.responseText);
         let cached = this_.storeIntoCache(data.hits);
         let rand = this_.getRandNum(cached.data.length);
-        console.log(cached);
         let url = cached.data[rand].largeImageURL;
-        console.log(url);
         this_.setState({cached: cached, url: url});
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
@@ -84,7 +82,8 @@ export default class PixabayImage extends React.Component {
   loadImage() {
     if(this.state.cached.data.length > 0) {
       let rand = this.getRandNum(this.state.cached.data.length);
-      let url = this.state.cached.data[rand].largeImageURL;
+      let url = this.state.cached.data[rand] != null ? this.state.cached.data[rand].largeImageURL : 
+        "img/bkground/default.jpg";
       this.setState({url: url});
     } else {
       this.loadImageUsingPixabayAPI();
