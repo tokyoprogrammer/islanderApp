@@ -277,7 +277,6 @@ export default class CourseRecommandationPage extends React.Component {
                      </Row>
                      <Row style={{width: "100%"}}>
                        <p>
-                         {this.state.currentOverview}
                        </p>
                      </Row>
                    </div>

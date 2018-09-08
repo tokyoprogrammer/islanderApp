@@ -84,25 +84,9 @@ export default class App extends React.Component {
     };
 
     const listDiv = {
-      height: '20px'
+      height: '60px'
     };
    
-    let homeMenu = (
-      <ListItem key={App.name} onClick={this.loadPage.bind(this, App)} tappable>
-        <div style={listDiv}>{this.state.strings.home}</div>
-      </ListItem>
-    );
-    let courseMenu = (
-      <ListItem key={CourseRecommandationPage.name} 
-        onClick={this.pushPage.bind(this, CourseRecommandationPage)} tappable>
-        <div style={listDiv}>{this.state.strings.course}</div>
-      </ListItem>
-    ); 
-    
-    let menuList = [];
-    menuList.push(homeMenu);
-    if(this.state.strings.getLanguage() == "kr") menuList.push(courseMenu);
-
     return (
       <Splitter>
         <SplitterSide
@@ -112,6 +96,7 @@ export default class App extends React.Component {
           onClose={this.hide.bind(this)}
           swipeable={false}>
           <Page>
+            <div style={{height: "100%"}}>
             <img src="img/islander.png" 
               className="center" 
               style={imageStyle} />
@@ -120,8 +105,17 @@ export default class App extends React.Component {
               <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
             </div>
             <List>
-              {menuList}
+              <ListItem onClick={this.loadPage.bind(this, App)} tappable 
+                style={listDiv}>
+                {this.state.strings.home}
+              </ListItem>
+              { this.state.strings.getLanguage() == 'kr' ? 
+              (<ListItem onClick={this.pushPage.bind(this, CourseRecommandationPage)} tappable 
+                style={listDiv}>
+                {this.state.strings.course}
+              </ListItem>) : null}
             </List>
+            </div>
           </Page>
         </SplitterSide>
         <SplitterContent>
