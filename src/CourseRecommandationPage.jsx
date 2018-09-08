@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, ProgressCircular, Carousel, CarouselItem, Card, Modal, Col, Row} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, ListHeader, ProgressCircular, Carousel, CarouselItem, Card, Modal, Col, Row, Fab} from 'react-onsenui';
 
 import LocalizedStrings from 'react-localization';
 
+import DetailView from './DetailView';
 import MapContainer from './MapContainer';
+import Marker from './Marker';
 
 export default class CourseRecommandationPage extends React.Component {
   constructor(props) {
@@ -22,6 +24,9 @@ export default class CourseRecommandationPage extends React.Component {
     let strings = new LocalizedStrings(langFile);
     strings.setLanguage(lang);
 
+    let favorites = JSON.parse(localStorage.getItem('favorites'));
+    if(favorites == null) favorites = [];
+
     const fixedAreaCode = 39; /* jeju island area code */
     const fixedContentType = 25;
     const serviceKey = 
@@ -30,6 +35,10 @@ export default class CourseRecommandationPage extends React.Component {
 
     this.state = {
       contentIdReplaceString: contentId,
+      urlForAllList: "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + 
+        serviceKey + "&contentTypeId=&areaCode=" + fixedAreaCode + 
+        "&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&" + 
+        "MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=2000&pageNo=1",
       urlForList: "http://api.visitkorea.or.kr/openapi/service/rest/" + 
         serviceLang + "/areaBasedList?ServiceKey=" + serviceKey + 
         "&contentTypeId=" + fixedContentType + "&areaCode=" + fixedAreaCode + 
@@ -47,17 +56,110 @@ export default class CourseRecommandationPage extends React.Component {
         "&contentId=" + contentId + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&listYN=Y",
       itemCarouselIndex: 0,
       numOfItems: 0,
+      allSightList: [],
       items: [],
       isOpen: true,
       currentOverview: "",
       strings: strings,
-      detailListItems: []
+      favorites: favorites,
+      detailListItems: [],
+      courseDetails: [],
+      additionalInfo: [] // map info, content type info
     };
     this.overScrolled = false;
     this.readLists();
   }
 
+  componentDidUpdate(prevProps) {
+    let favorites = localStorage.getItem('favorites');
+    if(favorites != JSON.stringify(this.state.favorites)) {
+      favorites = JSON.parse(favorites);
+      
+      this.setState({favorites: favorites});
+    } 
+  }
+
+  toggleFavorite(key) {
+    this.stopPropagation = true;
+    let favoritesCopy = this.state.favorites.slice(0); // copy array
+    let indexToRemove = -1;
+    for(let i = 0; i < favoritesCopy.length; i++) {
+      let favorite = favoritesCopy[i];
+      if(favorite == key) {
+        indexToRemove = i;
+        break;
+      }     
+    }
+    if(indexToRemove == -1)
+    {
+      favoritesCopy.push(key); // push to favorite list
+    } else {
+      favoritesCopy.splice(indexToRemove, 1); // remove untoggled favorate
+    }
+    localStorage.setItem("favorites", JSON.stringify(favoritesCopy)); // change favorite list and save it.
+
+    this.setState({favorites: favoritesCopy});
+  }
+
   readLists() {
+    let cache = JSON.parse(localStorage.getItem("itemsAllSights"));
+    let useCache = false;
+    if(cache != null) {
+      let cacheValidUntil = new Date(cache.createdDateTime);
+      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+      // cache will be valid until + 1 day of the created day.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        // compare and if cache is fresh
+        useCache = true;
+      }
+    }
+
+    if(useCache) {
+      var this_ = this;
+      const sleepTime = 500;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+      }).then(function(result) {
+        this_.setState({allSightList: cache.items});
+        this_.readCourseList();
+      });
+
+    } else {
+      this.readListsFromWeb();
+    }
+  }
+  
+  readListsFromWeb() {
+    var this_ = this;
+    
+    new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest;
+      xhr.onload = function() {
+        let ret = this_.readItemsFromResponseText(xhr.responseText);
+        this_.setState({allSightList: ret});
+        let cache = {
+          createdDateTime: new Date(),
+          items: ret
+        };
+        let cacheName = "itemsAllSights";
+        localStorage.setItem(cacheName, JSON.stringify(cache));
+        resolve(new Response(xhr.responseText, {status: xhr.status}));
+      }
+      xhr.onerror = function() {
+        notification.alert(this_.state.strings.oops);
+        this_.setState({currentOverview: this_.state.strings.oops, isOpen: false});
+        reject(new TypeError('API Request failed'));
+      }
+      xhr.open('GET', this_.state.urlForAllList);
+      xhr.send(null);
+    }).then(function(result) {
+      this_.readCourseList();
+    });
+  }
+
+  readCourseList() {
     var this_ = this;
     
     new Promise(function(resolve, reject) {
@@ -68,6 +170,8 @@ export default class CourseRecommandationPage extends React.Component {
         resolve(ret[0]);
       }
       xhr.onerror = function() {
+        notification.alert(this_.state.strings.oops);
+        this_.setState({currentOverview: this_.state.strings.oops, isOpen: false});
         reject(new TypeError('API Request failed'));
       }
       xhr.open('GET', this_.state.urlForList);
@@ -95,6 +199,7 @@ export default class CourseRecommandationPage extends React.Component {
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
+        notification.alert(this_.state.strings.oops);
         reject(new TypeError('API Request failed'));
       }
       xhr.open('GET', this_.convertContentId(this_.state.urlForOverview, contentId));
@@ -125,15 +230,62 @@ export default class CourseRecommandationPage extends React.Component {
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
+        notification.alert(this_.state.strings.oops);
         reject(new TypeError('API Request failed'));
       }
       xhr.open('GET', this_.convertContentId(this_.state.urlForCourseInfo, contentId));
       xhr.send(null);
     }).then(function(result) {
       // success callback
+      this_.setCurrentCourseDetailLists(contentId);
+    });
+  }  
+
+  setCurrentCourseDetailLists(contentId) {
+    var this_ = this;
+    new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest;
+      xhr.onload = function() {
+        let ret = this_.readItemsFromResponseText(xhr.responseText);
+        let additional = this_.makeAdditionalList(ret);
+        this_.setState({courseDetails: ret, additionalInfo: additional});
+        resolve(new Response(xhr.responseText, {status: xhr.status}));
+      }
+      xhr.onerror = function() {
+        notification.alert(this_.state.strings.oops);
+        reject(new TypeError('API Request failed'));
+      }
+      xhr.open('GET', this_.convertContentId(this_.state.urlForDetailInfo, contentId));
+      xhr.send(null);
+    }).then(function(result) {
+      // success callback
       this_.setState({isOpen: false});
     });
   }  
+
+  makeAdditionalList(courseList) {
+    let allList = this.state.allSightList;
+    let additionalList = [];
+    for(let i = 0; i < courseList.length; i++) {
+      let course = courseList[i];
+      for(let j = 0; j < allList.length; j++) {
+        let sight = allList[j];
+        if(sight.contentid._text == course.subcontentid._text) {
+          let item = {
+            title: sight.title._text,
+            contentId : sight.contentid._text,
+            contentTypeId: sight.contenttypeid._text,
+            mapX: sight.mapx._text,
+            mapY: sight.mapy._text
+          };
+          additionalList.push(item);
+          break;
+        }
+      }
+    }
+
+    return additionalList;
+  }
 
   readItemsFromResponseText(responseText) {
     var convert = require('xml-js');
@@ -159,7 +311,6 @@ export default class CourseRecommandationPage extends React.Component {
 
     return (
       <Toolbar>
-        <div className="left"><BackButton></BackButton></div>
         <div className="center">
         Islander Jeju <img src="img/milgam.png" style={imgStyle} />
         </div>
@@ -209,7 +360,37 @@ export default class CourseRecommandationPage extends React.Component {
       this.state.itemCarouselIndex + 1;
     this.setState({itemCarouselIndex: change});
   }
- 
+
+  markerClicked(e, id) {
+  } 
+
+  drawSingleMarker(lat, lng, color, zIndex, id) {
+    let markerKey = "marker-" + id;
+    return (<Marker key = {markerKey} 
+             position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
+             onClick = {this.markerClicked.bind(this)} />);
+  }
+  
+  goDetails(contentId) {
+    localStorage.setItem("contentId", contentId);
+    let additional = this.state.additionalInfo;
+    for(let i = 0; i < additional.length; i++) {
+      let item = additional[i];
+      if(item.contentId == contentId) { 
+        localStorage.setItem("contentTypeId", item.contentTypeId);
+        break; 
+      }
+    }
+    this.props.navigator.pushPage({ 
+      component: DetailView 
+    });
+  }
+
+  goTopScroll() {
+    let elmnt = document.getElementById("top");
+    elmnt.scrollIntoView(); 
+  }
+
   render() {
     const centerDiv = {
       textAlign: 'center'
@@ -227,11 +408,37 @@ export default class CourseRecommandationPage extends React.Component {
 
     const mapZoom = 9;
 
+    const markerGray = 'C0C0C0';
     const marginTopForArrow = "80px";
+
+    const grayColor = "#D3D3D3";
+    const goldColor = "#FFD700";
+    const starIconSize = {
+      default: 30,
+      material: 28
+    };
+    
+    const markerChrimsonRed = 'DC134C'
+    let additionalInfo = this.state.additionalInfo;
+    let markers = [];
+    if(additionalInfo.length > 0) {
+      for(let i = 0; i < additionalInfo.length; i++) {
+        let info = additionalInfo[i];
+        let lng = info.mapX;
+        let lat = info.mapY;
+        let marker = null;
+        if(i == 0 || i == additionalInfo.length - 1) 
+          marker = this.drawSingleMarker(lat, lng, markerChrimsonRed, i, i);
+        else
+          marker = this.drawSingleMarker(lat, lng, markerGray, i, i);
+        markers.push(marker);
+      }
+    }
 
     let map = (
       <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google}
-        width="100vw" height = "35vh">
+        width="100vw" height = "35vh" drawLine = {true}>
+        {markers}
       </MapContainer>
     );
     
@@ -249,7 +456,7 @@ export default class CourseRecommandationPage extends React.Component {
              {this.state.itemCarouselIndex - 1 <= index && this.state.itemCarouselIndex + 1 >= index ?
                <div style={{padding: "1px 0 0 0", textAlign: "center"}}>
                  <div className="card">
-                   <div className="card__title">
+                   <div className="card__title" style={{}}>
                      {item.title._text}
                    </div>
                    <div className="card__content">
@@ -264,7 +471,7 @@ export default class CourseRecommandationPage extends React.Component {
                        <Col width="90%">
                          <div>
                            <img src = {item.firstimage == null ? "img/noimage.png" : item.firstimage._text} 
-                             style={{width: "100%"}} />
+                             style={{width: "100%", height: "200px"}} />
                          </div>
                        </Col>
                        <Col width="5%">
@@ -304,7 +511,7 @@ export default class CourseRecommandationPage extends React.Component {
           </Modal>
         )}>
  
-        <div style={centerDiv}>
+        <div id="top">
           <div style = {{marginTop: '1%', marginBottom: '1%'}}>
             {map}
           </div>
@@ -313,10 +520,92 @@ export default class CourseRecommandationPage extends React.Component {
           </div>
           <div style={{marginLeft: "1%", marginRight: "1%"}}>
             <List>
+              <ListHeader>{this.state.strings.courseinfo}</ListHeader>
+              <ListItem expandable={true}>
+                <b>{this.state.strings.courseoverview} : </b><p>{this.state.strings.taptoexpand}</p>
+                <div className="expandable-content">
+                  {this.state.currentOverview}
+                </div>
+              </ListItem>
+              <ListItem>
+                <List modifier="inset" style={{width: "100%"}}>
+                  <ListHeader>{this.state.strings.course}</ListHeader> 
+                  {this.state.courseDetails.map((item, index) => (
+                    <ListItem style={{height: "60px"}}>
+                      {item.subdetailimg != null ?
+                      (<div className="left">
+                        <img src={item.subdetailimg._text} className = "list-item__thumbnail"/>
+                      </div>) : 
+                      (<div className="left">
+                        <img src="img/noimage.png" className = "list-item__thumbnail"/>
+                      </div>)}
+                      {item.subname != null ? (
+                        <div className="center"> 
+                          {item.subname._text}
+                        </div>) : null}
+                      <div className='right'>
+                        <Button modifier='quiet' 
+                          style={{
+                            width: '100%', 
+                            textAlign: "center", 
+                            color: this.state.favorites.includes(item.subcontentid._text) ? 
+                              goldColor : grayColor
+                          }}
+                          onClick={this.toggleFavorite.bind(this, item.subcontentid._text)}>
+                          <Icon icon='md-star' size={starIconSize}/>
+                        </Button>
+                      </div>
+ 
+                    </ListItem>
+                  ))}
+                </List>
+              </ListItem>
               {this.state.detailListItems}
             </List>
+            <div style={{margin: '1%'}}><h4><b>{this.state.strings.godetails}</b></h4></div>
+            {this.state.courseDetails.map((item, index) => (
+              <Card>
+                {item.subdetailimg != null ?
+                (<img src={item.subdetailimg._text} style={{width: "100%"}} />) :
+                (<img src="img/noimage.png" style={{width: "100%"}} />)}
+                <div className="card__title" style={{}}>
+                  <Row>
+                    <Col width="80%">  
+                      <h2 style={{margin: "1%"}}>
+                        {item.subname != null ? item.subname._text : null}
+                      </h2>
+                    </Col>
+                    <Col width="20%">
+                      <Button modifier='quiet' 
+                        style={{
+                          width: '100%', 
+                          textAlign: "center", 
+                          color: this.state.favorites.includes(item.subcontentid._text) ? 
+                            goldColor : grayColor
+                        }}
+                        onClick={this.toggleFavorite.bind(this, item.subcontentid._text)}>
+                        <Icon icon='md-star' size={starIconSize}/>
+                      </Button>
+                    </Col>
+                  </Row> 
+                </div>
+                <div className="card__content">
+                  {item.subdetailoverview != null? item.subdetailoverview._text : null}
+                </div>
+                <Button style={{width: "80%", marginLeft: "10%", marginRight: "10%"}}
+                  onClick={this.goDetails.bind(this, item.subcontentid._text)} >
+                  <div style={centerDiv}>
+                    {this.state.strings.moredetails}
+                  </div>
+                </Button>
+              </Card>
+            ))} 
           </div>
-       </div>
+        </div>
+        <Fab onClick={this.goTopScroll.bind(this)} 
+          style = {{ position: "fixed", bottom: '10%', right: '10px'}}>
+          <Icon icon='md-format-valign-top' />
+        </Fab>
       </Page>
     );
   }

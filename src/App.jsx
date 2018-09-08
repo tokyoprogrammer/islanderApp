@@ -27,22 +27,12 @@ export default class App extends React.Component {
     }
   }
 
-  pushPage(page) {
-   this.hide();
-   this.navigator.pushPage({ 
-      component: page
-    });
-  }
-
   loadPage(page) {
     this.hide();
-    const currentPage = this.navigator.pages.slice(-1)[0] // --- or [this.navigator.pages.length - 1]
-    if(currentPage.key != page.name){
-      this.navigator.resetPage({ 
-        component: page, 
-        props: { key: page.name, strings: this.state.strings } }, 
-        { animation: 'fade' });
-    }
+    this.navigator.resetPage({ 
+      component: page, 
+      props: { key: page.name, strings: this.state.strings } }, 
+      { animation: 'fade' });
   }
 
   show() {
@@ -110,7 +100,7 @@ export default class App extends React.Component {
                 {this.state.strings.home}
               </ListItem>
               { this.state.strings.getLanguage() == 'kr' ? 
-              (<ListItem onClick={this.pushPage.bind(this, CourseRecommandationPage)} tappable 
+              (<ListItem onClick={this.loadPage.bind(this, CourseRecommandationPage)} tappable 
                 style={listDiv}>
                 {this.state.strings.course}
               </ListItem>) : null}

@@ -26,8 +26,12 @@
     "expguide": "체험안내",
     "expagerange": "체험가능연령",
     "oops": "Oops! 뭔가 잘못되었어요. 다시 시도해주세요.",
+    "courseinfo": "코스 정보",
+    "courseoverview": "코스 개요",
+    "taptoexpand": "탭하여 확장",
     "coursedistance": "총 거리",
-    "coursetime": "예상 소요 시간"
+    "coursetime": "예상 소요 시간",
+    "moredetails": "더 보기"
   },
   "en": {
     "home": "Home",
@@ -56,7 +60,11 @@
     "expguide": "Experience Guide",
     "expagerange": "Available age",
     "oops": "Oops! Something went wrong. Please try it again.",
+    "courseinfo": "Course Info",
+    "courseoverview": "Course overview",
+    "taptoexpand": "Tap to expand",
     "coursedistance": "distance",
-    "coursetime": "Required time"
+    "coursetime": "Required time",
+    "moredetails": "More Details"
   }
 }
