@@ -11,6 +11,7 @@ import Marker from './Marker';
 export default class CourseRecommandationPage extends React.Component {
   constructor(props) {
     super(props);
+    console.log("loaded");
 
     let serviceLang = "";
     let lang = localStorage.getItem("lang");
@@ -25,8 +26,10 @@ export default class CourseRecommandationPage extends React.Component {
     strings.setLanguage(lang);
 
     let favorites = JSON.parse(localStorage.getItem('favorites'));
-    if(favorites == null) favorites = [];
-
+    if(favorites == null) {
+      favorites = [];
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
     const fixedAreaCode = 39; /* jeju island area code */
     const fixedContentType = 25;
     const serviceKey = 
@@ -217,11 +220,19 @@ export default class CourseRecommandationPage extends React.Component {
       xhr.onload = function() {
         let ret = this_.readItemsFromResponseText(xhr.responseText);
         let listItemForDistance = ret.distance != null ?
-          (<ListItem><b>{this_.state.strings.coursedistance} : </b> {ret.distance._text} </ListItem>) :
-          (<ListItem><b>{this_.state.strings.coursedistance} : </b> Unknown </ListItem>) ;
+          (<ListItem key="li-dist"> 
+            <b>{this_.state.strings.coursedistance} : </b> {ret.distance._text} 
+          </ListItem>) :
+          (<ListItem key="li-dist">
+            <b>{this_.state.strings.coursedistance} : </b> Unknown 
+          </ListItem>) ;
         let listItemForRequiredTime = ret.taketime != null ?
-          (<ListItem><b>{this_.state.strings.coursetime} : </b> {ret.taketime._text} </ListItem>) :
-          (<ListItem><b>{this_.state.strings.coursetime} : </b> Unknown </ListItem>) ;
+          (<ListItem key="li-time">
+            <b>{this_.state.strings.coursetime} : </b> {ret.taketime._text} 
+          </ListItem>) :
+          (<ListItem key="li-time">
+            <b>{this_.state.strings.coursetime} : </b> Unknown 
+          </ListItem>) ;
         let listArray = [];
         listArray.push(listItemForDistance);
         listArray.push(listItemForRequiredTime);
@@ -521,17 +532,17 @@ export default class CourseRecommandationPage extends React.Component {
           <div style={{marginLeft: "1%", marginRight: "1%"}}>
             <List>
               <ListHeader>{this.state.strings.courseinfo}</ListHeader>
-              <ListItem expandable={true}>
+              <ListItem key="li-overview" expandable={true}>
                 <b>{this.state.strings.courseoverview} : </b><p>{this.state.strings.taptoexpand}</p>
                 <div className="expandable-content">
                   {this.state.currentOverview}
                 </div>
               </ListItem>
-              <ListItem>
+              <ListItem key="li-course-list">
                 <List modifier="inset" style={{width: "100%"}}>
                   <ListHeader>{this.state.strings.course}</ListHeader> 
                   {this.state.courseDetails.map((item, index) => (
-                    <ListItem style={{height: "60px"}}>
+                    <ListItem key={"li-course-list-item" + index} style={{height: "60px"}}>
                       {item.subdetailimg != null ?
                       (<div className="left">
                         <img src={item.subdetailimg._text} className = "list-item__thumbnail"/>
@@ -555,7 +566,6 @@ export default class CourseRecommandationPage extends React.Component {
                           <Icon icon='md-star' size={starIconSize}/>
                         </Button>
                       </div>
- 
                     </ListItem>
                   ))}
                 </List>
@@ -564,7 +574,7 @@ export default class CourseRecommandationPage extends React.Component {
             </List>
             <div style={{margin: '1%'}}><h4><b>{this.state.strings.godetails}</b></h4></div>
             {this.state.courseDetails.map((item, index) => (
-              <Card>
+              <Card key={"detail-card" + index}>
                 {item.subdetailimg != null ?
                 (<img src={item.subdetailimg._text} style={{width: "100%"}} />) :
                 (<img src="img/noimage.png" style={{width: "100%"}} />)}

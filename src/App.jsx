@@ -13,9 +13,13 @@ export default class App extends React.Component {
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
 
+    let pageName = localStorage.getItem("pageToLoad");
+    console.log(pageName);
     this.state = {
       isOpen: false,
-      strings: strings
+      strings: strings,
+      page: pageName == "HomePage" ? HomePage : 
+        pageName == "CourseRecommandationPage" ? CourseRecommandationPage : HomePage
     };
 
     let lang = localStorage.getItem('lang');
@@ -29,10 +33,11 @@ export default class App extends React.Component {
 
   loadPage(page) {
     this.hide();
+    localStorage.setItem("pageToLoad", page);
     this.navigator.resetPage({ 
-      component: page, 
-      props: { key: page.name, strings: this.state.strings } }, 
-      { animation: 'fade' });
+      component: App, 
+      props: { key: App.name, strings: this.state.strings } }, 
+      { animation: 'none' });
   }
 
   show() {
@@ -95,12 +100,12 @@ export default class App extends React.Component {
               <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
             </div>
             <List>
-              <ListItem onClick={this.loadPage.bind(this, App)} tappable 
+              <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 
                 style={listDiv}>
                 {this.state.strings.home}
               </ListItem>
               { this.state.strings.getLanguage() == 'kr' ? 
-              (<ListItem onClick={this.loadPage.bind(this, CourseRecommandationPage)} tappable 
+              (<ListItem onClick={this.loadPage.bind(this, "CourseRecommandationPage")} tappable 
                 style={listDiv}>
                 {this.state.strings.course}
               </ListItem>) : null}
@@ -111,8 +116,8 @@ export default class App extends React.Component {
         <SplitterContent>
           <Navigator 
             initialRoute={{ 
-              component: HomePage, 
-              props: { key: HomePage.name, strings: this.state.strings } }} 
+              component: this.state.page, 
+              props: { key: this.state.page.name, strings: this.state.strings } }} 
             renderPage={this.renderPage.bind(this)}
             ref={(navigator) => { this.navigator = navigator; }} />
         </SplitterContent>
