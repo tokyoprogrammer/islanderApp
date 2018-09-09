@@ -14,7 +14,6 @@ export default class App extends React.Component {
     let strings = new LocalizedStrings(langFile);
 
     let pageName = localStorage.getItem("pageToLoad");
-    console.log(pageName);
     this.state = {
       isOpen: false,
       strings: strings,

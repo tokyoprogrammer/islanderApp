@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import LocalizedStrings from 'react-localization';
 
 import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, ListItem, List, Card, Row, Col, Modal} from 'react-onsenui';
+import {notification} from 'onsenui';
 
 import GooglePlaceImageView from './GooglePlaceImageView';
 
@@ -70,7 +71,6 @@ export default class DetailView extends React.Component {
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
-        notification.alert(this_.state.strings.oops);
         reject(new TypeError('Load Detail Common failed'));
       }
       xhr.open('GET', this_.state.urlForContentDetailCommon);

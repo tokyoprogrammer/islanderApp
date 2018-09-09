@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, ListHeader, ProgressCircular, Carousel, CarouselItem, Card, Modal, Col, Row, Fab} from 'react-onsenui';
+import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
 
@@ -11,7 +12,6 @@ import Marker from './Marker';
 export default class CourseRecommandationPage extends React.Component {
   constructor(props) {
     super(props);
-    console.log("loaded");
 
     let serviceLang = "";
     let lang = localStorage.getItem("lang");
@@ -38,23 +38,23 @@ export default class CourseRecommandationPage extends React.Component {
 
     this.state = {
       contentIdReplaceString: contentId,
-      urlForAllList: "http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + 
+      urlForAllList: "https://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + 
         serviceKey + "&contentTypeId=&areaCode=" + fixedAreaCode + 
         "&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&" + 
         "MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=2000&pageNo=1",
-      urlForList: "http://api.visitkorea.or.kr/openapi/service/rest/" + 
+      urlForList: "https://api.visitkorea.or.kr/openapi/service/rest/" + 
         serviceLang + "/areaBasedList?ServiceKey=" + serviceKey + 
         "&contentTypeId=" + fixedContentType + "&areaCode=" + fixedAreaCode + 
         "&sigunguCode=&cat1=C01&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide" + 
         "&arrange=A&numOfRows=1000&pageNo=1",
-      urlForOverview: "http://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
+      urlForOverview: "https://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
         "/detailCommon?ServiceKey=" + serviceKey + "&contentTypeId=" + fixedContentType + 
         "&contentId=" + contentId + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&" + 
         "firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&transGuideYN=Y",
-      urlForCourseInfo: "http://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
+      urlForCourseInfo: "https://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
         "/detailIntro?ServiceKey=" + serviceKey + "&contentTypeId=" + fixedContentType + 
         "&contentId=" + contentId + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&introYN=Y",
-      urlForDetailInfo: "http://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
+      urlForDetailInfo: "https://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
         "/detailInfo?ServiceKey=" + serviceKey + "&contentTypeId=" + fixedContentType + 
         "&contentId=" + contentId + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&listYN=Y",
       itemCarouselIndex: 0,
@@ -613,7 +613,7 @@ export default class CourseRecommandationPage extends React.Component {
           </div>
         </div>
         <Fab onClick={this.goTopScroll.bind(this)} 
-          style = {{ position: "fixed", bottom: '10%', right: '10px'}}>
+          style = {{ position: "fixed", bottom: '10px', right: '10px'}}>
           <Icon icon='md-format-valign-top' />
         </Fab>
       </Page>
