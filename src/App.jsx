@@ -3,8 +3,16 @@ import ReactDOM from 'react-dom';
 import {Navigator, Splitter, SplitterSide, SplitterContent, Page, Button, List, ListItem, Icon} from 'react-onsenui';
 import LocalizedStrings from 'react-localization';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faStroopwafel);
+
 import HomePage from './HomePage';
 import CourseRecommandationPage from './CourseRecommandationPage';
+import CreatePlanPage from './CreatePlanPage';
+import ShowMyPlanPage from './ShowMyPlanPage';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -18,7 +26,9 @@ export default class App extends React.Component {
       isOpen: false,
       strings: strings,
       page: pageName == "HomePage" ? HomePage : 
-        pageName == "CourseRecommandationPage" ? CourseRecommandationPage : HomePage
+        pageName == "CourseRecommandationPage" ? CourseRecommandationPage : 
+        pageName == "CreatePlanPage" ? CreatePlanPage : 
+        pageName == "ShowMyPlanPage" ? ShowMyPlanPage : HomePage
     };
 
     let lang = localStorage.getItem('lang');
@@ -91,24 +101,32 @@ export default class App extends React.Component {
           swipeable={false}>
           <Page>
             <div style={{height: "100%"}}>
-            <img src="img/islander.png" 
-              className="center" 
-              style={imageStyle} />
-            <div style={divCenter} >
-              <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
-              <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
-            </div>
-            <List>
-              <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 
-                style={listDiv}>
-                {this.state.strings.home}
-              </ListItem>
-              { this.state.strings.getLanguage() == 'kr' ? 
-              (<ListItem onClick={this.loadPage.bind(this, "CourseRecommandationPage")} tappable 
-                style={listDiv}>
-                {this.state.strings.course}
-              </ListItem>) : null}
-            </List>
+              <img src="img/islander.png" 
+                className="center" 
+                style={imageStyle} />
+              <div style={divCenter} >
+                <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
+                <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
+              </div>
+              <List>
+                <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.home}
+                </ListItem>
+                { this.state.strings.getLanguage() == 'kr' ? 
+                (<ListItem onClick={this.loadPage.bind(this, "CourseRecommandationPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.course}
+                </ListItem>) : null}
+                <ListItem onClick={this.loadPage.bind(this, "CreatePlanPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.createschedule}
+                </ListItem>
+                <ListItem onClick={this.loadPage.bind(this, "ShowMyPlanPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.showschedule}
+                </ListItem>
+              </List>
             </div>
           </Page>
         </SplitterSide>

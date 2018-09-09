@@ -1,7 +1,9 @@
 { 
   "kr": { 
     "home": "홈",
-    "course": "여행 코스", 
+    "course": "여행 코스",
+    "createschedule" : "나의 일정 만들기",
+    "showschedule" : "나의 일정 보기",  
     "language": "English",
     "sight": "관광지",
     "art": "문화, 예술, 역사",
@@ -31,11 +33,24 @@
     "taptoexpand": "탭하여 확장",
     "coursedistance": "총 거리",
     "coursetime": "예상 소요 시간",
-    "moredetails": "더 보기"
+    "moredetails": "더 보기",
+    "flightinfo": "항공 정보",
+    "hotelinfo": "숙소 정보",
+    "favoritesinfo": "장소 선택",
+    "createdone": "계획 완성",
+    "flightinfodesc": "항공권 정보를 입력해주세요.",
+    "flightdeparting": "제주도에서 출발",
+    "flightarrival": "제주도로 도착",
+    "hotelinfodesc": "호텔 정보를 입력해주세요.",
+    "favoritesinfodesc": "즐겨찾기 중에서 여행에 포함하고 싶은 곳을 선택해 주세요.",
+    "createdonedesc": "당신의 여행 계획이 완성되었습니다! 즐거운 여행 되세요.",
+    "gonext": "다음 단계 진행"
   },
   "en": {
     "home": "Home",
     "course": "Traveling Courses",
+    "createschedule" : "Create My Plan",
+    "showschedule" : "Show My Plan",
     "language": "한국어",
     "sight": "Sight seeing",
     "art": "Art, History",
@@ -65,6 +80,17 @@
     "taptoexpand": "Tap to expand",
     "coursedistance": "distance",
     "coursetime": "Required time",
-    "moredetails": "More Details"
+    "moredetails": "More Details",
+    "flightinfo": "Insert Flight",
+    "hotelinfo": "Insert Accomodation",
+    "favoritesinfo": "Select Sights",
+    "createdone": "Schedule is Ready!",
+    "flightinfodesc": "Please insert your flight schedule.",
+    "flightdeparting": "Departure from Jeju",
+    "flightarrival": "Arrival at Jeju",
+    "hotelinfodesc": "Please insert your accomodation details.",
+    "favoritesinfodesc": "Please choose where to go in your favorites list.",
+    "createdonedesc": "Your trip planning has been created successfully! Have a nice trip.",
+    "gonext": "Go to the Next Phase"
   }
 }
