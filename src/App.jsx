@@ -11,7 +11,7 @@ library.add(faStroopwafel);
 
 import HomePage from './HomePage';
 import CourseRecommandationPage from './CourseRecommandationPage';
-import CreatePlanPage from './CreatePlanPage';
+import CreateFlightPlanPage from './CreateFlightPlanPage';
 import ShowMyPlanPage from './ShowMyPlanPage';
 
 export default class App extends React.Component {
@@ -27,7 +27,7 @@ export default class App extends React.Component {
       strings: strings,
       page: pageName == "HomePage" ? HomePage : 
         pageName == "CourseRecommandationPage" ? CourseRecommandationPage : 
-        pageName == "CreatePlanPage" ? CreatePlanPage : 
+        pageName == "CreateFlightPlanPage" ? CreateFlightPlanPage : 
         pageName == "ShowMyPlanPage" ? ShowMyPlanPage : HomePage
     };
 
@@ -118,7 +118,7 @@ export default class App extends React.Component {
                   style={listDiv}>
                   {this.state.strings.course}
                 </ListItem>) : null}
-                <ListItem onClick={this.loadPage.bind(this, "CreatePlanPage")} tappable 
+                <ListItem onClick={this.loadPage.bind(this, "CreateFlightPlanPage")} tappable 
                   style={listDiv}>
                   {this.state.strings.createschedule}
                 </ListItem>

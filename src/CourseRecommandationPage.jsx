@@ -38,7 +38,8 @@ export default class CourseRecommandationPage extends React.Component {
 
     this.state = {
       contentIdReplaceString: contentId,
-      urlForAllList: "https://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=" + 
+      urlForAllList: "https://api.visitkorea.or.kr/openapi/service/rest/"+ serviceLang + 
+        "/areaBasedList?ServiceKey=" + 
         serviceKey + "&contentTypeId=&areaCode=" + fixedAreaCode + 
         "&sigunguCode=&cat1=&cat2=&cat3=&listYN=Y&MobileOS=ETC&" + 
         "MobileApp=TourAPI3.0_Guide&arrange=A&numOfRows=2000&pageNo=1",
@@ -397,7 +398,7 @@ export default class CourseRecommandationPage extends React.Component {
     });
   }
 
-  goTopScroll() {
+  goTopScroll(elementId) {
     let elmnt = document.getElementById("top");
     elmnt.scrollIntoView(); 
   }
@@ -467,7 +468,7 @@ export default class CourseRecommandationPage extends React.Component {
              {this.state.itemCarouselIndex - 1 <= index && this.state.itemCarouselIndex + 1 >= index ?
                <div style={{padding: "1px 0 0 0", textAlign: "center"}}>
                  <div className="card">
-                   <div className="card__title" style={{}}>
+                   <div className="card__title">
                      {item.title._text}
                    </div>
                    <div className="card__content">
@@ -529,7 +530,7 @@ export default class CourseRecommandationPage extends React.Component {
           <div>
             {courseCarousel}
           </div>
-          <div style={{marginLeft: "1%", marginRight: "1%"}}>
+          <div style={{marginLeft: "1%", marginRight: "1%"}} id="content">
             <List>
               <ListHeader>{this.state.strings.courseinfo}</ListHeader>
               <ListItem key="li-overview" expandable={true}>
@@ -578,7 +579,7 @@ export default class CourseRecommandationPage extends React.Component {
                 {item.subdetailimg != null ?
                 (<img src={item.subdetailimg._text} style={{width: "100%"}} />) :
                 (<img src="img/noimage.png" style={{width: "100%"}} />)}
-                <div className="card__title" style={{}}>
+                <div className="card__title">
                   <Row>
                     <Col width="80%">  
                       <h2 style={{margin: "1%"}}>

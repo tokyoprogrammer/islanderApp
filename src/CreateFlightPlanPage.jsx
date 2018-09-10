@@ -1,23 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem, Card} from 'react-onsenui';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {notification} from 'onsenui';
 
 import Stepper from 'react-stepper-horizontal';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import 'react-datepicker/dist/react-datepicker.css';
+import Calendar from 'react-calendar';
 
-export default class CreateMyPlan extends React.Component {
+import './CalendarStyle';
+
+import CreateAccomodationPlanPage from './CreateAccomodationPlanPage';
+
+export default class CreateFlightPlan extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      arrivalDate: moment(),
+      arrivalDate: new Date(),
       arrivalTime: '00:00',
-      departureDate: moment(),
+      departureDate: new Date(),
       departureTime: '00:00'
     };
-    this.activeStep = 0;
+    this.activeSteps = 0;
   }
 
   showMenu() {
@@ -66,31 +68,61 @@ export default class CreateMyPlan extends React.Component {
   }
 
   handleArrivalTimeChange(event) {
-    console.log(event.target.value);
     this.setState({
       arrivalTime: event.target.value
     });
   }
 
   handleArrivalDateChange(date) {
-    console.log(date);
     this.setState({
       arrivalDate: date
     });
   }
 
   handleDepartureTimeChange(event) {
-    console.log(event.target.value);
     this.setState({
       departureTime: event.target.value
     });
   }
 
   handleDepartureDateChange(date) {
-    console.log(date);
     this.setState({
       departureDate: date
     });
+  }
+
+  goNext() {
+    let arrivalTime = this.state.arrivalTime.split(":");
+    let arrivalDateTime = this.state.arrivalDate;
+    arrivalDateTime.setHours(arrivalTime[0], arrivalTime[1], 0);
+    
+    let departureTime = this.state.departureTime.split(":");
+    let departureDateTime = this.state.departureDate;
+    departureDateTime.setHours(departureTime[0], departureTime[1], 0);
+
+    if(arrivalDateTime >= departureDateTime) {
+      notification.alert(this.props.strings.cannotsame);
+      return;
+    }
+    
+    let string = 
+      "<b>" + this.props.strings.confirmschedule + "</b>" + "<br/>" + 
+      "<b>" + this.props.strings.arrivaltime + "</b>" + "<br/>" + 
+      arrivalDateTime + "<br/>" + 
+      "<b>" + this.props.strings.departuretime + "</b>" + "<br/>" + 
+      departureDateTime + "<br/>" + 
+      "<b>" + this.props.strings.areyousure + "</b>";
+    notification.confirm(string).then((response) => {
+      if(response == 1) {
+        localStorage.setItem("flightScheduleInfo", JSON.stringify({
+          arrivalTime: arrivalDateTime.toString(),
+          departureTime: departureDateTime.toString()
+        }));
+        this.props.navigator.pushPage({ 
+          component: CreateAccomodationPlanPage 
+        });
+      }
+    }); 
   }
 
   render() {
@@ -125,31 +157,39 @@ export default class CreateMyPlan extends React.Component {
             </div>
           </Card>
           <h3>
-            {this.props.strings.flightarrival}
             <img src="img/arrival.png" style={{width: "30px", padding: "3px"}} />
+            {this.props.strings.flightarrival}
           </h3>
           <div style={{width: "100%", textAlign: "center"}}>
-            <DatePicker selected={this.state.arrivalDate} 
-              onChange={this.handleArrivalDateChange.bind(this)} inline />
-            <br/>
-            <input type="time" value={this.state.arrivalTime} style = {{width: "40%", height: "30px"}} 
+            <Calendar value={this.state.arrivalDate} calendarType="US" className="calendar_width_100"
+              onChange={this.handleArrivalDateChange.bind(this)} 
+              formatMonth={(value) => formatDate(value, 'MM')}/>
+          </div>
+          <section>
+            <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
+            <b>{this.props.strings.arrivaltime} :</b>
+            <input type="time" value={this.state.arrivalTime} style={{width: "40%", height: "30px"}} 
               onChange={this.handleArrivalTimeChange.bind(this)} />
-          </div>
+          </section>
           <h3>
-            {this.props.strings.flightdeparting}
             <img src="img/departure.png" style={{width: "30px", padding: "3px"}} />
+            {this.props.strings.flightdeparting}
           </h3>
           <div style={{width: "100%", textAlign: "center"}}>
-            <DatePicker selected={this.state.departureDate} 
-              onChange={this.handleDepartureDateChange.bind(this)} inline />
-            <br/>
-            <input type="time" value={this.state.departureTime} style = {{width: "40%", height: "30px"}} 
-              onChange={this.handleDepartureTimeChange.bind(this)} />
+            <Calendar value={this.state.departureDate} calendarType="US" className="calendar_width_100"
+              onChange={this.handleDepartureDateChange.bind(this)}
+              formatMonth={(value) => formatDate(value, 'MM')} />
           </div>
+          <section>
+            <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
+            <b>{this.props.strings.departuretime} :</b>
+            <input type="time" value={this.state.departureTime} style={{width: "40%", height: "30px"}} 
+              onChange={this.handleDepartureTimeChange.bind(this)} />
+          </section>
           <div style={{padding: "1%"}}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center"}}>
+          <Button style={{width: "80%", margin: "10%", textAlign: "center"}} onClick={this.goNext.bind(this)}>
             {this.props.strings.gonext}
           </Button>          
         </div>
