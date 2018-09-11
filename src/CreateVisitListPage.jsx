@@ -6,8 +6,8 @@ import {notification} from 'onsenui';
 import LocalizedStrings from 'react-localization';
 
 import Stepper from 'react-stepper-horizontal';
-import FavoriteListView from './FavoriteListView';
 
+import FavoriteListView from './FavoriteListView';
 import App from './App';
 import DetailView from './DetailView';
 
@@ -75,6 +75,10 @@ export default class CreateVisitListPage extends React.Component {
     });
   }
 
+  onCheckChanged(check, id) {
+    console.log(check + " : " + id);
+  }
+  
   render() {
     const centerDiv = {textAlign: "center"};
     const infoMarkIconSize = {
@@ -117,7 +121,7 @@ export default class CreateVisitListPage extends React.Component {
             </div>
           </Card>
           <FavoriteListView onLoadDone={this.favoriteListLoadDone.bind(this)} 
-            onMoreClicked={this.goDetails.bind(this)} />
+            onMoreClicked={this.goDetails.bind(this)} onCheckChanged={this.onCheckChanged.bind(this)} />
           <div style={{textAlign: "center"}}>
             <Button style={{width: "80%", margin: "2%"}} onClick={this.loadPage.bind(this, "HomePage")}>
               {this.state.strings.moresights}

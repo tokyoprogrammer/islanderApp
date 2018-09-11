@@ -54,7 +54,9 @@
     "clearall": "모두 해제",
     "moresights": "관광지 더보기",
     "moreplans": "여행 계획 더 보기",
-    "nofavorites": "Oops, 즐겨 찾기 장소가 없어 보이네요? 즐겨 찾기를 추가해보시는건 어떠세요?"
+    "nofavorites": "Oops, 즐겨 찾기 장소가 없어 보이네요? 즐겨 찾기를 추가해보시는건 어떠세요?",
+    "favorite": "즐겨찾기 리스트",
+    "yourplan": "당신의 여행 일정"
   },
   "en": {
     "home": "Home",
@@ -111,6 +113,8 @@
     "clearall": "Clear All",
     "moresights": "More Sights",
     "moreplans": "More Plans",
-    "nofavorites": "Oops, I think you don't have any favorites? Why don't you add your favorite list?"
+    "nofavorites": "Oops, I think you don't have any favorites? Why don't you add your favorite list?",
+    "favorite": "Favorites List",
+    "yourplan": "Your trip schedule"
   }
 }

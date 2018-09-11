@@ -104,7 +104,7 @@ export default class CreateFlightPlan extends React.Component {
       notification.alert(this.props.strings.cannotsame);
       return;
     }
-    
+/*    
     let string = 
       "<b>" + this.props.strings.confirmschedule + "</b>" + "<br/>" + 
       "<b>" + this.props.strings.arrivaltime + "</b>" + "<br/>" + 
@@ -114,6 +114,7 @@ export default class CreateFlightPlan extends React.Component {
       "<b>" + this.props.strings.areyousure + "</b>";
     notification.confirm(string).then((response) => {
       if(response == 1) {
+*/
         localStorage.setItem("flightScheduleInfo", JSON.stringify({
           arrivalTime: arrivalDateTime.toString(),
           departureTime: departureDateTime.toString()
@@ -121,8 +122,8 @@ export default class CreateFlightPlan extends React.Component {
         this.props.navigator.pushPage({ 
           component: CreateAccomodationPlanPage 
         });
-      }
-    }); 
+//      }
+//    }); 
   }
 
   render() {
@@ -178,7 +179,8 @@ export default class CreateFlightPlan extends React.Component {
           <div style={{width: "100%", textAlign: "center"}}>
             <Calendar value={this.state.departureDate} calendarType="US" className="calendar_width_100"
               onChange={this.handleDepartureDateChange.bind(this)}
-              formatMonth={(value) => formatDate(value, 'MM')} />
+              formatMonth={(value) => formatDate(value, 'MM')}
+              minDate={this.state.arrivalDate} />
           </div>
           <section>
             <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />

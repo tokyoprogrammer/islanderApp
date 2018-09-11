@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {List, ListItem, Checkbox, Button} from 'react-onsenui';
+import {List, ListItem, Checkbox, Button, ListHeader, Icon} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
@@ -42,7 +42,14 @@ export default class FavoriteListView extends React.Component {
       strings: strings
     }
 
-    this.readList();
+    this.readList(lang);
+  }
+
+  componentDidUpdate(prevProps) {
+    let favorites = localStorage.getItem('favorites');
+    if(favorites != JSON.stringify(this.state.favorites)) {
+      this.setState({favorites: JSON.parse(favorites)});
+    } 
   }
 
   readItemsFromResponseText(responseText) {
@@ -53,27 +60,59 @@ export default class FavoriteListView extends React.Component {
     return items;
   }
 
-  readList() {
-    var this_ = this;
-    
-    new Promise(function(resolve, reject) {
-      var xhr = new XMLHttpRequest;
-      xhr.onload = function() {
-        let ret = this_.readItemsFromResponseText(xhr.responseText);
-        this_.setState({allSights: ret});
+  readList(lang) {
+    let cache = JSON.parse(localStorage.getItem("itemsAllSights" + lang));
+    let useCache = false;
+    if(cache != null) {
+      let cacheValidUntil = new Date(cache.createdDateTime);
+      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+      // cache will be valid until + 1 day of the created day.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        // compare and if cache is fresh
+        useCache = true;
+      }
+    }
 
-        resolve(new Response(xhr.responseText, {status: xhr.status}));
-      }
-      xhr.onerror = function() {
-        notification.alert(this_.state.strings.oops);
-        this_.setState({allSights: []});
-        reject(new TypeError('API Request failed'));
-      }
-      xhr.open('GET', this_.state.urlForAllList);
-      xhr.send(null);
-    }).then(function(result) {
-      this_.makeList();
-    }); 
+    if(useCache) {
+      var this_ = this;
+      const sleepTime = 500;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+      }).then(function(result) {
+        this_.setState({allSights: cache.items});
+        this_.makeList();
+      });
+    } else {
+      var this_ = this;
+    
+      new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest;
+        xhr.onload = function() {
+          let ret = this_.readItemsFromResponseText(xhr.responseText);
+          this_.setState({allSights: ret});
+
+          let cache = {
+            createdDateTime: new Date(),
+            items: ret
+          };
+
+          localStorage.setItem("itemsAllSights" + lang, JSON.stringify(cache));
+
+          resolve(new Response(xhr.responseText, {status: xhr.status}));
+        }
+        xhr.onerror = function() {
+          notification.alert(this_.state.strings.oops);
+          this_.setState({allSights: []});
+          reject(new TypeError('API Request failed'));
+        }
+        xhr.open('GET', this_.state.urlForAllList);
+        xhr.send(null);
+      }).then(function(result) {
+        this_.makeList();
+      }); 
+    }
   }
 
   makeList() {
@@ -95,13 +134,57 @@ export default class FavoriteListView extends React.Component {
     this.props.onLoadDone();
   }
 
+  toggleFavorite(key) {
+    this.stopPropagation = true;
+    let favoritesCopy = this.state.favorites.slice(0); // copy array
+    let indexToRemove = -1;
+    for(let i = 0; i < favoritesCopy.length; i++) {
+      let favorite = favoritesCopy[i];
+      if(favorite == key) {
+        indexToRemove = i;
+        break;
+      }     
+    }
+    if(indexToRemove == -1)
+    {
+      favoritesCopy.push(key); // push to favorite list
+    } else {
+      favoritesCopy.splice(indexToRemove, 1); // remove untoggled favorate
+    }
+    localStorage.setItem("favorites", JSON.stringify(favoritesCopy)); // change favorite list and save it.
+
+    this.setState({favorites: favoritesCopy});
+  }
+
+  onChange(id, e) {
+    if(this.props.onCheckChanged)
+      this.props.onCheckChanged(e.target.checked, id);
+  }
+
   renderCheckboxRow(row) {
+    const grayColor = "#D3D3D3";
+    const goldColor = "#FFD700";
+    const starIconSize = {
+      default: 30,
+      material: 28
+    };
+ 
     return (
       <ListItem key={row.contentid._text} tappable>
         <label className='left'>
-          <Checkbox
-            inputId={"checkbox-" + row.contentid._text}
-          />
+          {this.props.showStar ? 
+            (<Button modifier='quiet' 
+              style={{
+                width: '100%', 
+                textAlign: "center", 
+                color: this.state.favorites.includes(row.contentid._text) ? 
+                  goldColor : grayColor
+                }}
+              onClick={this.toggleFavorite.bind(this, row.contentid._text)}>
+              <Icon icon='md-star' size={starIconSize}/>
+            </Button>) :
+            (<Checkbox onChange={this.onChange.bind(this, row.contentid._text)} 
+              inputId={"checkbox-" + row.contentid._text}/>)}
         </label>
         <div className='left'>
           {row.firstimage != null ? 
@@ -125,6 +208,8 @@ export default class FavoriteListView extends React.Component {
       <div>
         {this.state.favoritesInfo.length > 0 ? 
           (<List dataSource={this.state.favoritesInfo}
+            renderHeader={() => (
+              <ListHeader>{this.state.strings.favorite}</ListHeader>)}
             renderRow={this.renderCheckboxRow.bind(this)}/>) :
           (<h3 style={{width: "100%", textAlign: "center"}}>
             {this.state.strings.nofavorites}
@@ -136,5 +221,12 @@ export default class FavoriteListView extends React.Component {
 
 FavoriteListView.propTypes = {
   onLoadDone: React.PropTypes.func,
-  onMoreClicked: React.PropTypes.func, 
+  onMoreClicked: React.PropTypes.func,
+  onCheckChanged: React.PropTypes.func,
+  showStar: React.PropTypes.bool  
+}
+
+FavoriteListView.defaultProps = {
+  showStar: false,
+  onCheckChanged: null
 }

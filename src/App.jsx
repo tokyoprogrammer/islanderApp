@@ -3,16 +3,11 @@ import ReactDOM from 'react-dom';
 import {Navigator, Splitter, SplitterSide, SplitterContent, Page, Button, List, ListItem, Icon} from 'react-onsenui';
 import LocalizedStrings from 'react-localization';
 
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
-
-library.add(faStroopwafel);
-
 import HomePage from './HomePage';
 import CourseRecommandationPage from './CourseRecommandationPage';
 import CreateFlightPlanPage from './CreateFlightPlanPage';
 import ShowMyPlanPage from './ShowMyPlanPage';
+import AllFavoritesPage from './AllFavoritesPage';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -26,6 +21,7 @@ export default class App extends React.Component {
       isOpen: false,
       strings: strings,
       page: pageName == "HomePage" ? HomePage : 
+        pageName == "AllFavoritesPage" ? AllFavoritesPage :
         pageName == "CourseRecommandationPage" ? CourseRecommandationPage : 
         pageName == "CreateFlightPlanPage" ? CreateFlightPlanPage : 
         pageName == "ShowMyPlanPage" ? ShowMyPlanPage : HomePage
@@ -112,6 +108,10 @@ export default class App extends React.Component {
                 <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 
                   style={listDiv}>
                   {this.state.strings.home}
+                </ListItem>
+                <ListItem onClick={this.loadPage.bind(this, "AllFavoritesPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.favorite}
                 </ListItem>
                 { this.state.strings.getLanguage() == 'kr' ? 
                 (<ListItem onClick={this.loadPage.bind(this, "CourseRecommandationPage")} tappable 

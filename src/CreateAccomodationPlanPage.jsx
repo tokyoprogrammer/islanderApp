@@ -6,6 +6,9 @@ import {notification} from 'onsenui';
 import LocalizedStrings from 'react-localization';
 
 import Stepper from 'react-stepper-horizontal';
+import Calendar from 'react-calendar';
+
+import './CalendarStyle';
 
 import CreateVisitListPage from './CreateVisitListPage';
 
@@ -29,6 +32,16 @@ export default class CreateAccomodationPlanPage extends React.Component {
     };
 
     this.activeSteps = 1;
+  }
+
+  getDates(startDate, stopDate) {
+    var dateArray = new Array();
+    var currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateArray.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dateArray;
   }
 
   showMenu() {
@@ -74,6 +87,13 @@ export default class CreateAccomodationPlanPage extends React.Component {
     });
   }
 
+  tileStyle({ date, view }) {
+    if(date >= this.state.arrivalDateTime && date <= this.state.departureDateTime) { 
+      return "tile_w_bgcolor"
+    }
+    return null;
+  }
+
   render() {
     const centerDiv = {textAlign: "center"};
     const infoMarkIconSize = {
@@ -105,6 +125,15 @@ export default class CreateAccomodationPlanPage extends React.Component {
               </p>
             </div>
           </Card>
+          <b>{this.state.strings.yourplan}</b>
+          <div style={{width: "100%", textAlign: "center"}}>
+            <Calendar activeStartDate={this.state.arrivalDateTime}
+              minDate={this.state.arrivalDateTime}
+              maxDate={this.state.departureDateTime}
+              calendarType="US" className="calendar_width_100"
+              tileClassName={this.tileStyle.bind(this)}
+              formatMonth={(value) => formatDate(value, 'MM')} />
+          </div>
           <div style={{padding: "1%"}}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
