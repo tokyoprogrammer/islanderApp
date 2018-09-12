@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 
 import LocalizedStrings from 'react-localization';
 
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, ListItem, List, Card, Row, Col, Modal} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Carousel, CarouselItem, Icon, ProgressCircular, ListItem, List, Card, Row, Col, Modal} from 'react-onsenui';
 
 import GooglePlaceImageView from './GooglePlaceImageView';
+
+import './imagefit.css';
 
 export default class DetailView extends React.Component {
   constructor(props) {
@@ -43,18 +45,34 @@ export default class DetailView extends React.Component {
         serviceLang + "/detailIntro?ServiceKey=" +
         serviceKey + "&contentTypeId=" + contentTypeId + "&contentId=" + contentId +
         "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&introYN=Y",
+      urlForDetailImage: "https://api.visitkorea.or.kr/openapi/service/rest/" +
+        serviceLang + "/detailImage?ServiceKey=" +
+        serviceKey + "&contentTypeId=" + 
+        contentTypeId + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&contentId=" + 
+        contentId + "&imageYN=Y",
+      urlForDetailImageMenu: "https://api.visitkorea.or.kr/openapi/service/rest/" +
+        serviceLang + "/detailImage?ServiceKey=" +
+        serviceKey + "&contentTypeId=" + contentTypeId + 
+        "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&contentId=" + 
+        contentId + "&imageYN=N",
       strings: strings,
       itemDetailCommon: null,
       itemDetailIntro: null,
+      itemDetailImage: [],
+      itemDetailImageMenu: [],
       favorites: favorites,
       contentId: contentId,
       isOpen: false,
-      imageForModal: ""
+      imageForModal: "",
+      counter: 0,
+      images: []
     };
     
     strings.setLanguage(lang);
     this.readDetailCommon();
     this.readDetailIntro();
+    this.readDetailImage();
+    this.readDetailImageMenu();
   }
 
   readDetailCommon() {
@@ -97,6 +115,53 @@ export default class DetailView extends React.Component {
     });
   }
 
+  readDetailImage() {
+    var this_ = this;
+    new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest;
+      xhr.onload = function() {
+        var convert = require('xml-js');
+        var options = {compact: true, ignoreComment: true, spaces: 4};
+        var xml = convert.xml2js(xhr.responseText, options);
+        console.log(xml.response.body.items.item);
+        if(xml.response.body.items.item != null) 
+          this_.setState({itemDetailImage: xml.response.body.items.item});
+        resolve(new Response(xhr.responseText, {status: xhr.status}));
+      }
+      xhr.onerror = function() {
+        reject(new TypeError('Load Detail Image failed'));
+      }
+      xhr.open('GET', this_.state.urlForDetailImage);
+      xhr.send(null);
+    });
+  }
+
+  readDetailImageMenu() {
+    var this_ = this;
+    new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest;
+      xhr.onload = function() {
+        var convert = require('xml-js');
+        var options = {compact: true, ignoreComment: true, spaces: 4};
+        var xml = convert.xml2js(xhr.responseText, options);
+        console.log(xml.response.body.items.item);
+        if(xml.response.body.totalCount._text > 1) {
+          this_.setState({itemDetailImageMenu: xml.response.body.items.item});
+        }
+        else {
+          let imageURL = xml.response.body.items.item;
+          if(xml.response.body.items.item != null)
+            this_.setState({itemDetailImageMenu: [imageURL]});
+	}
+        resolve(new Response(xhr.responseText, {status: xhr.status}));
+      }
+      xhr.onerror = function() {
+        reject(new TypeError('Load Detail ImageMenu failed'));
+      }
+      xhr.open('GET', this_.state.urlForDetailImageMenu);
+      xhr.send(null);
+    });
+  }
   showMenu() {
     this.props.showMenu();
   }
@@ -152,24 +217,72 @@ export default class DetailView extends React.Component {
     this.setState({isOpen: true, imageForModal: imageSrc});
   }
 
+  handleChange(e) {
+    this.setState({counter: e.activeIndex});
+  }
+
   renderCommon() {
     if(this.state.itemDetailCommon != null) {
+      let carouselItems = [];
       let title = this.state.itemDetailCommon.title == null ? 
         "" : this.state.itemDetailCommon.title._text;
       let overview = this.state.itemDetailCommon.overview == null ? 
         "" : this.state.itemDetailCommon.overview._text;
 
+      let key1 = '1';
+      let key2 = '2';
+      let carouselItem = null;
+      let images = [];
+      for(let i = 0; i < this.state.itemDetailImage.length; i++) {
+        let item = this.state.itemDetailImage[i];
+        let imageURL = item.originimgurl._text;
+        let imageItem = (
+          <CarouselItem>
+            <img src={imageURL}
+              className="image-cover"
+              style={{width: "100%", height: "220px"}} 
+              onClick={this.openModal.bind(this, imageURL)}/>
+          </CarouselItem>
+        );
+        images.push(imageItem);
+      }
+
+      for(let i = 0; i < this.state.itemDetailImageMenu.length; i++) {
+        let item = this.state.itemDetailImageMenu[i];
+        let imageURL = item.originimgurl._text;
+        let imageItem = (
+          <CarouselItem>
+            <img src={imageURL}
+              className="image-cover"
+              style={{width: "100%", height: "220px"}}
+              onClick={this.openModal.bind(this, imageURL)}/>
+          </CarouselItem>
+        );
+        images.push(imageItem);
+      }
+
       let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-           placeTitle = {this.state.itemDetailCommon.title._text} listThumbnail={false} multi={true}
+           placeTitle = {this.state.itemDetailCommon.title._text} 
+           listThumbnail={false} multi={true}
            imageOnClick={this.openModal.bind(this)} />) : 
-        (<img src={this.state.itemDetailCommon.firstimage._text} style={{width: "100%"}} 
-          onClick={this.openModal.bind(this, this.state.itemDetailCommon.firstimage._text)}/>);
+	(<Carousel swipeable autoScroll overscrollable autoScrollRatio={0.5} 
+           index={this.state.counter}
+           onPostChange={this.handleChange.bind(this)}>
+           <CarouselItem>
+             <img src={this.state.itemDetailCommon.firstimage._text}
+               className="image-cover"
+               style={{width: "100%", height: "220px"}} 
+               onClick={this.openModal.bind(this, 
+                 this.state.itemDetailCommon.firstimage._text)}/>
+           </CarouselItem>
+           {images}
+         </Carousel>) ;
 
       const grayColor = "#D3D3D3";
       const goldColor = "#FFD700";
       const starIconSize = {
-        default: 30,
+        fault: 30,
         material: 28
       };
 
@@ -187,7 +300,7 @@ export default class DetailView extends React.Component {
       let commonField = (
         <div>
           <Card>
-            <div>{imageSrc}</div>
+	    <div>{imageSrc}</div>    
             <div className="title left">
               <Row>
                 <Col width="80%">  
@@ -232,9 +345,46 @@ export default class DetailView extends React.Component {
         map = (<img src = {mapURL} style={{width: '100%'}} />);
       }
  
-      return {commonField: commonField, listField: listField, map: map};
+      return {commonField: commonField, listField: listField, map: map}; 
     }
     else return {commonField: null, listField: null, map: null};
+  }
+
+  renderCultureDetails(){
+    let ret = [];
+    let infocenter = this.state.itemDetailIntro.infocenterculture == null ?
+      null :
+      (<ListItem key="li-infocenter">
+        <b>{this.state.strings.infocenter + " : "}</b>
+        <p>{this.state.itemDetailIntro.infocenterculture._text}</p>
+      </ListItem>);
+    ret.push(infocenter);
+    console.log(this.state.strings);
+    let worktime = this.state.itemDetailIntro.usetimeculture  == null ?
+      null :
+      (<ListItem key="li-workingtime">
+        <b>{this.state.strings.workingtime + " : "}</b>
+        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.usetimeculture._text)}>
+	</p>
+      </ListItem>);
+    ret.push(worktime);
+    let holiday = this.state.itemDetailIntro.restdateculture  == null ?
+      null :
+      (<ListItem key="li-holiday">
+        <b>{this.state.strings.holiday + " : "}</b>
+        <p>{this.state.itemDetailIntro.restdateculture._text}</p>
+      </ListItem>);
+    ret.push(holiday);
+    let usefee = this.state.itemDetailIntro.usefee  == null ?
+      null :
+      (<ListItem key="li-usefee">
+        <b>{this.state.strings.usefee + " : "}</b>
+        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.usefee._text)}>
+	</p>
+      </ListItem>);
+    ret.push(usefee);
+
+    return ret;
   }
 
   renderRestaurantDetails() {
@@ -304,7 +454,104 @@ export default class DetailView extends React.Component {
 
     return ret;
   }
+  
+  renderFestivalDetails(){
+    let ret = [];
+    let sponsor = this.state.itemDetailIntro.sponsor2 == null ?
+      null : 
+      (<ListItem key="li-sponsor">
+        <b>{this.state.strings.sponsor + " : "}</b>
+        <p>{this.state.itemDetailIntro.sponsor2._text}</p>
+      </ListItem>);
+    ret.push(sponsor);
+    let sponsorTel = this.state.itemDetailIntro.sponsortel == null ?
+      null : 
+      (<ListItem key="li-sponsorTel">
+        <b>{this.state.strings.sponsorTel + " : "}</b>
+        <p>{this.state.itemDetailIntro.sponsortel._text}</p>
+      </ListItem>);
+    ret.push(sponsorTel);
+    let eventStartDate = this.state.itemDetailIntro.eventstartdate == null ?
+      null : 
+      (<ListItem key="li-eventStartDate">
+        <b>{this.state.strings.eventStartDate + " : "}</b>
+        <p>{this.state.itemDetailIntro.eventstartdate._text}</p>
+      </ListItem>);
+    ret.push(eventStartDate);
+    let eventEndDate = this.state.itemDetailIntro.eventenddate == null ?
+      null : 
+      (<ListItem key="li-eventEndDate">
+        <b>{this.state.strings.eventEndDate + " : "}</b>
+        <p>{this.state.itemDetailIntro.eventenddate._text}</p>
+      </ListItem>);
+    ret.push(eventEndDate);
+    let playTime = this.state.itemDetailIntro.playtime == null ?
+      null : 
+      (<ListItem key="li-playTime">
+        <b>{this.state.strings.playTime + " : "}</b>
+        <p>{this.state.itemDetailIntro.playtime._text}</p>
+      </ListItem>);
+    ret.push(playTime);
+    let eventPlace = this.state.itemDetailIntro.eventplace == null ?
+      null : 
+      (<ListItem key="li-eventPlace">
+        <b>{this.state.strings.eventPlace + " : "}</b>
+        <p>{this.state.itemDetailIntro.eventplace._text}</p>
+      </ListItem>);
+    ret.push(eventPlace);
+    let spendTimeFestival = this.state.itemDetailIntro.spendtimefestival == null ?
+      null : 
+      (<ListItem key="li-spendTimeFestival">
+        <b>{this.state.strings.spendTimeFestival + " : "}</b>
+        <p>{this.state.itemDetailIntro.spendtimefestival._text}</p>
+	</ListItem>);
+    ret.push(spendTimeFestival);
+    let ageLimit = this.state.itemDetailIntro.agelimit == null ?
+      null : 
+      (<ListItem key="li-ageLimit">
+        <b>{this.state.strings.ageLimit + " : "}</b>
+        <p>{this.state.itemDetailIntro.agelimit._text}</p>
+      </ListItem>);
+    ret.push(ageLimit);
+    let placeInfo = this.state.itemDetailIntro.placeinfo == null ?
+      null : 
+      (<ListItem key="li-placeInfo">
+        <b>{this.state.strings.placeInfo + " : "}</b>
+	<p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.placeinfo._text)}></p>
+      </ListItem>);
+    ret.push(placeInfo);
 
+
+
+
+    return ret;
+  }
+
+  renderActivityDetails(){
+    let ret = [];
+    let holiday = this.state.itemDetailIntro.restdateleports == null ?
+      null :
+      (<ListItem key="li-holiday">
+        <b>{this.state.strings.holiday + " : " }</b>
+        <p>{this.state.itemDetailIntro.restdateleports._text}</p>
+      </ListItem>);
+    ret.push(holiday);
+    let workingtime = this.state.itemDetailIntro.usetimeleports == null ?
+      null :
+      (<ListItem key="li-workingtime">
+        <b>{this.state.strings.workingtime + " : " }</b>
+        <p>{this.state.itemDetailIntro.usetimeleports._text}</p>
+      </ListItem>);
+    ret.push(workingtime);
+    let reservation = this.state.itemDetailIntro.reservation == null ?
+      null :
+      (<ListItem key="li-reservation">
+        <b>{this.state.strings.reservation + " : " }</b>
+        <p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.reservation._text)}></p>
+      </ListItem>);
+    ret.push(reservation);
+    return ret;
+  }
 
   renderSightDetails() {
     let ret = [];
@@ -418,14 +665,17 @@ export default class DetailView extends React.Component {
         // sight
         ret = this.renderSightDetails();
       }
-      else if(contentTypeId == 24 || contentTypeId == 78) {
+      else if(contentTypeId == 24 || contentTypeId == 78 || contentTypeId == 14) {
         // culture
+	ret = this.renderCultureDetails();
       }
       else if(contentTypeId == 15 || contentTypeId == 85) {
         // festival
+        ret = this.renderFestivalDetails();
       }
       else if(contentTypeId == 28 || contentTypeId == 75) {
         // activity
+	ret = this.renderActivityDetails();
       }
       else if(contentTypeId == 38 || contentTypeId == 79) {
         // shopping
@@ -487,7 +737,7 @@ export default class DetailView extends React.Component {
           </Modal>
         )}>
         <div>
-          <div style={{margin: '1%'}}><h4><b>{this.state.strings.overview}</b></h4></div>
+	  <div style={{margin: '1%'}}><h4><b>{this.state.strings.overview}</b></h4></div>
           {commonField}
           <div style={{margin: '1%'}}><h4><b>{this.state.strings.godetails}</b></h4></div>
           {map}

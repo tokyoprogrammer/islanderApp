@@ -23,7 +23,18 @@
     "parking": "주차장",
     "infocenter": "문의정보",
     "expguide": "체험안내",
-    "expagerange": "체험가능연령"
+    "expagerange": "체험가능연령",
+    "usefee": "이용요금",
+    "sponsor": "주관사정보",
+    "sponsorTel": "주관사 연락처",
+    "eventStartDate": "행사시작일",
+    "eventEndDate": "행사종료일",
+    "playTime": "공연시간",
+    "eventPlace": "행사장소",
+    "spendTimeFestival": "관람소요시간",
+    "ageLimit": "관람가능연령",
+    "placeInfo": "행사장 위치안내",
+    "reservation" : "예약안내"
   },
   "en": {
     "home": "Home",
@@ -49,6 +60,17 @@
     "parking": "parking",
     "infocenter": "Information",
     "expguide": "Experience Guide",
-    "expagerange": "Available age"
+    "expagerange": "Available age",
+    "usefee": "Fee",
+    "sponsor": "Sponsor",
+    "sponsorTel": "Sponsor Tel number",
+    "eventStartDate": "Event Start Date",
+    "eventEndDate": "Event End Date",
+    "playTime": "Play time",
+    "eventPlace": "Event place",
+    "spendTimeFestival": "Spend time for festival",
+    "ageLimit": "Age limit",
+    "placeInfo": "Place Information",
+    "reservation": "Reservation"
   }
 }
