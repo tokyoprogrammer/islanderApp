@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, Card} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, Card, Modal} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
@@ -11,6 +11,7 @@ import Calendar from 'react-calendar';
 import './CalendarStyle';
 
 import CreateVisitListPage from './CreateVisitListPage';
+import GoogleSearchField from './GoogleSearchField';
 
 export default class CreateAccomodationPlanPage extends React.Component {
   constructor(props) {
@@ -28,7 +29,8 @@ export default class CreateAccomodationPlanPage extends React.Component {
       arrivalDateTime: arrivalDateTime,
       departureDateTime: departureDateTime,
       strings: strings,
-      nights: departureDateTime.getDate() - arrivalDateTime.getDate()
+      nights: departureDateTime.getDate() - arrivalDateTime.getDate(),
+      isOpen: false
     };
 
     this.activeSteps = 1;
@@ -94,6 +96,24 @@ export default class CreateAccomodationPlanPage extends React.Component {
     return null;
   }
 
+  openSearch() {
+    this.setState({isOpen: true});
+  }
+
+  onSearchDone(places) {
+    for(let i = 0; i < places.length; i++) {
+      let place = places[i];
+      console.log(place.name);
+      console.log(place.addr);
+      console.log(place.lat);
+      console.log(place.lng);
+    }
+  }
+
+  addAccomodation() {
+    this.setState({isOpen: false});
+  }
+
   render() {
     const centerDiv = {textAlign: "center"};
     const infoMarkIconSize = {
@@ -108,8 +128,37 @@ export default class CreateAccomodationPlanPage extends React.Component {
       {title: this.state.strings.createdone}
     ];
 
+    const mapCenter = {
+      lat: 33.356432,
+      lng: 126.5268767
+    };
+
+    const mapZoom = 9;
+
+    const closeIconSize = {
+      default: 25,
+      material: 23
+    };
+
     return (
-      <Page renderToolbar={this.renderToolbar.bind(this)}>
+      <Page renderToolbar={this.renderToolbar.bind(this)}
+       renderModal={() => (
+          <Modal
+            isOpen={this.state.isOpen}>
+            <div style={{width: "100%", display: "inline-block"}}>
+              <GoogleSearchField initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+                width="100vw" height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
+              <Button style={{margin: "1%"}} onClick={this.addAccomodation.bind(this)}>
+                {this.state.strings.addaccomodation}
+              </Button>
+              <Button modifier='quiet' onClick={() => this.setState({isOpen: false})}
+                style={{position: "absolute", top: "5%", right: "5%", color: "#D3D3D3"}} >
+                <Icon icon="md-close-circle-o" size={closeIconSize} />
+              </Button>
+            </div>
+          </Modal>
+        )}>
+ 
         <div>
           <div style={centerDiv}>
             <h2>{this.state.strings.createschedule}</h2>
@@ -134,6 +183,10 @@ export default class CreateAccomodationPlanPage extends React.Component {
               tileClassName={this.tileStyle.bind(this)}
               formatMonth={(value) => formatDate(value, 'MM')} />
           </div>
+          <Button style={{width: "80%", margin: "10%", textAlign: "center"}} 
+            onClick={this.openSearch.bind(this)}>
+            {this.state.strings.findaccomodation}
+          </Button>          
           <div style={{padding: "1%"}}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
