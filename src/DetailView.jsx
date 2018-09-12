@@ -5,6 +5,8 @@ import LocalizedStrings from 'react-localization';
 
 import {Toolbar, ToolbarButton, Page, Button, BackButton, Carousel, CarouselItem, Icon, ProgressCircular, ListItem, List, Card, Row, Col, Modal} from 'react-onsenui';
 
+import {notification} from 'onsenui';
+
 import GooglePlaceImageView from './GooglePlaceImageView';
 
 import './imagefit.css';
@@ -108,6 +110,7 @@ export default class DetailView extends React.Component {
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
+        notification.alert(this_.state.strings.oops);
         reject(new TypeError('Load Detail Intro failed'));
       }
       xhr.open('GET', this_.state.urlForContentDetailIntro);

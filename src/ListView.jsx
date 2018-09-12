@@ -314,7 +314,7 @@ export default class ListView extends React.Component {
             calculateItemHeight={() => this.listItemHeight} />
         </div>
         <Fab onClick={this.goTopScroll.bind(this)} 
-          style = {{ position: "fixed", bottom: '10%', right: '10px'}}>
+          style = {{ position: "fixed", bottom: '10px', right: '10px'}}>
           <Icon icon='md-format-valign-top' />
         </Fab>
       </Page>

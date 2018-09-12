@@ -594,7 +594,7 @@ export default class MapView extends React.Component {
             {placeCarousel}
           </div>
         </div>
-        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '10%', right: '10px', position: 'fixed'}}>
+        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '10px', right: '10px', position: 'fixed'}}>
           <Icon icon='fa-bars' />
         </Fab>
       </Page>

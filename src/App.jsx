@@ -4,6 +4,10 @@ import {Navigator, Splitter, SplitterSide, SplitterContent, Page, Button, List, 
 import LocalizedStrings from 'react-localization';
 
 import HomePage from './HomePage';
+import CourseRecommandationPage from './CourseRecommandationPage';
+import CreateFlightPlanPage from './CreateFlightPlanPage';
+import ShowMyPlanPage from './ShowMyPlanPage';
+import AllFavoritesPage from './AllFavoritesPage';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -12,9 +16,15 @@ export default class App extends React.Component {
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
 
+    let pageName = localStorage.getItem("pageToLoad");
     this.state = {
       isOpen: false,
-      strings: strings
+      strings: strings,
+      page: pageName == "HomePage" ? HomePage : 
+        pageName == "AllFavoritesPage" ? AllFavoritesPage :
+        pageName == "CourseRecommandationPage" ? CourseRecommandationPage : 
+        pageName == "CreateFlightPlanPage" ? CreateFlightPlanPage : 
+        pageName == "ShowMyPlanPage" ? ShowMyPlanPage : HomePage
     };
 
     let lang = localStorage.getItem('lang');
@@ -26,16 +36,13 @@ export default class App extends React.Component {
     }
   }
 
-
   loadPage(page) {
     this.hide();
-    const currentPage = this.navigator.pages.slice(-1)[0] // --- or [this.navigator.pages.length - 1]
-    if(currentPage.key != page.name){
-      this.navigator.resetPage({ 
-        component: page, 
-        props: { key: page.name, strings: this.state.strings } }, 
-        { animation: 'fade' });
-    }
+    localStorage.setItem("pageToLoad", page);
+    this.navigator.resetPage({ 
+      component: App, 
+      props: { key: App.name, strings: this.state.strings } }, 
+      { animation: 'none' });
   }
 
   show() {
@@ -77,9 +84,9 @@ export default class App extends React.Component {
     };
 
     const listDiv = {
-      height: '20px'
+      height: '60px'
     };
-
+   
     return (
       <Splitter>
         <SplitterSide
@@ -89,25 +96,45 @@ export default class App extends React.Component {
           onClose={this.hide.bind(this)}
           swipeable={false}>
           <Page>
-            <img src="img/islander.png" 
-              className="center" 
-              style={imageStyle} />
-            <div style={divCenter} >
-              <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
-              <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
+            <div style={{height: "100%"}}>
+              <img src="img/islander.png" 
+                className="center" 
+                style={imageStyle} />
+              <div style={divCenter} >
+                <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
+                <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
+              </div>
+              <List>
+                <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.home}
+                </ListItem>
+                <ListItem onClick={this.loadPage.bind(this, "AllFavoritesPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.favorite}
+                </ListItem>
+                { this.state.strings.getLanguage() == 'kr' ? 
+                (<ListItem onClick={this.loadPage.bind(this, "CourseRecommandationPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.course}
+                </ListItem>) : null}
+                <ListItem onClick={this.loadPage.bind(this, "CreateFlightPlanPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.createschedule}
+                </ListItem>
+                <ListItem onClick={this.loadPage.bind(this, "ShowMyPlanPage")} tappable 
+                  style={listDiv}>
+                  {this.state.strings.showschedule}
+                </ListItem>
+              </List>
             </div>
-            <List>
-              <ListItem key={App.name} onClick={this.loadPage.bind(this, App)} tappable>
-                <div style={listDiv}>{this.state.strings.home}</div>
-              </ListItem>
-            </List>
           </Page>
         </SplitterSide>
         <SplitterContent>
           <Navigator 
             initialRoute={{ 
-              component: HomePage, 
-              props: { key: HomePage.name, strings: this.state.strings } }} 
+              component: this.state.page, 
+              props: { key: this.state.page.name, strings: this.state.strings } }} 
             renderPage={this.renderPage.bind(this)}
             ref={(navigator) => { this.navigator = navigator; }} />
         </SplitterContent>
