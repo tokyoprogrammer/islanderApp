@@ -73,7 +73,9 @@
     "saleitem": "판매품목",
     "restdateshopping": "쉬는날",
     "scale": "규모",
-    "shopguide": "매장안내"
+    "shopguide": "매장안내",
+    "findaccomodation": "숙소 검색",
+    "addaccomodation": "숙소 추가"
   },
   "en": {
     "home": "Home",
@@ -149,6 +151,8 @@
     "saleitem": "Sale Item",
     "restdateshopping": "Close Date",
     "scale": "Shop Scale",
-    "shopguide": "Shop Info"
+    "shopguide": "Shop Info",
+    "findaccomodation": "Find Accomodation",
+    "addaccomodation": "Add Accomodation"
   }
 }
