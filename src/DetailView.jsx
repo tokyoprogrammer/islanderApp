@@ -470,63 +470,59 @@ export default class DetailView extends React.Component {
     let sponsorTel = this.state.itemDetailIntro.sponsortel == null ?
       null : 
       (<ListItem key="li-sponsorTel">
-        <b>{this.state.strings.sponsorTel + " : "}</b>
+        <b>{this.state.strings.sponsortel + " : "}</b>
         <p>{this.state.itemDetailIntro.sponsortel._text}</p>
       </ListItem>);
     ret.push(sponsorTel);
     let eventStartDate = this.state.itemDetailIntro.eventstartdate == null ?
       null : 
       (<ListItem key="li-eventStartDate">
-        <b>{this.state.strings.eventStartDate + " : "}</b>
+        <b>{this.state.strings.eventstartdate + " : "}</b>
         <p>{this.state.itemDetailIntro.eventstartdate._text}</p>
       </ListItem>);
     ret.push(eventStartDate);
     let eventEndDate = this.state.itemDetailIntro.eventenddate == null ?
       null : 
       (<ListItem key="li-eventEndDate">
-        <b>{this.state.strings.eventEndDate + " : "}</b>
+        <b>{this.state.strings.eventenddate + " : "}</b>
         <p>{this.state.itemDetailIntro.eventenddate._text}</p>
       </ListItem>);
     ret.push(eventEndDate);
     let playTime = this.state.itemDetailIntro.playtime == null ?
       null : 
       (<ListItem key="li-playTime">
-        <b>{this.state.strings.playTime + " : "}</b>
+        <b>{this.state.strings.playtime + " : "}</b>
         <p>{this.state.itemDetailIntro.playtime._text}</p>
       </ListItem>);
     ret.push(playTime);
     let eventPlace = this.state.itemDetailIntro.eventplace == null ?
       null : 
       (<ListItem key="li-eventPlace">
-        <b>{this.state.strings.eventPlace + " : "}</b>
+        <b>{this.state.strings.eventplace + " : "}</b>
         <p>{this.state.itemDetailIntro.eventplace._text}</p>
       </ListItem>);
     ret.push(eventPlace);
     let spendTimeFestival = this.state.itemDetailIntro.spendtimefestival == null ?
       null : 
       (<ListItem key="li-spendTimeFestival">
-        <b>{this.state.strings.spendTimeFestival + " : "}</b>
+        <b>{this.state.strings.spendtimefestival + " : "}</b>
         <p>{this.state.itemDetailIntro.spendtimefestival._text}</p>
 	</ListItem>);
     ret.push(spendTimeFestival);
     let ageLimit = this.state.itemDetailIntro.agelimit == null ?
       null : 
       (<ListItem key="li-ageLimit">
-        <b>{this.state.strings.ageLimit + " : "}</b>
+        <b>{this.state.strings.agelimit + " : "}</b>
         <p>{this.state.itemDetailIntro.agelimit._text}</p>
       </ListItem>);
     ret.push(ageLimit);
     let placeInfo = this.state.itemDetailIntro.placeinfo == null ?
       null : 
       (<ListItem key="li-placeInfo">
-        <b>{this.state.strings.placeInfo + " : "}</b>
+        <b>{this.state.strings.placeinfo + " : "}</b>
 	<p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.placeinfo._text)}></p>
       </ListItem>);
     ret.push(placeInfo);
-
-
-
-
     return ret;
   }
 
@@ -539,13 +535,15 @@ export default class DetailView extends React.Component {
         <p>{this.state.itemDetailIntro.restdateleports._text}</p>
       </ListItem>);
     ret.push(holiday);
-    let workingtime = this.state.itemDetailIntro.usetimeleports == null ?
+    let usingTime = this.state.itemDetailIntro.usetimeleports == null ?
       null :
-      (<ListItem key="li-workingtime">
-        <b>{this.state.strings.workingtime + " : " }</b>
-        <p>{this.state.itemDetailIntro.usetimeleports._text}</p>
-      </ListItem>);
-    ret.push(workingtime);
+        this.state.itemDetailIntro.usetimeleports._test == null ?
+          null :
+            (<ListItem key="li-usingTime">
+              <b>{this.state.strings.usingtime + " : " }</b>
+              <p>{this.state.itemDetailIntro.usetimeleports._text}</p>
+            </ListItem>);
+    ret.push(usingTime);
     let reservation = this.state.itemDetailIntro.reservation == null ?
       null :
       (<ListItem key="li-reservation">
@@ -553,7 +551,135 @@ export default class DetailView extends React.Component {
         <p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.reservation._text)}></p>
       </ListItem>);
     ret.push(reservation);
+    let playAgeLimit = this.state.itemDetailIntro.expagerangeleports == null ?
+      null :
+      (<ListItem key="li-playagelimit">
+        <b>{this.state.strings.playagelimit + " : " }</b>
+        <p>{this.state.itemDetailIntro.expagerangeleports._text}</p>
+      </ListItem>);
+    ret.push(playAgeLimit);
+
+    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    let creditcard = this.state.itemDetailIntro.chkcreditcardleports == null ? 
+      null : 
+      this.state.itemDetailIntro.chkcreditcardleports._text;
+    let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
+      (<img src="img/card.png" style={iconSize} />) : null;
+    let parking = this.state.itemDetailIntro.parkingleports == null ? 
+      null : 
+      this.state.itemDetailIntro.parkingleports._text;
+    let parkingIcon = parking != null && 
+      (parking.includes("가능") || parking.includes("주차") || 
+       parking.includes("Available") || parking.includes("spaces")) ?
+      (<img src="img/parking.png" style={iconSize} />) : null;
+    let stroller = this.state.itemDetailIntro.chkbabycarriageleports == null ? 
+      null : 
+      this.state.itemDetailIntro.chkbabycarriageleports._text;
+    let strollerIcon = stroller != null && (stroller.includes("있음") || stroller.includes("Avail")) ? 
+      (<img src="img/stroller.png" style={iconSize}/>) : null;
+    let pet = this.state.itemDetailIntro.chkpetleports == null ? 
+      null : 
+      this.state.itemDetailIntro.chkpetleports._text;
+    let petIcon = (pet != null && pet.length > 0) && 
+      (pet.includes("없음") || pet.includes("No") || pet.includes("N/A")) ? 
+      (<img src="img/nopet.png" style={iconSize}/>) : null;
+
+    let etc = (
+      <ListItem key="li-icons">
+        {creditCardIcon}
+        {parkingIcon}
+        {strollerIcon}
+        {petIcon}
+      </ListItem>
+    );
+    ret.push(etc);
     return ret;
+  }
+  renderShoppingDetails(){
+  let ret = [];
+
+  let saleItem = this.state.itemDetailIntro.saleitem == null ? 
+    null : 
+      (<ListItem key="li-saleItem">
+        <b>{this.state.strings.saleitem + " : "}</b>
+        <p>{this.state.itemDetailIntro.saleitem._text}</p>
+      </ListItem>);
+    ret.push(saleItem);
+  let workingtime = this.state.itemDetailIntro.opendateshopping == null ? 
+    null : 
+      (<ListItem key="li-workingtime">
+        <b>{this.state.strings.workingtime + " : "}</b>
+        <p>{this.state.itemDetailIntro.opendateshopping._text}</p>
+      </ListItem>);
+    ret.push(workingtime);
+  let restDateShopping = this.state.itemDetailIntro.restdateshopping == null ? 
+    null : 
+      (<ListItem key="li-restDateShopping">
+        <b>{this.state.strings.restdateshopping + " : "}</b>
+        <p>{this.state.itemDetailIntro.restdateshopping._text}</p>
+      </ListItem>);
+    ret.push(restDateShopping);
+
+  let scale = this.state.itemDetailIntro.scaleshopping == null ? 
+    null : 
+      (<ListItem key="li-scale">
+        <b>{this.state.strings.scale + " : "}</b>
+        <p>{this.state.itemDetailIntro.scaleshopping._text}</p>
+      </ListItem>);
+    ret.push(scale);
+  
+  let shopGuide = this.state.itemDetailIntro.shopguide == null ? 
+    null :
+      this.state.itemDetailIntro.shopguide._text == null ?
+        null :
+          (<ListItem key="li-shopGuide">
+            <b>{this.state.strings.shopguide + " : "}</b>
+            <p>{this.state.itemDetailIntro.shopguide._text}</p>
+          </ListItem>);
+    ret.push(shopGuide);
+
+    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    let creditcard = this.state.itemDetailIntro.chkcreditcardshopping == null ? 
+      null : 
+        this.state.itemDetailIntro.chkcreditcardshopping._text;
+    let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
+      (<img src="img/card.png" style={iconSize} />) : null;
+    let parking = this.state.itemDetailIntro.parkingshopping == null ? 
+      null : 
+        this.state.itemDetailIntro.parkingshopping._text;
+    let parkingIcon = parking != null && 
+      (parking.includes("가능") || parking.includes("주차") || 
+       parking.includes("Available") || parking.includes("spaces")) ?
+      (<img src="img/parking.png" style={iconSize} />) : null;
+    let stroller = this.state.itemDetailIntro.chkbabycarriageshopping == null ? 
+      null : 
+        this.state.itemDetailIntro.chkbabycarriageshopping._text;
+    let strollerIcon = stroller != null && 
+      (stroller.includes("있음") || stroller.includes("Avail")) ? 
+        (<img src="img/stroller.png" style={iconSize}/>) : null;
+    let pet = this.state.itemDetailIntro.chkpetshopping == null ? 
+      null : 
+        this.state.itemDetailIntro.chkpetshopping._text;
+    let petIcon = (pet != null && pet.length > 0) && 
+      (pet.includes("없음") || pet.includes("No") || pet.includes("N/A")) ? 
+        (<img src="img/nopet.png" style={iconSize}/>) : null;
+    let restroom = this.state.itemDetailIntro.restroom  == null ? 
+      null : 
+        this.state.itemDetailIntro.restroom._text;
+    let restroomIcon = (restroom != null && restroom.length > 0) && 
+      (restroom.includes("있음") || restroom.includes("Avail")) ? 
+        (<img src="img/restroom.png" style={iconSize}/>) : null;
+    let etc = (
+      <ListItem key="li-icons">
+        {creditCardIcon}
+        {parkingIcon}
+        {strollerIcon}
+        {petIcon}
+        {restroomIcon}
+      </ListItem>
+    );
+    ret.push(etc);
+  return ret;
   }
 
   renderSightDetails() {
@@ -577,9 +703,7 @@ export default class DetailView extends React.Component {
       null : 
       (<ListItem key="li-expagerange">
         <b>{this.state.strings.expagerange + " : "}</b>
-        <p>
-          {this.state.itemDetailIntro.expagerange._text}
-        </p>
+        <p>{this.state.itemDetailIntro.expagerange._text}</p>
       </ListItem>);
     ret.push(expagerange);
     let holiday = this.state.itemDetailIntro.restdate == null ? 
@@ -670,7 +794,7 @@ export default class DetailView extends React.Component {
       }
       else if(contentTypeId == 24 || contentTypeId == 78 || contentTypeId == 14) {
         // culture
-	ret = this.renderCultureDetails();
+        ret = this.renderCultureDetails();
       }
       else if(contentTypeId == 15 || contentTypeId == 85) {
         // festival
@@ -678,10 +802,11 @@ export default class DetailView extends React.Component {
       }
       else if(contentTypeId == 28 || contentTypeId == 75) {
         // activity
-	ret = this.renderActivityDetails();
+        ret = this.renderActivityDetails();
       }
       else if(contentTypeId == 38 || contentTypeId == 79) {
         // shopping
+        ret = this.renderShoppingDetails();
       }
       else if(contentTypeId == 39 || contentTypeId == 82) {
         // foods
