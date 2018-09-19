@@ -56,5 +56,8 @@ jobs:
           command: |
             git clone https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git islander-jeju-app && cp -r ./www/* ./islander-jeju-app
       - run:
-          name: Commit and Deploy to Heroku
-          command: cd islander-jeju-app && git config --global user.email "yo1226@gmail.com" && git config --global user.name "Yoseob Kim" && git add * && git commit -am "deploy" && git push https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-juju-app.git
+          name: Commit files into Heroku git
+          command: cd islander-jeju-app && git config --global user.email "yo1226@gmail.com" && git config --global user.name "Yoseob Kim" && git add * && git commit -am "deploy"
+      - run:
+          name: Push files into Heroku git and Deploy
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git
