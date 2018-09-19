@@ -60,4 +60,4 @@ jobs:
           command: cd islander-jeju-app && git config --global user.email "yo1226@gmail.com" && git config --global user.name "Yoseob Kim" && git add * && git commit -am "deploy"
       - run:
           name: Push files into Heroku git and Deploy
-          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git master
