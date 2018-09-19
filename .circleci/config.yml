@@ -35,13 +35,12 @@ jobs:
       - run:
           name: create dummy project for cordova
           command: cp -r .cordova /home/circleci/.cordova
-      - run: ls -al ~/
-      - run: 
-          name: Make build directory
-          command: mkdir ~/repo/www # make directory for build
       - run: 
           name: Install node modules
           command: npm install # install npm packages
+      - run:
+          name: Update Monaca
+          command: monaca update --force 
 
       - save_cache:
           paths:

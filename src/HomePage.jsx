@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, Button} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem} from 'react-onsenui';
 
-import MapView from './MapView'; 
+import MapView from './MapView';
+import PixabayImage from './PixabayImage';
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -83,56 +84,81 @@ export default class HomePage extends React.Component {
     let activityCode = isKr ? 28 : 75;
     let shoppingCode = isKr ? 38 : 79;
     let foodsCode = isKr ? 39 : 82;
+    const minHeightForBG = "200px";
+    let listItemStyle = {
+      backgroundColor: "rgba(255, 255, 255, 1.0)", 
+      marginBottom: "1%",
+      boxShadow: "0px 2px 2px 2px #9E9E9E",
+    };
+
+    let listDivStyle = {
+      margin: "3%",
+      marginTop: "-10%",
+      boxShadow: "2px 0px 2px 2px #9E9E9E",
+    };
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={divCenter}>
-          <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, sightCode)}>
-            <img src="img/sightseeing.png" style={imageStyle} />
-            <br/>
-            <div style={divCenter}>
-              <p>{this.props.strings.sight}</p>
-            </div>
-          </Button>
-          <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, cultureCode)}>
-            <img src="img/culture.png" style={imageStyle} />
-            <br/>
-            <div style={divCenter}>
-              <p>{this.props.strings.art}</p>
-            </div>
-          </Button>
-        </div>
-        <div style={divCenter}>
-          <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, festivalCode)}>
-            <img src="img/festival.png" style={imageStyle} />
-            <br/>
-            <div style={divCenter}>
-              <p>{this.props.strings.festival}</p>
-            </div>
-          </Button>
-          <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, activityCode)}>
-            <img src="img/activity.png" style={imageStyle} />
-            <br/>
-            <div style={divCenter}>
-              <p>{this.props.strings.activity}</p>
-            </div>
-          </Button>
-        </div>
-        <div style={divCenter}>
-          <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, shoppingCode)}>
-            <img src="img/shopping.png" style={imageStyle} />
-            <br/>
-            <div style={divCenter}>
-              <p>{this.props.strings.shopping}</p>
-            </div>
-          </Button>
-          <Button style={buttonStyle} modifier='quiet' onClick={this.pushPage.bind(this, foodsCode)}>
-            <img src="img/food.png" style={imageStyle} />
-            <br/>
-            <div style={divCenter}>
-              <p>{this.props.strings.foods}</p>
-            </div>
-          </Button>
+        <div style={{height: "100%"}}>
+          <PixabayImage />
+          <div style={listDivStyle}>
+            <List style={{backgroundColor: "rgba(255, 255, 255, 1.0)", boxShadow: "2px 2px 2px 2px #9E9E9E"}}>
+              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
+                onClick={this.pushPage.bind(this, sightCode)}>
+                <div className = "left">
+                  <img src = "img/sightseeing.png" style = {{height: "60px"}} />
+                </div>
+                <div className = "center">
+                  <h3>{this.props.strings.sight}</h3>
+                </div>
+              </ListItem>
+              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
+                onClick={this.pushPage.bind(this, cultureCode)}>
+                <div className = "left">
+                  <img src = "img/culture.png" style = {{height: "60px"}} />
+                </div>
+                <div className = "center">
+                  <h3>{this.props.strings.art}</h3>
+                </div>
+              </ListItem>
+              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
+                onClick={this.pushPage.bind(this, festivalCode)}>
+                <div className = "left">
+                  <img src = "img/festival.png" style = {{height: "60px"}} />
+                </div>
+                <div className = "center">
+                  <h3>{this.props.strings.festival}</h3>
+                </div>
+              </ListItem>
+              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
+                onClick={this.pushPage.bind(this, activityCode)}>
+                <div className = "left">
+                  <img src = "img/activity.png" style = {{height: "60px"}} />
+                </div>
+                <div className = "center">
+                  <h3>{this.props.strings.activity}</h3>
+                </div>
+              </ListItem>
+              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
+                onClick={this.pushPage.bind(this, shoppingCode)}>
+                <div className = "left">
+                  <img src = "img/shopping.png" style = {{height: "60px"}} />
+                </div>
+                <div className = "center">
+                  <h3>{this.props.strings.shopping}</h3>
+                </div>
+              </ListItem>
+              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
+                onClick={this.pushPage.bind(this, foodsCode)}>
+                <div className = "left">
+                  <img src = "img/food.png" style = {{height: "60px"}} />
+                </div>
+                <div className = "center">
+                  <h3>{this.props.strings.foods}</h3>
+                </div>
+              </ListItem>
+            </List>
+          </div>
         </div>
       </Page>
     );

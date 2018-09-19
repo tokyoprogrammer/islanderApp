@@ -24,17 +24,17 @@ export class GooglePlaceImageView extends React.Component {
         // compare and if cache is fresh
         cached = currentCache;
       } else {
-        localStorage.getItem("google-image-cached", JSON.stringify(cached));
+        localStorage.setItem("google-image-cached", JSON.stringify(cached));
       }
     } else {
-      localStorage.getItem("google-image-cached", JSON.stringify(cached));
+      localStorage.setItem("google-image-cached", JSON.stringify(cached));
     }
 
     this.state = {
       cached: cached,
       url: "img/noimage.png",
       urls: [],
-      counter: 0
+      counter: 0,
     }
   }
 
@@ -143,6 +143,12 @@ export class GooglePlaceImageView extends React.Component {
     this.setState({counter: e.activeIndex});
   }
 
+  openModal(imageSrc) {
+    if(this.props.imageOnClick != null) {
+      this.props.imageOnClick(imageSrc);
+    }
+  }
+
   drawCarousel() {
     let carouselItems = [];
 
@@ -151,7 +157,7 @@ export class GooglePlaceImageView extends React.Component {
       let imageSrc = this.state.urls[i];
       let carouselItem = (
         <CarouselItem key={key}>
-          <img src = {imageSrc} style={{width: "100%"}}/>
+          <img src = {imageSrc} style={{width: "100%"}} onClick={this.openModal.bind(this, imageSrc)}/>
           <div style={{width: "100%", position: "absolute", textAlign: "center", 
             fontSize: "10px", top: "5%", left: '0px', right: '0px'}}>
               {this.state.urls.map((item, index) => (
@@ -201,7 +207,14 @@ GooglePlaceImageView.propTypes = {
   maxHeight: React.PropTypes.number,
   placeTitle: React.PropTypes.string,
   listThumbnail: React.PropTypes.bool,
-  multi: React.PropTypes.bool
+  multi: React.PropTypes.bool,
+  imageOnClick: React.PropTypes.func
+}
+
+GooglePlaceImageView.defaultProps = {
+  multi: false,
+  listThumbnail: false,
+  imageOnClick: null
 }
 
 export default GoogleApiWrapper({

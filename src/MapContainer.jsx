@@ -29,7 +29,7 @@ export class MapContainer extends React.Component {
         mapTypeId: 'roadmap' 
       })
 
-      this.map = new maps.Map(node, mapConfig); 
+      this.map = new maps.Map(node, mapConfig);
     }
   }
 
@@ -37,6 +37,32 @@ export class MapContainer extends React.Component {
     const {children} = this.props;
 
     if(!children) return;
+
+    if(this.props.drawLine) {
+      const {children} = this.props;
+      if(this.path) {
+        this.path.setMap(null); // clear path
+      }
+      if(children.length > 1) {
+        let positions = [];
+        for(let i = 0; i < children.length; i++) {
+          const position = children[i].props.position;
+          positions.push({
+            lat: parseFloat(position.lat),
+            lng: parseFloat(position.lng)
+          });
+        }
+        let path = new this.props.google.maps.Polyline({
+          path: positions,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        this.path = path;
+        path.setMap(this.map);
+      }
+    } 
 
     return React.Children.map(children, c => {
       if(c == null) return;
@@ -67,14 +93,16 @@ MapContainer.propTypes = {
   zoom: React.PropTypes.number,
   initialCenter: React.PropTypes.object,
   width: React.PropTypes.string,
-  height: React.PropTypes.string
+  height: React.PropTypes.string,
+  drawLine: React.PropTypes.bool
 }
 MapContainer.defaultProps = {
   zoom: 9,
   initialCenter: {
     lat: 33.356432,
     lng: 126.5268767
-  }
+  },
+  drawLine: false
 }
 
 export default GoogleApiWrapper((props) => ({
