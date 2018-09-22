@@ -285,7 +285,7 @@ export default class DetailView extends React.Component {
       const grayColor = "#D3D3D3";
       const goldColor = "#FFD700";
       const starIconSize = {
-        fault: 30,
+        default: 30,
         material: 28
       };
 
