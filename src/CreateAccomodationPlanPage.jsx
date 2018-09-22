@@ -30,7 +30,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
       departureDateTime: departureDateTime,
       strings: strings,
       nights: departureDateTime.getDate() - arrivalDateTime.getDate(),
-      isOpen: false
+      accomodationList: [],
+      isOpen: false,
+      currentAccomodation: {}
     };
 
     this.activeSteps = 1;
@@ -84,33 +86,79 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   goNext() {
+    localStorage.setItem("accomodationInfo", JSON.stringify([
+      {
+        hotelInfo: {
+          name: "Kal Hotel Jeju",
+          addr: "...",
+          lat: "...",
+          lng: "..."
+        },
+        scheduleInfo: [
+          "Sat Sep 22 2018 00:00:00 GMT+0900 (한국 표준시)",
+          "Wed Sep 26 2018 00:00:00 GMT+0900 (한국 표준시)"
+        ] 
+      },
+      {
+        hotelInfo: {
+          name: "Hyatt Regency Jeju",
+          addr: "...",
+          lat: "...",
+          lng: "..."
+        },
+        scheduleInfo: [
+          "Sat Sep 22 2018 00:00:00 GMT+0900 (한국 표준시)",
+          "Wed Sep 26 2018 00:00:00 GMT+0900 (한국 표준시)"
+        ] 
+      }
+    ]));
+
     this.props.navigator.pushPage({ 
       component: CreateVisitListPage 
     });
   }
 
-  tileStyle({ date, view }) {
-    if(date >= this.state.arrivalDateTime && date <= this.state.departureDateTime) { 
-      return "tile_w_bgcolor"
+  addToAccomodationList() {
+    if(this.state.currentAccomodation.name != null && 
+       this.state.currentAccomodation.lat != null && 
+       this.state.currentAccomodation.lng != null) {
+      let accomodationList = this.state.accomodationList;
+      accomodationList.push(this.state.currentAccomodation);
+      this.setState({accomodationList: accomodationList});
+    } else {
+      this.setState({});
     }
-    return null;
-  }
-
-  openSearch() {
-    this.setState({isOpen: true});
   }
 
   onSearchDone(places) {
     for(let i = 0; i < places.length; i++) {
       let place = places[i];
-      console.log(place.name);
-      console.log(place.addr);
-      console.log(place.lat);
-      console.log(place.lng);
+      this.setState({currentAccomodation: place});
     }
   }
 
-  addAccomodation() {
+  addToSchedule() {
+    this.setState({isOpen: true});
+  }
+
+  renderAccomodationList(row, index) {
+    return (
+      <ListItem key={"al" + index}>
+        <div className="left">
+          {row.name}
+        </div>
+        <div className="center">
+          yyyy.mm.dd - yyyy.mm.dd
+        </div>
+        <div className="right">
+          <Button onClick={this.addToSchedule.bind(this)}>{this.state.strings.addtoschedule}</Button>
+        </div>
+      </ListItem>
+    ); 
+  }
+  
+  onCalendarChange(value) {
+    console.log(value);
     this.setState({isOpen: false});
   }
 
@@ -146,11 +194,16 @@ export default class CreateAccomodationPlanPage extends React.Component {
           <Modal
             isOpen={this.state.isOpen}>
             <div style={{width: "100%", display: "inline-block"}}>
-              <GoogleSearchField initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
-                width="100vw" height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
-              <Button style={{margin: "1%"}} onClick={this.addAccomodation.bind(this)}>
-                {this.state.strings.addaccomodation}
-              </Button>
+              <div style={{width: "100%", textAlign: "center"}}>
+                <Calendar activeStartDate={this.state.arrivalDateTime}
+                  minDate={this.state.arrivalDateTime}
+                  maxDate={this.state.departureDateTime}
+                  selectRange={true}
+                  returnValue="range"
+                  onChange={this.onCalendarChange.bind(this)}
+                  calendarType="US" className="calendar_width_100"
+                  formatMonth={(value) => formatDate(value, 'MM')} />
+              </div>
               <Button modifier='quiet' onClick={() => this.setState({isOpen: false})}
                 style={{position: "absolute", top: "5%", right: "5%", color: "#D3D3D3"}} >
                 <Icon icon="md-close-circle-o" size={closeIconSize} />
@@ -175,18 +228,26 @@ export default class CreateAccomodationPlanPage extends React.Component {
             </div>
           </Card>
           <b>{this.state.strings.yourplan}</b>
-          <div style={{width: "100%", textAlign: "center"}}>
-            <Calendar activeStartDate={this.state.arrivalDateTime}
-              minDate={this.state.arrivalDateTime}
-              maxDate={this.state.departureDateTime}
-              calendarType="US" className="calendar_width_100"
-              tileClassName={this.tileStyle.bind(this)}
-              formatMonth={(value) => formatDate(value, 'MM')} />
-          </div>
+          <Card>
+            <div>
+              <p>
+                {this.state.strings.flightarrival + " : " + this.state.arrivalDateTime}
+              </p>
+              <p>
+                {this.state.strings.flightdeparting + " : " + this.state.departureDateTime}
+              </p>
+              <p>{this.state.nights + " 박"}</p>
+            </div>
+          </Card>
+          <b>{this.state.strings.findaccomodation}</b>
+          <GoogleSearchField initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+            width="100vw" height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
           <Button style={{width: "80%", margin: "10%", textAlign: "center"}} 
-            onClick={this.openSearch.bind(this)}>
-            {this.state.strings.findaccomodation}
-          </Button>          
+            onClick={this.addToAccomodationList.bind(this)}>
+            {this.state.strings.addaccomodation}
+          </Button>
+          <List renderRow={this.renderAccomodationList.bind(this)} 
+            dataSource={this.state.accomodationList} />
           <div style={{padding: "1%"}}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>

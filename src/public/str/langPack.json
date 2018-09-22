@@ -75,7 +75,8 @@
     "scale": "규모",
     "shopguide": "매장안내",
     "findaccomodation": "숙소 검색",
-    "addaccomodation": "숙소 추가"
+    "addaccomodation": "숙소 추가",
+    "addtoschedule": "일정에 추가"
   },
   "en": {
     "home": "Home",
@@ -153,6 +154,7 @@
     "scale": "Shop Scale",
     "shopguide": "Shop Info",
     "findaccomodation": "Find Accomodation",
-    "addaccomodation": "Add Accomodation"
+    "addaccomodation": "Add Accomodation",
+    "addtoschedule": "Add to Schedule"
   }
 }
