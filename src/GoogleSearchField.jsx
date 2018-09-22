@@ -13,7 +13,6 @@ export class GoogleSearchField extends React.Component {
   }
 
   loadMap() {
-    console.log(this.props);
     if (this.props && this.props.google) { 
       const {google} = this.props;
       const maps = google.maps;
@@ -94,14 +93,15 @@ export class GoogleSearchField extends React.Component {
 
   render() {
     const style = { 
-      width: this.props.width,
-      height: this.props.height
+      width: "95vw",
+      height: this.props.height,
+      margin: "2.5%"
     }
 
     return (
-      <div>
+      <div style={{textAlign: "center"}}>
         <input id="pac-input" type="text" placeholder="Search Box" 
-          style={{width: style.width, height: "30px"}} /> 
+          style={{width: "95%", height: "30px"}} /> 
         <div ref="map" style={style}>
         </div>
       </div>
@@ -113,7 +113,6 @@ GoogleSearchField.propTypes = {
   google: React.PropTypes.object,
   zoom: React.PropTypes.number,
   initialCenter: React.PropTypes.object,
-  width: React.PropTypes.string,
   height: React.PropTypes.string,
   onSearchDone: React.PropTypes.func
 }

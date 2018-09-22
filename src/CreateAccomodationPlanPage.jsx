@@ -241,8 +241,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
           </Card>
           <b>{this.state.strings.findaccomodation}</b>
           <GoogleSearchField initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
-            width="100vw" height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center"}} 
+            height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
+          <Button style={{width: "80%", margin: "10%", 
+            marginTop: "1%", marginBottom: "2%", textAlign: "center"}} 
             onClick={this.addToAccomodationList.bind(this)}>
             {this.state.strings.addaccomodation}
           </Button>
