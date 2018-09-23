@@ -365,11 +365,13 @@ export default class DetailView extends React.Component {
     console.log(this.state.strings);
     let worktime = this.state.itemDetailIntro.usetimeculture  == null ?
       null :
-      (<ListItem key="li-workingtime">
-        <b>{this.state.strings.workingtime + " : "}</b>
-        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.usetimeculture._text)}>
-	</p>
-      </ListItem>);
+      this.state.itemDetailIntro.usetimeculture._text == null ?
+        null :
+        (<ListItem key="li-workingtime">
+          <b>{this.state.strings.workingtime + " : "}</b>
+          <p dangerouslySetInnerHTML =
+            {this.createMarkup(this.state.itemDetailIntro.usetimeculture._text)}></p>
+        </ListItem>);
     ret.push(worktime);
     let holiday = this.state.itemDetailIntro.restdateculture  == null ?
       null :
@@ -380,12 +382,46 @@ export default class DetailView extends React.Component {
     ret.push(holiday);
     let usefee = this.state.itemDetailIntro.usefee  == null ?
       null :
-      (<ListItem key="li-usefee">
+      this.state.itemDetailIntro.usefee._text == null ?
+        null :
+        (<ListItem key="li-usefee">
         <b>{this.state.strings.usefee + " : "}</b>
-        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.usefee._text)}>
-	</p>
+        <p dangerouslySetInnerHTML = 
+          {this.createMarkup(this.state.itemDetailIntro.usefee._text)}></p>
       </ListItem>);
     ret.push(usefee);
+
+    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    let smoking = this.state.itemDetailIntro.smoking == null ? 
+      null : 
+      this.state.itemDetailIntro.smoking._text;
+    let smokingIcon = smoking != null && 
+      (smoking.includes("Non") || 
+      smoking.includes("금연")) ? 
+        (<img src="img/smoking-ban.png" style={iconSize}/>) : null;
+    let creditcard = this.state.itemDetailIntro.chkcreditcardculture == null ? 
+      null : 
+      this.state.itemDetailIntro.chkcreditcardculture._text;
+    let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
+      (<img src="img/card.png" style={iconSize} />) : null;
+    let parking = this.state.itemDetailIntro.parkingculture == null ? 
+      null : 
+      this.state.itemDetailIntro.parkingculture._text;
+    let parkingIcon = parking != null && 
+      (parking.includes("가능") || parking.includes("주차") || 
+       parking.includes("Available") || parking.includes("spaces")) ?
+      (<img src="img/parking.png" style={iconSize} />) : null;
+    let etc = (
+      <ListItem key="li-icons">
+        {smokingIcon}
+        {creditCardIcon}
+        {parkingIcon}
+      </ListItem>
+    );
+    ret.push(etc);
+
+
+
 
     return ret;
   }
@@ -462,66 +498,85 @@ export default class DetailView extends React.Component {
     let ret = [];
     let sponsor = this.state.itemDetailIntro.sponsor2 == null ?
       null : 
-      (<ListItem key="li-sponsor">
-        <b>{this.state.strings.sponsor + " : "}</b>
-        <p>{this.state.itemDetailIntro.sponsor2._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.sponsor2._text == null ?
+        null :
+        (<ListItem key="li-sponsor">
+          <b>{this.state.strings.sponsor + " : "}</b>
+          <p>{this.state.itemDetailIntro.sponsor2._text}</p>
+        </ListItem>);
     ret.push(sponsor);
     let sponsorTel = this.state.itemDetailIntro.sponsortel == null ?
       null : 
-      (<ListItem key="li-sponsorTel">
-        <b>{this.state.strings.sponsortel + " : "}</b>
-        <p>{this.state.itemDetailIntro.sponsortel._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.sponsortel._text == null ?
+        null :
+        (<ListItem key="li-sponsorTel">
+          <b>{this.state.strings.sponsortel + " : "}</b>
+          <p>{this.state.itemDetailIntro.sponsortel._text}</p>
+        </ListItem>);
     ret.push(sponsorTel);
     let eventStartDate = this.state.itemDetailIntro.eventstartdate == null ?
       null : 
-      (<ListItem key="li-eventStartDate">
-        <b>{this.state.strings.eventstartdate + " : "}</b>
-        <p>{this.state.itemDetailIntro.eventstartdate._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.eventstartdate._text == null ?
+        null :
+        (<ListItem key="li-eventStartDate">
+          <b>{this.state.strings.eventstartdate + " : "}</b>
+          <p>{this.state.itemDetailIntro.eventstartdate._text}</p>
+        </ListItem>);
     ret.push(eventStartDate);
     let eventEndDate = this.state.itemDetailIntro.eventenddate == null ?
       null : 
-      (<ListItem key="li-eventEndDate">
-        <b>{this.state.strings.eventenddate + " : "}</b>
-        <p>{this.state.itemDetailIntro.eventenddate._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.eventenddate._text == null ?
+        null :
+        (<ListItem key="li-eventEndDate">
+          <b>{this.state.strings.eventenddate + " : "}</b>
+          <p>{this.state.itemDetailIntro.eventenddate._text}</p>
+        </ListItem>);
     ret.push(eventEndDate);
     let playTime = this.state.itemDetailIntro.playtime == null ?
       null : 
-      (<ListItem key="li-playTime">
-        <b>{this.state.strings.playtime + " : "}</b>
-        <p>{this.state.itemDetailIntro.playtime._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.playtime._text == null ?
+        null :
+        (<ListItem key="li-playTime">
+          <b>{this.state.strings.playtime + " : "}</b>
+          <p>{this.state.itemDetailIntro.playtime._text}</p>
+        </ListItem>);
     ret.push(playTime);
     let eventPlace = this.state.itemDetailIntro.eventplace == null ?
       null : 
-      (<ListItem key="li-eventPlace">
-        <b>{this.state.strings.eventplace + " : "}</b>
-        <p>{this.state.itemDetailIntro.eventplace._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.eventplace._text == null ?
+        null :
+        (<ListItem key="li-eventPlace">
+          <b>{this.state.strings.eventplace + " : "}</b>
+          <p>{this.state.itemDetailIntro.eventplace._text}</p>
+        </ListItem>);
     ret.push(eventPlace);
     let spendTimeFestival = this.state.itemDetailIntro.spendtimefestival == null ?
       null : 
-      (<ListItem key="li-spendTimeFestival">
-        <b>{this.state.strings.spendtimefestival + " : "}</b>
-        <p>{this.state.itemDetailIntro.spendtimefestival._text}</p>
-	</ListItem>);
+      this.state.itemDetailIntro.spendtimefestival._text == null ?
+        null :
+        (<ListItem key="li-spendTimeFestival">
+          <b>{this.state.strings.spendtimefestival + " : "}</b>
+          <p>{this.state.itemDetailIntro.spendtimefestival._text}</p>
+	  </ListItem>);
     ret.push(spendTimeFestival);
     let ageLimit = this.state.itemDetailIntro.agelimit == null ?
       null : 
-      (<ListItem key="li-ageLimit">
-        <b>{this.state.strings.agelimit + " : "}</b>
-        <p>{this.state.itemDetailIntro.agelimit._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.agelimit._text == null ?
+        null :
+        (<ListItem key="li-ageLimit">
+          <b>{this.state.strings.agelimit + " : "}</b>
+          <p>{this.state.itemDetailIntro.agelimit._text}</p>
+        </ListItem>);
     ret.push(ageLimit);
     let placeInfo = this.state.itemDetailIntro.placeinfo == null ?
       null : 
-      (<ListItem key="li-placeInfo">
-        <b>{this.state.strings.placeinfo + " : "}</b>
-	<p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.placeinfo._text)}></p>
-      </ListItem>);
+      this.state.itemDetailIntro.placeinfo._text == null ?
+        null :
+        (<ListItem key="li-placeInfo">
+          <b>{this.state.strings.placeinfo + " : "}</b>
+	      <p dangerouslySetInnerHTML = 
+            {this.createMarkup(this.state.itemDetailIntro.placeinfo._text)}></p>
+        </ListItem>);
     ret.push(placeInfo);
     return ret;
   }
@@ -537,26 +592,32 @@ export default class DetailView extends React.Component {
     ret.push(holiday);
     let usingTime = this.state.itemDetailIntro.usetimeleports == null ?
       null :
-        this.state.itemDetailIntro.usetimeleports._test == null ?
+        this.state.itemDetailIntro.usetimeleports._text == null ?
           null :
-            (<ListItem key="li-usingTime">
-              <b>{this.state.strings.usingtime + " : " }</b>
-              <p>{this.state.itemDetailIntro.usetimeleports._text}</p>
-            </ListItem>);
+          (<ListItem key="li-usingTime">
+            <b>{this.state.strings.usingtime + " : " }</b>
+            <p>{this.state.itemDetailIntro.usetimeleports._text}</p>
+          </ListItem>);
     ret.push(usingTime);
     let reservation = this.state.itemDetailIntro.reservation == null ?
       null :
-      (<ListItem key="li-reservation">
-        <b>{this.state.strings.reservation + " : " }</b>
-        <p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.reservation._text)}></p>
-      </ListItem>);
+      this.state.itemDetailIntro.reservation._text == null ?
+        null :
+        (<ListItem key="li-reservation">
+          <b>{this.state.strings.reservation + " : " }</b>
+          <p dangerouslySetInnerHTML =
+            {this.createMarkup(this.state.itemDetailIntro.reservation._text)}></p>
+        </ListItem>);
     ret.push(reservation);
     let playAgeLimit = this.state.itemDetailIntro.expagerangeleports == null ?
       null :
-      (<ListItem key="li-playagelimit">
-        <b>{this.state.strings.playagelimit + " : " }</b>
-        <p>{this.state.itemDetailIntro.expagerangeleports._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.usetimeleports._text == null ?
+        null :
+        (<ListItem key="li-playagelimit">
+          <b>{this.state.strings.playagelimit + " : " }</b>
+          <p dangerouslySetInnerHTML =
+          {this.createMarkup(this.state.itemDetailIntro.expagerangeleports._text)}></p>
+        </ListItem>);
     ret.push(playAgeLimit);
 
     let iconSize={width: "50px", height : "50px", margin: '1%'};
@@ -600,13 +661,17 @@ export default class DetailView extends React.Component {
 
   let saleItem = this.state.itemDetailIntro.saleitem == null ? 
     null : 
-      (<ListItem key="li-saleItem">
+    this.state.itemDetailIntro.saleitem._text == null ?
+      null :
+(<ListItem key="li-saleItem">
         <b>{this.state.strings.saleitem + " : "}</b>
         <p>{this.state.itemDetailIntro.saleitem._text}</p>
       </ListItem>);
     ret.push(saleItem);
   let workingtime = this.state.itemDetailIntro.opendateshopping == null ? 
     null : 
+    this.state.itemDetailIntro.opendateshopping._text == null ?
+      null :
       (<ListItem key="li-workingtime">
         <b>{this.state.strings.workingtime + " : "}</b>
         <p>{this.state.itemDetailIntro.opendateshopping._text}</p>
@@ -614,28 +679,31 @@ export default class DetailView extends React.Component {
     ret.push(workingtime);
   let restDateShopping = this.state.itemDetailIntro.restdateshopping == null ? 
     null : 
+    this.state.itemDetailIntro.restdateshopping._text == null ?
+      null :
       (<ListItem key="li-restDateShopping">
         <b>{this.state.strings.restdateshopping + " : "}</b>
         <p>{this.state.itemDetailIntro.restdateshopping._text}</p>
       </ListItem>);
     ret.push(restDateShopping);
-
   let scale = this.state.itemDetailIntro.scaleshopping == null ? 
     null : 
+    this.state.itemDetailIntro.scaleshopping._text == null ?
+      null :
       (<ListItem key="li-scale">
         <b>{this.state.strings.scale + " : "}</b>
-        <p>{this.state.itemDetailIntro.scaleshopping._text}</p>
+	    <p dangerouslySetInnerHTML = 
+          {this.createMarkup(this.state.itemDetailIntro.scaleshopping._text)}></p>
       </ListItem>);
     ret.push(scale);
-  
   let shopGuide = this.state.itemDetailIntro.shopguide == null ? 
     null :
-      this.state.itemDetailIntro.shopguide._text == null ?
-        null :
-          (<ListItem key="li-shopGuide">
-            <b>{this.state.strings.shopguide + " : "}</b>
-            <p>{this.state.itemDetailIntro.shopguide._text}</p>
-          </ListItem>);
+    this.state.itemDetailIntro.shopguide._text == null ?
+      null :
+      (<ListItem key="li-shopGuide">
+        <b>{this.state.strings.shopguide + " : "}</b>
+        <p>{this.state.itemDetailIntro.shopguide._text}</p>
+      </ListItem>);
     ret.push(shopGuide);
 
     let iconSize={width: "50px", height : "50px", margin: '1%'};
@@ -685,43 +753,55 @@ export default class DetailView extends React.Component {
   renderSightDetails() {
     let ret = [];
     let infocenter = this.state.itemDetailIntro.infocenter == null ? 
-      null : 
-      (<ListItem key="li-infocenter">
-        <b>{this.state.strings.infocenter + " : " }</b>
-        <p dangerouslySetInnerHTML={this.createMarkup(this.state.itemDetailIntro.infocenter._text)}></p>
-      </ListItem>);
+      null :
+      this.state.itemDetailIntro.infocenter._text == null ?
+        null :
+        (<ListItem key="li-infocenter">
+          <b>{this.state.strings.infocenter + " : " }</b>
+          <p dangerouslySetInnerHTML=
+            {this.createMarkup(this.state.itemDetailIntro.infocenter._text)}></p>
+        </ListItem>);
     ret.push(infocenter);
     let parser = new DOMParser();
     let expguide = this.state.itemDetailIntro.expguide == null ? 
-      null : 
-      (<ListItem key="li-expguide">
-        <b>{this.state.strings.expguide + " : "}</b>
-        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.expguide._text)}></p>
-      </ListItem>);
+      null :
+      this.state.itemDetailIntro.expguide._text == null ?
+        null :
+        (<ListItem key="li-expguide">
+          <b>{this.state.strings.expguide + " : "}</b>
+          <p dangerouslySetInnerHTML =
+            {this.createMarkup(this.state.itemDetailIntro.expguide._text)}></p>
+        </ListItem>);
     ret.push(expguide);
     let expagerange = this.state.itemDetailIntro.expagerange == null ? 
       null : 
-      (<ListItem key="li-expagerange">
-        <b>{this.state.strings.expagerange + " : "}</b>
-        <p>{this.state.itemDetailIntro.expagerange._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.expagerange._text == null ?
+        null :
+        (<ListItem key="li-expagerange">
+          <b>{this.state.strings.expagerange + " : "}</b>
+          <p dangerouslySetInnerHTML = 
+            {this.createMarkup(this.state.itemDetailIntro.expagerange._text)}></p>
+        </ListItem>);
     ret.push(expagerange);
     let holiday = this.state.itemDetailIntro.restdate == null ? 
       null : 
-      (<ListItem key="li-holiday">
-        <b>{this.state.strings.holiday + " : "}</b>
-        <p>
-          {this.state.itemDetailIntro.restdate._text}
-        </p>
-      </ListItem>);
+      this.state.itemDetailIntro.restdate._text == null ?
+        null :
+        (<ListItem key="li-holiday">
+          <b>{this.state.strings.holiday + " : "}</b>
+          <p dangerouslySetInnerHTML = 
+            {this.createMarkup(this.state.itemDetailIntro.holiday._text)}></p>
+        </ListItem>);
     ret.push(holiday);
     let usetime = this.state.itemDetailIntro.usetime == null ? 
-      null : 
-      (<ListItem key="li-usetime">
-        <b>{this.state.strings.workingtime + " : "}</b>
-        <p dangerouslySetInnerHTML = {this.createMarkup(this.state.itemDetailIntro.usetime._text)}>
-        </p>
-      </ListItem>);
+      null :
+      this.state.itemDetailIntro.usetime._text == null ?
+        null :
+        (<ListItem key="li-usetime">
+          <b>{this.state.strings.workingtime + " : "}</b>
+          <p dangerouslySetInnerHTML = 
+            {this.createMarkup(this.state.itemDetailIntro.usetime._text)}></p>
+        </ListItem>);
     ret.push(usetime);
 
     let iconSize={width: "50px", height : "50px", margin: '1%'};
