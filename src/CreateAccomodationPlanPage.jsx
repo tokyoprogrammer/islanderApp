@@ -90,24 +90,24 @@ export default class CreateAccomodationPlanPage extends React.Component {
       {
         hotelInfo: {
           name: "Kal Hotel Jeju",
-          addr: "...",
-          lat: "...",
-          lng: "..."
+          addr: "South Korea, Jeju-do, Cheju, Ido 1(il)-dong, 중앙로 151",
+          lat: 33.50566000000001,
+          lng: 126.52616999999998
         },
         scheduleInfo: [
           "Sat Sep 22 2018 00:00:00 GMT+0900 (한국 표준시)",
-          "Wed Sep 26 2018 00:00:00 GMT+0900 (한국 표준시)"
+          "Wed Sep 24 2018 00:00:00 GMT+0900 (한국 표준시)"
         ] 
       },
       {
         hotelInfo: {
           name: "Hyatt Regency Jeju",
-          addr: "...",
-          lat: "...",
-          lng: "..."
+          addr: "114, Jungmungwangwang-ro 72 beon-gil, 색달동 Seogwipo-si, Jeju-do, South Korea",
+          lat: 33.244488,
+          lng: 126.40593799999999
         },
         scheduleInfo: [
-          "Sat Sep 22 2018 00:00:00 GMT+0900 (한국 표준시)",
+          "Sat Sep 24 2018 00:00:00 GMT+0900 (한국 표준시)",
           "Wed Sep 26 2018 00:00:00 GMT+0900 (한국 표준시)"
         ] 
       }
@@ -137,7 +137,8 @@ export default class CreateAccomodationPlanPage extends React.Component {
     }
   }
 
-  addToSchedule() {
+  addToSchedule(row) {
+    console.log(row);
     this.setState({isOpen: true});
   }
 
@@ -151,7 +152,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
           yyyy.mm.dd - yyyy.mm.dd
         </div>
         <div className="right">
-          <Button onClick={this.addToSchedule.bind(this)}>{this.state.strings.addtoschedule}</Button>
+          <Button onClick={this.addToSchedule.bind(this, row)}>{this.state.strings.addtoschedule}</Button>
         </div>
       </ListItem>
     ); 

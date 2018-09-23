@@ -11,8 +11,9 @@ export default class Marker extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((this.props.map !== prevProps.map) ||
-      (this.props.position !== prevProps.positon)) {
+    if((this.props.map !== prevProps.map) ||
+       (this.props.position !== prevProps.positon) ||
+       (this.props.id !== prevProps.id)) {
       // The relevant props have changed
       if(this.marker) {
         this.marker.setMap(null); // clear Marker
@@ -34,7 +35,6 @@ export default class Marker extends React.Component {
     
     let pos = position || mapCenter;
     position = new google.maps.LatLng(pos.lat, pos.lng);
-
     let image = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
 
     const pref = {

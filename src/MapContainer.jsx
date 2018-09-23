@@ -12,6 +12,12 @@ export class MapContainer extends React.Component {
     this.loadMap(); 
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.children !== this.props.children) {
+      this.setState({});
+    }
+  }
+
   loadMap() {
     if (this.props && this.props.google) { 
       const {google} = this.props;
@@ -52,6 +58,7 @@ export class MapContainer extends React.Component {
             lng: parseFloat(position.lng)
           });
         }
+
         let path = new this.props.google.maps.Polyline({
           path: positions,
           geodesic: true,
@@ -64,14 +71,15 @@ export class MapContainer extends React.Component {
       }
     } 
 
-    return React.Children.map(children, c => {
+    let ret = React.Children.map(children, c => {
       if(c == null) return;
       return React.cloneElement(c, {
         map: this.map,
         google: this.props.google,
         mapCenter: this.props.initialCenter
       });
-    })
+    });
+    return ret;
   }
 
   render() {

@@ -63,6 +63,7 @@ export default class CourseRecommandationPage extends React.Component {
       allSightList: [],
       items: [],
       isOpen: true,
+      lang: lang,
       currentOverview: "",
       strings: strings,
       favorites: favorites,
@@ -106,7 +107,7 @@ export default class CourseRecommandationPage extends React.Component {
   }
 
   readLists() {
-    let cache = JSON.parse(localStorage.getItem("itemsAllSights"));
+    let cache = JSON.parse(localStorage.getItem("itemsAllSights" + this.state.lang));
     let useCache = false;
     if(cache != null) {
       let cacheValidUntil = new Date(cache.createdDateTime);
@@ -147,7 +148,7 @@ export default class CourseRecommandationPage extends React.Component {
           createdDateTime: new Date(),
           items: ret
         };
-        let cacheName = "itemsAllSights";
+        let cacheName = "itemsAllSights" + this_.state.lang;
         localStorage.setItem(cacheName, JSON.stringify(cache));
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
@@ -448,7 +449,7 @@ export default class CourseRecommandationPage extends React.Component {
     }
 
     let map = (
-      <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google}
+      <MapContainer initialCenter={mapCenter} zoom={mapZoom}
         width="100vw" height = "35vh" drawLine = {true}>
         {markers}
       </MapContainer>

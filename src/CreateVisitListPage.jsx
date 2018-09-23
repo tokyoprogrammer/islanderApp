@@ -10,6 +10,7 @@ import Stepper from 'react-stepper-horizontal';
 import FavoriteListView from './FavoriteListView';
 import App from './App';
 import DetailView from './DetailView';
+import CreatePlanPage from './CreatePlanPage';
 
 export default class CreateVisitListPage extends React.Component {
   constructor(props) {
@@ -21,9 +22,11 @@ export default class CreateVisitListPage extends React.Component {
 
     this.state = {
       strings: strings,
-      showLoading: true
+      showLoading: true,
+      checkedSights: []
     };
 
+    localStorage.setItem("checkedSights", JSON.stringify([]));
     this.activeSteps = 2;
   }
 
@@ -61,6 +64,10 @@ export default class CreateVisitListPage extends React.Component {
   }
 
   goNext() {
+    localStorage.setItem("checkedSights", JSON.stringify(this.state.checkedSights));
+    this.props.navigator.pushPage({ 
+      component: CreatePlanPage
+    });
   }
 
   favoriteListLoadDone() {
@@ -76,7 +83,16 @@ export default class CreateVisitListPage extends React.Component {
   }
 
   onCheckChanged(check, id) {
-    console.log(check + " : " + id);
+    let checkedSights = this.state.checkedSights.slice(0); // copy array
+    if(check) {
+      checkedSights.push(id);
+    } else {
+      let index = checkedSights.indexOf(id);
+      if(index > -1) {
+        checkedSights.splice(index, 1);
+      }
+    }
+    this.setState({checkedSights: checkedSights});
   }
   
   render() {
