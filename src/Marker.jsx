@@ -35,7 +35,7 @@ export default class Marker extends React.Component {
     
     let pos = position || mapCenter;
     position = new google.maps.LatLng(pos.lat, pos.lng);
-    let image = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
+    let image = "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
 
     const pref = {
       map: map,
