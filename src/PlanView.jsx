@@ -4,9 +4,16 @@ import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, 
 import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
+import Timeline from 'react-image-timeline';
+require('react-image-timeline/dist/timeline.css');
+require('./CustomTimeLineStyle.css');
 
 import MapContainer from './MapContainer';
 import Marker from './Marker';
+
+const CustomLabel = (props) => {
+    return null;
+};
 
 export default class PlanView extends React.Component {
   constructor(props) {
@@ -41,10 +48,46 @@ export default class PlanView extends React.Component {
     }
     
     let maxLen = 0;
-    for(let i = 0; i < plan.length; i++) {
-      if(plan[i].length > maxLen) maxLen = plan[i].length;
-    }
+    let timeline = [];
 
+    for(let i = 0; i < plan.length; i++) {
+      let planForDay = plan[i];
+      if(planForDay.length > maxLen) maxLen = planForDay.length;
+      let dateTime = new Date(schedule.arrivalTime);
+      dateTime.setDate(arrivalTime.getDate() + i);
+      dateTime.setHours(0);
+      for(let j = 0; j < planForDay.length; j++) {
+        dateTime.setHours(j + 1);
+        let place = planForDay[j];
+        let singleEvent = {};
+        if((j == 0 && i == 0) || (j == planForDay.length - 1 && i == plan.length - 1)) {
+          singleEvent = {
+            date: new Date(dateTime.getTime()),
+            text: strings.airportdesc + "\n" + place.addr,
+            title: place.name,
+            imageUrl: "img/airport-bg.jpg"
+          };
+        } else if(j == planForDay.length - 1 || j == 0) {
+          let desc = strings.hoteldesc.replace("HOTELNAME", place.name);
+          singleEvent = {
+            date: new Date(dateTime.getTime()),
+            text: desc,
+            title: place.name,
+            imageUrl: "img/hotel-bg.jpg"
+          };
+        } else {
+          singleEvent = {
+            date: new Date(dateTime.getTime()),
+            text: "desc text comes here",
+            title: place.name,
+            imageUrl: "img/bkground/default.jpg" 
+          };
+        }
+        console.log(singleEvent);
+        timeline.push(singleEvent);
+      }
+    }
+    console.log(timeline);
     this.state = {
       plan: plan,
       strings: strings,
@@ -54,12 +97,13 @@ export default class PlanView extends React.Component {
       itemCarouselIndex: 0,
       numOfItems: plan.length,
       additionalInfo: plan[0],
-      maxLen: maxLen
+      maxLen: maxLen,
+      timeline: timeline
     }
     this.overScrolled = false;
 
     var this_ = this;
-    const sleepTime = 500;
+    const sleepTime = 1000;
     new Promise(function(resolve, reject) {
       setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
     }).then(function(result) {
@@ -237,6 +281,8 @@ export default class PlanView extends React.Component {
         {map}
         <p>{this.state.strings.swipemoredetail}</p>
         {carousel}
+        <Timeline events={this.state.timeline} customStartLabel={CustomLabel} customEndLabel={CustomLabel}
+          customFooter={CustomLabel}/>
       </div>
     )
   }
