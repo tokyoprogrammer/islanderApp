@@ -67,6 +67,14 @@ export default class PlanView extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    let lang = localStorage.getItem("lang");
+    if(this.state.strings.getLanguage() != lang) {
+      this.state.strings.setLanguage(lang);
+      this.setState({});
+    }
+  }
+
   prevItem() {
     let change = this.state.itemCarouselIndex - 1 < 0 ?
       this.state.numOfItems - 1 :

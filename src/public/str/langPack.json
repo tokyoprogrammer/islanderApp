@@ -84,7 +84,8 @@
     "days": "일",
     "nights": "박",
     "entireplan": "전체 계획",
-    "swipemoredetail": "지도를 통해 전반적 일정을 확인하실 수 있습니다. 상세 일정은 아래의 카드를 Swipe 해주세요."
+    "swipemoredetail": "지도를 통해 전반적 일정을 확인하실 수 있습니다. 상세 일정은 아래의 카드를 Swipe 해주세요.",
+    "thereisnoplan": "나의 일정이 아직 만들어지기 전입니다. 여행을 위해 일정을 만들어 보시는건 어떠세요?"
   },
   "en": {
     "home": "Home",
@@ -171,6 +172,7 @@
     "days": "days",
     "nights": "nights",
     "entireplan": "Entire Plan",
-    "swipemoredetail": "You can check the entire plan through the map. For more details, please swipe the card below."
+    "swipemoredetail": "You can check the entire plan through the map. For more details, please swipe the card below.",
+    "thereisnoplan": "There is no created plan yet. Why don't you create a plan for your better trip?"
   }
 }

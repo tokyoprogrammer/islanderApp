@@ -2,9 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem} from 'react-onsenui';
 
+import PlanView from './PlanView';
+
 export default class ShowMyPlan extends React.Component {
   constructor(props) {
     super(props);
+    let plan = JSON.parse(localStorage.getItem("plan"));
+    this.state = {
+      plan: plan
+    };
   }
 
   showMenu() {
@@ -53,11 +59,16 @@ export default class ShowMyPlan extends React.Component {
   }
 
   render() {
+    const centerDiv = {textAlign: "center"};
+    
+    let planView = this.state.plan != null && this.state.plan.length >0 ? (<PlanView />) : 
+      (<h3>{this.props.strings.thereisnoplan}</h3>);
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div>
-          {this.props.strings.showschedule}
+        <div style={centerDiv}>
+          <h2>{this.props.strings.showschedule}</h2>
         </div>
+        {planView}
       </Page>
     );
   }
