@@ -790,7 +790,7 @@ export default class DetailView extends React.Component {
         (<ListItem key="li-holiday">
           <b>{this.state.strings.holiday + " : "}</b>
           <p dangerouslySetInnerHTML = 
-            {this.createMarkup(this.state.itemDetailIntro.holiday._text)}></p>
+            {this.createMarkup(this.state.itemDetailIntro.restdate._text)}></p>
         </ListItem>);
     ret.push(holiday);
     let usetime = this.state.itemDetailIntro.usetime == null ? 
