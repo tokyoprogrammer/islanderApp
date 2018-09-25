@@ -95,7 +95,12 @@ export default class CreatePlanPage extends React.Component {
         if(i + 1 < this_.state.days - 1) end = this_.state.accomodationArr[i + 1];
         else end = this_.startPoint;
       }
-      localStorage.setItem("plan", JSON.stringify(visitLists));
+      localStorage.setItem("plan", JSON.stringify(
+        {
+          schedule: this_.state.schedule,
+          accomodationInfo: this_.state.accomodationInfo,
+          data: visitLists
+        }));
 
       this_.setState({
         visitList: visitList,
@@ -116,10 +121,12 @@ export default class CreatePlanPage extends React.Component {
           let visit = {
             name: sight.title._text,
             contentid: checked,
+            contenttypeid: sight.contenttypeid._text,
             addr: sight.addr1._text,
             lat: sight.mapy._text,
             lng: sight.mapx._text,
-            dfrom: 0
+            dfrom: 0,
+            image: sight.firstimage != null ? sight.firstimage._text : "img/bkground/default.jpg"
           };
           visitList.push(visit);
           break;
@@ -215,7 +222,7 @@ export default class CreatePlanPage extends React.Component {
       material: 28
     };
 
-    let planView = this.state.plan != null && this.state.plan.length >0 ? (<PlanView />) : null;
+    let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView />) : null;
     
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}

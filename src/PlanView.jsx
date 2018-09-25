@@ -23,14 +23,16 @@ export default class PlanView extends React.Component {
     let strings = new LocalizedStrings(langFile);
     strings.setLanguage(lang);
 
-    let plan = JSON.parse(localStorage.getItem("plan"));
-    let schedule = JSON.parse(localStorage.getItem("flightScheduleInfo"));
+    let localStoragePlan = JSON.parse(localStorage.getItem("plan"));
+
+    let plan = localStoragePlan.data;
+    let schedule = localStoragePlan.schedule;
     let days = 0;
     let arrivalTime = new Date(schedule.arrivalTime);
     let departureTime = new Date(schedule.departureTime);
     days = departureTime.getDate() - arrivalTime.getDate() + 1;
 
-    let accomodationInfo = JSON.parse(localStorage.getItem("accomodationInfo"));
+    let accomodationInfo = localStoragePlan.accomodationInfo;
     let accomodationArr = [];
     for(let i = 0; i < days - 1; i++) {
       let day = new Date();
@@ -56,6 +58,7 @@ export default class PlanView extends React.Component {
       let dateTime = new Date(schedule.arrivalTime);
       dateTime.setDate(arrivalTime.getDate() + i);
       dateTime.setHours(0);
+      let timeline_sub = [];
       for(let j = 0; j < planForDay.length; j++) {
         dateTime.setHours(j + 1);
         let place = planForDay[j];
@@ -78,16 +81,15 @@ export default class PlanView extends React.Component {
         } else {
           singleEvent = {
             date: new Date(dateTime.getTime()),
-            text: "desc text comes here",
+            text: place.addr,
             title: place.name,
-            imageUrl: "img/bkground/default.jpg" 
+            imageUrl: place.image 
           };
         }
-        console.log(singleEvent);
-        timeline.push(singleEvent);
+        timeline_sub.push(singleEvent);
       }
+      timeline.push(timeline_sub);
     }
-    console.log(timeline);
     this.state = {
       plan: plan,
       strings: strings,
@@ -281,7 +283,8 @@ export default class PlanView extends React.Component {
         {map}
         <p>{this.state.strings.swipemoredetail}</p>
         {carousel}
-        <Timeline events={this.state.timeline} customStartLabel={CustomLabel} customEndLabel={CustomLabel}
+        <Timeline events={this.state.timeline[this.state.itemCarouselIndex]} 
+          customStartLabel={CustomLabel} customEndLabel={CustomLabel}
           customFooter={CustomLabel}/>
       </div>
     )
