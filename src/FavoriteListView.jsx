@@ -170,7 +170,7 @@ export default class FavoriteListView extends React.Component {
     };
  
     return (
-      <ListItem key={row.contentid._text} tappable>
+      <ListItem key={row.contentid._text} tappable modifier="longdivider">
         <label className='left'>
           {this.props.showStar ? 
             (<Button modifier='quiet' 

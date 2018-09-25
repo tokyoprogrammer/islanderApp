@@ -93,7 +93,7 @@ export default class HomePage extends React.Component {
 
     let listDivStyle = {
       margin: "3%",
-      marginTop: "-10%",
+      marginTop: "-15%",
       boxShadow: "2px 0px 2px 2px #9E9E9E",
     };
 

@@ -253,7 +253,8 @@ export default class CreateAccomodationPlanPage extends React.Component {
           <div style={{padding: "1%"}}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center"}} onClick={this.goNext.bind(this)}>
+          <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
+            onClick={this.goNext.bind(this)}>
             {this.state.strings.gonext}
           </Button>          
         </div>

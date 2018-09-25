@@ -26,7 +26,8 @@ export class GoogleSearchField extends React.Component {
       const mapConfig = Object.assign({}, {
         center: center, 
         zoom: zoom, 
-        mapTypeId: 'roadmap' 
+        mapTypeId: 'roadmap',
+        gestureHandling: 'cooperative'
       })
 
       this.map = new maps.Map(node, mapConfig);

@@ -23,7 +23,7 @@ export default class CreateVisitListPage extends React.Component {
     this.state = {
       strings: strings,
       showLoading: true,
-      checkedSights: []
+      checkedSights: [],
     };
 
     localStorage.setItem("checkedSights", JSON.stringify([]));
@@ -64,6 +64,11 @@ export default class CreateVisitListPage extends React.Component {
   }
 
   goNext() {
+    if(this.state.checkedSights.length <= 0) {
+      notification.alert(this.state.strings.cannotlessthanone);
+      return;
+    }
+
     localStorage.setItem("checkedSights", JSON.stringify(this.state.checkedSights));
     this.props.navigator.pushPage({ 
       component: CreatePlanPage
@@ -153,7 +158,8 @@ export default class CreateVisitListPage extends React.Component {
           <div style={{padding: "1%"}}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center"}} onClick={this.goNext.bind(this)}>
+          <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
+            onClick={this.goNext.bind(this)}>
             {this.state.strings.gonext}
           </Button>          
         </div>
