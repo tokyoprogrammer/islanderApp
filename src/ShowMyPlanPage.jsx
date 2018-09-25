@@ -7,7 +7,8 @@ import PlanView from './PlanView';
 export default class ShowMyPlan extends React.Component {
   constructor(props) {
     super(props);
-    let plan = JSON.parse(localStorage.getItem("plan")).data;
+    let plan = JSON.parse(localStorage.getItem("plan"));
+    if(plan != null) plan = plan.data;
     this.state = {
       plan: plan
     };
