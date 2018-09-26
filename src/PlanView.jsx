@@ -168,7 +168,7 @@ export default class PlanView extends React.Component {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} />);
+             onClick = {this.markerClicked.bind(this)} text={"" + (id + 1)} />);
   }
  
   render() {

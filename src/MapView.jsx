@@ -489,7 +489,7 @@ export default class MapView extends React.Component {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} />);
+             onClick = {this.markerClicked.bind(this)} text="%E2%80%A2"/>);
   }
 
   createMarkup(text) {
