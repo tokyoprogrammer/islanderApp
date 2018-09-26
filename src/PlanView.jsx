@@ -105,7 +105,7 @@ export default class PlanView extends React.Component {
     this.overScrolled = false;
 
     var this_ = this;
-    const sleepTime = 1000;
+    const sleepTime = 1500;
     new Promise(function(resolve, reject) {
       setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
     }).then(function(result) {

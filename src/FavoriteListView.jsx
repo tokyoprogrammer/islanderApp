@@ -5,6 +5,9 @@ import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
 
+import MapContainer from './MapContainer';
+import Marker from './Marker';
+
 export default class FavoriteListView extends React.Component {
   constructor(props) {
     super(props);
@@ -39,10 +42,19 @@ export default class FavoriteListView extends React.Component {
       favorites: favorites,
       allSights: [],
       favoritesInfo: [],
-      strings: strings
+      strings: strings,
+      checkedSights: []
     }
 
     this.readList(lang);
+
+    var this_ = this;
+    const sleepTime = 1500;
+    new Promise(function(resolve, reject) {
+      setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+    }).then(function(result) {
+      this_.setState({});
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -132,6 +144,14 @@ export default class FavoriteListView extends React.Component {
     }
     this.setState({favoritesInfo: favoritesInfo});
     this.props.onLoadDone();
+
+    var this_ = this;
+    const sleepTime = 1500;
+    new Promise(function(resolve, reject) {
+      setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+    }).then(function(result) {
+      this_.setState({});
+    });
   }
 
   toggleFavorite(key) {
@@ -157,8 +177,20 @@ export default class FavoriteListView extends React.Component {
   }
 
   onChange(id, e) {
-    if(this.props.onCheckChanged)
+    if(this.props.onCheckChanged) {
       this.props.onCheckChanged(e.target.checked, id);
+    }
+
+    let checkedSights = this.state.checkedSights.slice(0); // copy array
+    if(e.target.checked) {
+      checkedSights.push(id);
+    } else {
+      let index = checkedSights.indexOf(id);
+      if(index > -1) {
+        checkedSights.splice(index, 1);
+      }
+    }
+    this.setState({checkedSights: checkedSights});
   }
 
   renderCheckboxRow(row) {
@@ -203,9 +235,43 @@ export default class FavoriteListView extends React.Component {
     )
   }
 
+  markerClicked(e, id) {
+  }
+
+  drawSingleMarker(lat, lng, color, zIndex, id) {
+    let markerKey = "marker-" + id;
+    return (<Marker key = {markerKey} 
+             position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
+             onClick = {this.markerClicked.bind(this)} />);
+  }
+
   render() {
+    const markerGray = 'C0C0C0';
+    const markerChrimsonRed = 'DC134C'
+    const mapCenter = {
+      lat: 33.356432,
+      lng: 126.5268767
+    };
+
+    const mapZoom = 9;
+
     return (
       <div>
+        {this.state.favoritesInfo.length > 0 ?
+        (<MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+          width = "100vw" height = "30vh">
+          {this.state.favoritesInfo.map((item, index) => { 
+            if(this.props.showStar) {
+              return this.state.favorites.includes(item.contentid._text) ? 
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerChrimsonRed, index, index) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerGray, index, index);
+            } else {
+              return this.state.checkedSights.includes(item.contentid._text) ? 
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerChrimsonRed, index, index) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerGray, index, index);
+            }
+          })}
+        </MapContainer>) : null}
         {this.state.favoritesInfo.length > 0 ? 
           (<List dataSource={this.state.favoritesInfo}
             renderHeader={() => (
