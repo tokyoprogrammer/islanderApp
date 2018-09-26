@@ -189,6 +189,10 @@ export default class ListView extends React.Component {
     return filteredItems;
   }
  
+  createMarkup(text) {
+    return {__html: text }; 
+  }
+
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
     const imageWidth = 100;
@@ -223,9 +227,6 @@ export default class ListView extends React.Component {
       (<img src={itemInfo.firstimage._text} style={imageStyle} />);
 
     let tel = itemInfo.tel;
-    let telLink = tel == null ? null : "tel:" + tel._text;
-    let telTag = tel == null ? null : 
-      (<a href={telLink}>{tel._text}</a>);
 
     let starColor = grayColor;
     let favorites = this.state.favorites;
@@ -240,19 +241,23 @@ export default class ListView extends React.Component {
     return (
       <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable
         onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
-        <div className='left'>{itemImage}</div>
-        <div className='center' style = {{paddingTop: '2px', paddingBottom: '2px'}}>
+        <Row style={{width: "100%"}}>
+        <Col width="30%">
+          {itemImage}
+        </Col>
+        <Col width="50%">
           <h3 style={{margin:"1px"}}>{title}</h3>
           <p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>
-          {telTag}
-        </div>
-        <div className='right'>
+          {tel != null ? (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
+        </Col>
+        <Col width="20%">
           <Button modifier='quiet' 
             style={{width: '100%', textAlign: "center", color: starColor}}
             onClick={this.toggleFavorite.bind(this, contentId)}>
             <Icon icon='md-star' size={starIconSize}/>
           </Button>
-        </div>
+        </Col>
+        </Row>
       </ListItem>);
   }
 
