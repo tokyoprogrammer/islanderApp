@@ -217,9 +217,6 @@ export default class MapView extends React.Component {
           placeTitle = {title} listThumbnail = {false} multi = {false} />) :
         (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
   
-      let telLink = tel == null ? null : "tel:" + tel._text;
-      let telTag = tel == null ? null : 
-        (<a href={telLink}>{tel._text}</a>);
       let detailButton = (
         <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
          {this.state.strings.godetails}
@@ -273,7 +270,7 @@ export default class MapView extends React.Component {
                   <div style={{padding: "1%"}}>
                     <p style={{margin: "1%"}}>{addr}</p>
                     <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
-                    <p style={{margin: "1%"}}>{telTag}</p>
+                    {tel != null ? (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
                     <div style={{margin: "2%"}}>
                       {detailButton}
                     </div>
@@ -493,6 +490,10 @@ export default class MapView extends React.Component {
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
              onClick = {this.markerClicked.bind(this)} />);
+  }
+
+  createMarkup(text) {
+    return {__html: text }; 
   }
 
   render() {
