@@ -405,6 +405,14 @@ export default class MapView extends React.Component {
      </Toolbar>
     );
   }
+
+  renderFixed() {
+    return (
+      <Fab onClick={this.loadListView.bind(this)} position="bottom right">
+        <Icon icon='fa-bars' />
+      </Fab>
+    );
+  }
   
   loadListView() {
    this.props.navigator.pushPage({ 
@@ -571,7 +579,8 @@ export default class MapView extends React.Component {
       </MapContainer>);
 
     return (
-      <Page renderToolbar = {this.renderToolbar.bind(this)}>
+      <Page renderToolbar = {this.renderToolbar.bind(this)}
+        renderFixed={this.renderFixed.bind(this)}>
         <div style = {centerDiv}>
           <TopToggleView index = {this.state.segmentIndex} 
             onPostChange = {this.handleAddressFilter.bind(this)} 
@@ -595,9 +604,6 @@ export default class MapView extends React.Component {
             {placeCarousel}
           </div>
         </div>
-        <Fab onClick={this.loadListView.bind(this)} style={{bottom: '10px', right: '10px', position: 'fixed'}}>
-          <Icon icon='fa-bars' />
-        </Fab>
       </Page>
     );
   }

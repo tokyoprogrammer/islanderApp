@@ -85,6 +85,15 @@ export default class ListView extends React.Component {
     );
   }
 
+  renderFixed() {
+    return (
+      <Fab onClick={this.goTopScroll.bind(this)} 
+        position="bottom right">
+        <Icon icon='md-format-valign-top' />
+      </Fab>
+    );
+  }
+
   toggleFavorite(key) {
     // event.stopPropagation(); // doesn't work.
     this.stopPropagation = true;
@@ -295,7 +304,8 @@ export default class ListView extends React.Component {
     let fullWidth = window.innerWidth + "px";
 
     return (
-      <Page renderToolbar={this.renderToolbar.bind(this)}>
+      <Page renderToolbar={this.renderToolbar.bind(this)}
+        renderFixed={this.renderFixed.bind(this)}>
         <div style={styleToolbar} id="top">
           <TopToggleView index = {this.state.segmentIndex}
             onPostChange = {this.handleAddressFilter.bind(this)}
@@ -318,10 +328,6 @@ export default class ListView extends React.Component {
             renderRow={this.renderRow.bind(this)} 
             calculateItemHeight={() => this.listItemHeight} />
         </div>
-        <Fab onClick={this.goTopScroll.bind(this)} 
-          style = {{ position: "fixed", bottom: '10px', right: '10px'}}>
-          <Icon icon='md-format-valign-top' />
-        </Fab>
       </Page>
     );
   }

@@ -23,7 +23,7 @@ export default class PlanView extends React.Component {
     let strings = new LocalizedStrings(langFile);
     strings.setLanguage(lang);
 
-    let localStoragePlan = JSON.parse(localStorage.getItem("plan"));
+    let localStoragePlan = JSON.parse(localStorage.getItem("plan" + lang));
 
     let plan = localStoragePlan.data;
     let schedule = localStoragePlan.schedule;
@@ -90,6 +90,7 @@ export default class PlanView extends React.Component {
       }
       timeline.push(timeline_sub);
     }
+
     this.state = {
       plan: plan,
       strings: strings,
@@ -164,11 +165,11 @@ export default class PlanView extends React.Component {
   markerClicked(e, id) {
   } 
 
-  drawSingleMarker(lat, lng, color, zIndex, id) {
+  drawSingleMarker(lat, lng, color, zIndex, id, text) {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
-             position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} text={"" + (id + 1)} />);
+             position={{lat: lat, lng: lng}} color={color} zIndex={zIndex} id={id}
+             onClick={this.markerClicked.bind(this)} text={text} />);
   }
  
   render() {
@@ -231,7 +232,7 @@ export default class PlanView extends React.Component {
         // I leave this code to avoid bug.
         if(i >= additionalInfo.length) {
           let last = additionalInfo[additionalInfo.length - 1];
-          marker = this.drawSingleMarker(last.lat, last.lng, markerChrimsonRed, i, i);
+          marker = this.drawSingleMarker(last.lat, last.lng, markerChrimsonRed, i, i, i.toString());
           markers.push(marker);
           continue;
         }
@@ -241,9 +242,9 @@ export default class PlanView extends React.Component {
         let lat = "" + info.lat;
         let marker = null;
         if(i == 0 || i == additionalInfo.length - 1) 
-          marker = this.drawSingleMarker(lat, lng, markerChrimsonRed, i, i);
+          marker = this.drawSingleMarker(lat, lng, markerChrimsonRed, i, i, (i + 1).toString());
         else
-          marker = this.drawSingleMarker(lat, lng, markerGray, i, i);
+          marker = this.drawSingleMarker(lat, lng, markerGray, i, i, (i + 1).toString());
         markers.push(marker);
       }
     }

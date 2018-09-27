@@ -8,6 +8,32 @@ import PixabayImage from './PixabayImage';
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      weatherIcon: "",
+      weatherDegree: ""
+    }
+    this.readWeather();
+  }
+
+  readWeather() {
+    var this_ = this;
+    let URL = "http://api.openweathermap.org/data/2.5/weather?q=Jeju,kr&appid=8e0c89b8e26008044c73cb82ed5e4d60";
+    new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest;
+      xhr.onload = function() {
+        let res = JSON.parse(xhr.responseText);
+        this_.setState({
+          weatherIcon: "http://openweathermap.org/img/w/" + res.weather[0].icon + ".png",
+          weatherDegree: res.main.temp - 273.15
+        });
+        resolve(new Response(xhr.responseText, {status: xhr.status}));
+      }
+      xhr.onerror = function() {
+        reject(new TypeError('API Request failed'));
+      }
+      xhr.open('GET', URL);
+      xhr.send(null);
+    });
   }
 
   pushPage(code) {
@@ -101,6 +127,11 @@ export default class HomePage extends React.Component {
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div style={{height: "100%"}}>
           <PixabayImage />
+          <div style={{position: "absolute", top: "10px", textAlign: "center", borderRadius: "6px", 
+            right: "10px", backgroundColor: "rgba(255,250,250, .4)"}}>
+            <img src={this.state.weatherIcon} style={{width: "40px", float: "left"}} />
+            <span style={{float: "left", marginTop: "10%"}}>{this.state.weatherDegree + "ºC"}</span>
+          </div>
           <div style={listDivStyle}>
             <List style={{backgroundColor: "rgba(255, 255, 255, 1.0)", boxShadow: "2px 2px 2px 2px #9E9E9E"}}>
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 

@@ -95,7 +95,7 @@ export default class CreatePlanPage extends React.Component {
         if(i + 1 < this_.state.days - 1) end = this_.state.accomodationArr[i + 1];
         else end = this_.startPoint;
       }
-      localStorage.setItem("plan", JSON.stringify(
+      localStorage.setItem("plan" + this_.state.strings.getLanguage(), JSON.stringify(
         {
           schedule: this_.state.schedule,
           accomodationInfo: this_.state.accomodationInfo,

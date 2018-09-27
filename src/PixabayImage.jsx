@@ -13,7 +13,6 @@ export default class PixabayImage extends React.Component {
       data: []
     };
 
-    console.log()
     if(currentCache != null) {
       let cacheValidUntil = new Date(currentCache.createdDateTime);
       cacheValidUntil.setHours(cacheValidUntil.getHours() + 1);
