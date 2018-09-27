@@ -16,16 +16,54 @@ export default class HomePage extends React.Component {
   }
 
   readWeather() {
+    let cache = JSON.parse(localStorage.getItem("weather"));
+    let useCache = false;
+    if(cache != null) {
+      let cacheValidUntil = new Date(cache.createdDateTime);
+      cacheValidUntil.setHours(cacheValidUntil.getHours() + 1);
+      // cache will be valid until + 1 hour of the created hour.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        useCache = true;
+      }
+    }
+
+    if(useCache) {
+      var this_ = this;
+      const sleepTime = 500;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+      }).then(function(result) {
+        let weather = cache.data;
+        this_.setState({
+          weatherIcon: weather.weatherIcon,
+          weatherDegree: weather.weatherDegree
+        });
+      });
+
+      return; 
+    }
+
     var this_ = this;
     let URL = "https://api.openweathermap.org/data/2.5/weather?q=Jeju,kr&appid=8e0c89b8e26008044c73cb82ed5e4d60";
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
         let res = JSON.parse(xhr.responseText);
+        let weatherIcon = "http://openweathermap.org/img/w/" + res.weather[0].icon + ".png";
+        let weatherDegree = res.main.temp - 273.15;
         this_.setState({
-          weatherIcon: "http://openweathermap.org/img/w/" + res.weather[0].icon + ".png",
-          weatherDegree: res.main.temp - 273.15
+          weatherIcon: weatherIcon,
+          weatherDegree: weatherDegree
         });
+        localStorage.setItem("weather", JSON.stringify({
+          createdDateTime: new Date(),
+          data: {
+            weatherIcon: weatherIcon,
+            weatherDegree: weatherDegree
+          }
+        }));
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
       xhr.onerror = function() {
