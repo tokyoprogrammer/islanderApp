@@ -17,7 +17,7 @@ export default class HomePage extends React.Component {
 
   readWeather() {
     var this_ = this;
-    let URL = "http://api.openweathermap.org/data/2.5/weather?q=Jeju,kr&appid=8e0c89b8e26008044c73cb82ed5e4d60";
+    let URL = "https://api.openweathermap.org/data/2.5/weather?q=Jeju,kr&appid=8e0c89b8e26008044c73cb82ed5e4d60";
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
