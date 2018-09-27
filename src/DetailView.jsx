@@ -376,8 +376,9 @@ export default class DetailView extends React.Component {
     let holiday = this.state.itemDetailIntro.restdateculture  == null ?
       null :
       (<ListItem key="li-holiday">
-        <b>{this.state.strings.holiday + " : "}</b>
-        <p>{this.state.itemDetailIntro.restdateculture._text}</p>
+        <b>{this.state.strings.holiday + " : "}</b> 
+        <p dangerouslySetInnerHTML = 
+          {this.createMarkup(this.state.itemDetailIntro.restdateculture._text)}></p>
       </ListItem>);
     ret.push(holiday);
     let usefee = this.state.itemDetailIntro.usefee  == null ?
@@ -439,7 +440,9 @@ export default class DetailView extends React.Component {
     let holiday = this.state.itemDetailIntro.restdatefood == null ? 
       null : 
       (<ListItem key="li-holiday">
-        <b>{this.state.strings.holiday + " : "}</b><p>{this.state.itemDetailIntro.restdatefood._text}</p>
+        <b>{this.state.strings.holiday + " : "}</b> 
+        <p dangerouslySetInnerHTML = 
+          {this.createMarkup(this.state.itemDetailIntro.restdatefood._text)}></p>
       </ListItem>);
     ret.push(holiday);
     let firstmenu = this.state.itemDetailIntro.firstmenu == null ? 
@@ -587,7 +590,8 @@ export default class DetailView extends React.Component {
       null :
       (<ListItem key="li-holiday">
         <b>{this.state.strings.holiday + " : " }</b>
-        <p>{this.state.itemDetailIntro.restdateleports._text}</p>
+        <p dangerouslySetInnerHTML = 
+          {this.createMarkup(this.state.itemDetailIntro.restdateleports._text)}></p>
       </ListItem>);
     ret.push(holiday);
     let usingTime = this.state.itemDetailIntro.usetimeleports == null ?
@@ -596,7 +600,9 @@ export default class DetailView extends React.Component {
           null :
           (<ListItem key="li-usingTime">
             <b>{this.state.strings.usingtime + " : " }</b>
-            <p>{this.state.itemDetailIntro.usetimeleports._text}</p>
+            <p dangerouslySetInnerHTML = 
+              {this.createMarkup(this.state.itemDetailIntro.usetimeleports._text)}>
+            </p>
           </ListItem>);
     ret.push(usingTime);
     let reservation = this.state.itemDetailIntro.reservation == null ?
