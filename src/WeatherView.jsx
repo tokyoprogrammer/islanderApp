@@ -139,7 +139,7 @@ export default class WeatherView extends React.Component {
     let jump = 8;
     const centerDiv = {width: "100%", textAlign: "center"};
     const imageWidth = {width: "35px"};
-    const fontColor = {color: "#FFFFFF"}
+    const fontColor = {color: "#FFFFFF", paddingTop: "5px"}
     let minTemp = 9999;
     let maxTemp = 0;
     let prevdt = new Date(this.state.forecast[0].dt * 1000);
@@ -150,14 +150,14 @@ export default class WeatherView extends React.Component {
     for(let i = 0; i < this.state.forecast.length; i++) {
       let item = this.state.forecast[i];
       let dt = new Date(item.dt * 1000);
-      if(current.getDate() == dt.getDate()) continue; // same day
+
       if(dt.getHours() == 12) { 
         weatherIcon = "http://openweathermap.org/img/w/" + item.weather[0].icon + ".png";
         needUpdate = true;
       }
       if(prevdt.getDate() != dt.getDate()) {
-        // new day, should update minTemp and maxTemp and add 
-        let item = (
+        // a new day, should update minTemp and maxTemp and add 
+        let listitem = (
           <div key={"weather-list-" + i} style={{padding: "0px"}}>
             <Row>
               <Col width="30%">
@@ -178,13 +178,15 @@ export default class WeatherView extends React.Component {
             </Row>
           </div>
         );
-        listItems.push(item);
+        listItems.push(listitem);
         minTemp = 9999;
         maxTemp = 0;
         needUpdate = false;
       }
+
       if(minTemp > item.main.temp) minTemp = item.main.temp;
       if(maxTemp < item.main.temp) maxTemp = item.main.temp;
+
       prevdt = dt;
     }
 
