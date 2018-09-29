@@ -52,9 +52,9 @@
     "favoritesinfo": "장소 선택",
     "createdone": "계획 완성",
     "flightinfodesc": "항공권 정보를 입력해주세요.",
-    "flightdeparting": "제주도에서 출발",
-    "flightarrival": "제주도로 도착",
-    "departuretime": "출발시간",
+    "flightdeparting": "제주도 출발",
+    "flightarrival": "제주도 도착",
+"departuretime": "출발시간",
     "arrivaltime" : "도착시간",
     "hotelinfodesc": "호텔 정보를 입력해주세요.",
     "favoritesinfodesc": "즐겨찾기 중에서 여행에 포함하고 싶은 곳을 선택해 주세요.",
@@ -90,6 +90,17 @@
     "hoteldesc": "여행을 계속할 힘을 주는 휴식의 장소, HOTELNAME 숙소입니다.",
     "cannotlessthanone" : "하나 이상은 선택하셔야 합니다.",
     "jeju": "제주"
+    "monday" : "월요일",
+    "tuesday" : "화요일",
+    "wednesday" : "수요일",
+    "thursday" : "목요일",
+    "friday" : "금요일",
+    "saturday" : "토요일",
+    "sunday" : "일요일",
+    "year" : "년",
+    "month" : "월",
+    "date" : "일",
+    "nights" : "박"
   },
   "en": {
     "home": "Home",
@@ -182,5 +193,16 @@
     "hoteldesc": "A place of relaxation and gives you the power to continue your journey, This is HOTELNAME.",
     "cannotlessthanone" : "You have to select at least one of them.",
     "jeju": "Jeju"
+    "monday" : "Monday",
+    "tuesday" : "Tuesday",
+    "wednesday" : "Wednesday",
+    "thursday" : "Thursday",
+    "friday" : "Friday",
+    "saturday" : "Saturday",
+    "sunday" : "Sunday",
+    "year" : "Year",
+    "month" : "Month",
+    "date" : "Date",
+    "nights" : "nights"
   }
 }
