@@ -4,6 +4,7 @@ import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem} from 'react-
 
 import MapView from './MapView';
 import PixabayImage from './PixabayImage';
+import WeatherPage from './WeatherPage';
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export default class HomePage extends React.Component {
         let weather = cache.data;
         this_.setState({
           weatherIcon: weather.weatherIcon,
-          weatherDegree: weather.weatherDegree
+          weatherDegree: weather.weatherDegree,
         });
       });
 
@@ -46,22 +47,32 @@ export default class HomePage extends React.Component {
     }
 
     var this_ = this;
-    let URL = "https://api.openweathermap.org/data/2.5/weather?q=Jeju,kr&appid=8e0c89b8e26008044c73cb82ed5e4d60";
+    let lang = this.props.strings.getLanguage();
+    let URL = "https://api.openweathermap.org/data/2.5/weather?q=Jeju,kr" + 
+      "&appid=8e0c89b8e26008044c73cb82ed5e4d60" + 
+      "&lang=" + lang;
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
         let res = JSON.parse(xhr.responseText);
+        console.log(res);
         let weatherIcon = "http://openweathermap.org/img/w/" + res.weather[0].icon + ".png";
         let weatherDegree = res.main.temp - 273.15;
+        let tempMin = res.main.temp_min - 273.15;
+        let tempMax = res.main.temp_max - 273.15;
         this_.setState({
           weatherIcon: weatherIcon,
-          weatherDegree: weatherDegree
+          weatherDegree: weatherDegree,
+          tempMin: tempMin,
+          tempMax: tempMax
         });
         localStorage.setItem("weather", JSON.stringify({
           createdDateTime: new Date(),
           data: {
             weatherIcon: weatherIcon,
-            weatherDegree: weatherDegree
+            weatherDegree: weatherDegree,
+            tempMin: tempMin,
+            tempMax: tempMax
           }
         }));
         resolve(new Response(xhr.responseText, {status: xhr.status}));
@@ -78,6 +89,12 @@ export default class HomePage extends React.Component {
     localStorage.setItem("code", code);
     this.props.navigator.pushPage({ 
       component: MapView 
+    });
+  }
+
+  pushWeatherPage() {
+    this.props.navigator.pushPage({ 
+      component: WeatherPage 
     });
   }
 
@@ -165,11 +182,15 @@ export default class HomePage extends React.Component {
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div style={{height: "100%"}}>
           <PixabayImage />
-          <div style={{position: "absolute", top: "10px", textAlign: "center", borderRadius: "6px", 
-            right: "10px", backgroundColor: "rgba(255,250,250, .4)"}}>
+	  <Button modifier="quiet"
+            style={{position: "absolute", top: "10px", textAlign: "center", borderRadius: "6px", 
+              right: "10px", backgroundColor: "rgba(255, 250, 250, .4)"}} 
+            onClick={this.pushWeatherPage.bind(this)}>
             <img src={this.state.weatherIcon} style={{width: "40px", float: "left"}} />
-            <span style={{float: "left", marginTop: "10%"}}>{this.state.weatherDegree + "ºC"}</span>
-          </div>
+            <span style={{float: "left", marginTop: "10%", color: "#000000"}}>
+              {this.state.weatherDegree + "ºC"}
+            </span>
+          </Button>
           <div style={listDivStyle}>
             <List style={{backgroundColor: "rgba(255, 255, 255, 1.0)", boxShadow: "2px 2px 2px 2px #9E9E9E"}}>
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 

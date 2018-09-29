@@ -88,7 +88,8 @@
     "thereisnoplan": "나의 일정이 아직 만들어지기 전입니다. 여행을 위해 일정을 만들어 보시는건 어떠세요?",
     "airportdesc": "여행의 시작과 끝, 제주 국제 공항 입니다.",
     "hoteldesc": "여행을 계속할 힘을 주는 휴식의 장소, HOTELNAME 숙소입니다.",
-    "cannotlessthanone" : "하나 이상은 선택하셔야 합니다."
+    "cannotlessthanone" : "하나 이상은 선택하셔야 합니다.",
+    "jeju": "제주"
   },
   "en": {
     "home": "Home",
@@ -179,6 +180,7 @@
     "thereisnoplan": "There is no created plan yet. Why don't you create a plan for your better trip?",
     "airportdesc": "The beginning and end of the trip, This is Jeju International Airport.",
     "hoteldesc": "A place of relaxation and gives you the power to continue your journey, This is HOTELNAME.",
-    "cannotlessthanone" : "You have to select at least one of them."
+    "cannotlessthanone" : "You have to select at least one of them.",
+    "jeju": "Jeju"
   }
 }
