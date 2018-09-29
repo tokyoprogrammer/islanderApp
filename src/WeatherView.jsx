@@ -91,7 +91,7 @@ export default class WeatherView extends React.Component {
         let icon = "http://openweathermap.org/img/w/" + item.weather[0].icon + ".png";
         let degree = (item.main.temp - 273.15).toFixed(1);
         let colItem = (
-          <Col>
+          <Col key={"24-col-" + i}>
             <Row>
               <div style={centerDiv}>
                 <p style={{color: "#FFFFFF"}}>{hours}</p>
@@ -119,14 +119,121 @@ export default class WeatherView extends React.Component {
     );
   }
 
+  getDayInStr(datetime) {
+    let day =  datetime.getDay();
+    switch(day){
+      case 0 : return this.state.strings.sunday; 
+      case 1 : return this.state.strings.monday;
+      case 2 : return this.state.strings.tuesday;
+      case 3 : return this.state.strings.wednesday;
+      case 4 : return this.state.strings.thursday;
+      case 5 : return this.state.strings.friday;
+      case 6 : return this.state.strings.saturday;
+      default : console.log("wrong day information"); return null;
+    }
+  }
+
+  renderForecastList() {
+    if(this.state.forecast.length < 1) return null;
+    let listItems = [];
+    let jump = 8;
+    const centerDiv = {width: "100%", textAlign: "center"};
+    const imageWidth = {width: "35px"};
+    const fontColor = {color: "#FFFFFF"}
+    let minTemp = 9999;
+    let maxTemp = 0;
+    let prevdt = new Date(this.state.forecast[0].dt * 1000);
+    let current = new Date();
+    let weatherIcon = "";
+    let needUpdate = false;
+
+    for(let i = 0; i < this.state.forecast.length; i++) {
+      let item = this.state.forecast[i];
+      let dt = new Date(item.dt * 1000);
+      if(current.getDate() == dt.getDate()) continue; // same day
+      if(dt.getHours() == 12) { 
+        weatherIcon = "http://openweathermap.org/img/w/" + item.weather[0].icon + ".png";
+        needUpdate = true;
+      }
+      if(prevdt.getDate() != dt.getDate()) {
+        // new day, should update minTemp and maxTemp and add 
+        let item = (
+          <div key={"weather-list-" + i} style={{padding: "0px"}}>
+            <Row>
+              <Col width="30%">
+                <div style={centerDiv}>
+                  <p style={fontColor}>{prevdt.getDate() + " (" + this.getDayInStr(prevdt) + ")"}</p>
+                </div>
+              </Col>
+              <Col width="40%">
+                <div style={centerDiv}><img src={weatherIcon} style={imageWidth} /></div>
+              </Col>
+              <Col width="30%">
+                <div style={centerDiv}>
+                  <p style={fontColor}>
+                    {(minTemp - 273.15).toFixed(1) + " / " + (maxTemp - 273.15).toFixed(1)}
+                  </p>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        );
+        listItems.push(item);
+        minTemp = 9999;
+        maxTemp = 0;
+        needUpdate = false;
+      }
+      if(minTemp > item.main.temp) minTemp = item.main.temp;
+      if(maxTemp < item.main.temp) maxTemp = item.main.temp;
+      prevdt = dt;
+    }
+
+    // last one
+    if(needUpdate) {
+      let item = (
+        <div key={"weather-list-last"} style={{padding: "0px"}}>
+          <Row>
+            <Col width="30%">
+              <div style={centerDiv}>
+                <p style={fontColor}>{prevdt.getDate() + " (" + this.getDayInStr(prevdt) + ")"}</p>
+              </div>
+            </Col>
+            <Col width="40%">
+              <div style={centerDiv}><img src={weatherIcon} style={imageWidth}/></div>
+            </Col>
+            <Col width="30%">
+              <div style={centerDiv}>
+                <p style={fontColor}>
+                  {(minTemp - 273.15).toFixed(1) + " / " + (maxTemp - 273.15).toFixed(1)}
+                </p>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      );
+      listItems.push(item);
+    }
+
+    return (
+      <div>
+        {listItems}
+      </div>
+    );
+  }
+
   render() {
     const centerDiv = {textAlign: "center"};
-    const current = new Date();
     let forecast24 = this.render24Forecast();
+    const current = new Date();
+    let forecastList = this.renderForecastList();
 
     return (
       <div style={centerDiv}>
         <h2>{this.state.strings.jeju}</h2>
+        <h4>
+          {current.getFullYear() + "/" + (current.getMonth() + 1) + 
+            "/" + current.getDate() + " " + this.getDayInStr(current)}
+        </h4>
         <Row>
           <Col width="35%"></Col>
           <Col width="15%">
@@ -140,8 +247,12 @@ export default class WeatherView extends React.Component {
           <Col width="35%"></Col>
         </Row>
         <div style={{borderRadius: "6px", backgroundColor: "rgba(0, 0, 0, .4)", padding: "3%", 
-          marginLeft: "2px", marginRight: "2px", marginTop: "5%"}}>
+          marginLeft: "2%", marginRight: "2%", marginTop: "5%"}}>
           {forecast24}
+        </div>
+        <div style={{borderRadius: "6px", backgroundColor: "rgba(0, 0, 0, .4)", padding: "3%", 
+          marginLeft: "2%", marginRight: "2%", marginTop: "5%"}}>
+          {forecastList}
         </div>
       </div>
     )

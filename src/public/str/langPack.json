@@ -98,8 +98,7 @@
     "sunday" : "일요일",
     "year" : "년",
     "month" : "월",
-    "date" : "일",
-    "nights" : "박"
+    "date" : "일"
   },
   "en": {
     "home": "Home",
@@ -200,7 +199,6 @@
     "sunday" : "Sunday",
     "year" : "Year",
     "month" : "Month",
-    "date" : "Date",
-    "nights" : "nights"
+    "date" : "Date"
   }
 }
