@@ -95,7 +95,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
 */
     let dateInfo;
     let year = datetime.getFullYear();
-    let month = datetime.getMonth();
+    let month = datetime.getMonth() + 1;
     let date = datetime.getDate();
     let day =  datetime.getDay();
     switch(day){
