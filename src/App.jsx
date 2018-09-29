@@ -135,6 +135,7 @@ export default class App extends React.Component {
             initialRoute={{ 
               component: this.state.page, 
               props: { key: this.state.page.name, strings: this.state.strings } }} 
+            swipeable 
             renderPage={this.renderPage.bind(this)}
             ref={(navigator) => { this.navigator = navigator; }} />
         </SplitterContent>
