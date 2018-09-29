@@ -85,6 +85,50 @@ export default class CreateAccomodationPlanPage extends React.Component {
     );
   }
 
+  
+  convertTime(datetime){
+/*    let timeArray = time.split(' ');
+    console.log("timeArray : "+timeArray[0]);
+    console.log("timeArray : "+timeArray[1]);
+    console.log("timeArray : "+timeArray[2]);
+    console.log("timeArray : "+timeArray[3]);
+*/
+    let dateInfo;
+    let year = datetime.getFullYear();
+    let month = datetime.getMonth();
+    let date = datetime.getDate();
+    let day =  datetime.getDay();
+    switch(day){
+      case 0 : day = this.state.strings.sunday; 
+               break; 
+      case 1 : day = this.state.strings.monday;
+               break;
+      case 2 : day = this.state.strings.tuesday;
+               break;
+      case 3 : day = this.state.strings.wednesday;
+               break;
+      case 4 : day = this.state.strings.thursday;
+               break;
+      case 5 : day = this.state.strings.friday;
+               break;
+      case 6 : day = this.state.strings.saturday;
+               break;
+      default : console.log("wrong day information");
+               break;
+    }
+    let hours = datetime.getHours();
+    hours = hours < 10 ? '0'+hours : hours;
+    let minutes = datetime.getMinutes();
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    
+    console.log("year:"+year+", month:"+month+", date:"+date+"day:"+day+"hour:"+hours+"minutes"+minutes);
+    dateInfo = year+this.state.strings.year+" "
+               +month+this.state.strings.month+" "
+               +date+this.state.strings.date+" "
+               +day+" "+hours+ ":"+minutes;
+    console.log("dateInfo : "+dateInfo);
+    return dateInfo;
+  }
   goNext() {
     localStorage.setItem("accomodationInfo", JSON.stringify([
       {
@@ -232,12 +276,16 @@ export default class CreateAccomodationPlanPage extends React.Component {
           <Card>
             <div>
               <p>
-                {this.state.strings.flightarrival + " : " + this.state.arrivalDateTime}
-              </p>
+                {this.state.strings.flightarrival + " : "
+                +this.convertTime(this.state.arrivalDateTime)} 
+              </p> 
               <p>
-                {this.state.strings.flightdeparting + " : " + this.state.departureDateTime}
+                {this.state.strings.flightdeparting + " : " 
+                +this.convertTime(this.state.departureDateTime)}
               </p>
-              <p>{this.state.nights + " 박"}</p>
+              <p>{this.state.nights + this.state.strings.nights+" "}
+                {this.state.nights+1}{this.state.strings.date}
+              </p>
             </div>
           </Card>
           <b>{this.state.strings.findaccomodation}</b>
