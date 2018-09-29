@@ -336,6 +336,14 @@ export default class CourseRecommandationPage extends React.Component {
     );
   }
 
+  renderFixed() {
+    return (
+      <Fab onClick={this.goTopScroll.bind(this)} position="bottom right">
+        <Icon icon='md-format-valign-top' />
+      </Fab>
+    );
+  }
+
   handleCourseChange(e) {
     if(this.overScrolled) {
       this.overScrolled = false;
@@ -514,7 +522,8 @@ export default class CourseRecommandationPage extends React.Component {
  
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)} 
-       renderModal={() => (
+        renderFixed={this.renderFixed.bind(this)}
+        renderModal={() => (
           <Modal
             isOpen={this.state.isOpen}>
             <div style={{width: "100%", display: "inline-block", position: "relative"}}>
@@ -614,10 +623,6 @@ export default class CourseRecommandationPage extends React.Component {
             ))} 
           </div>
         </div>
-        <Fab onClick={this.goTopScroll.bind(this)} 
-          style = {{ position: "fixed", bottom: '10px', right: '10px'}}>
-          <Icon icon='md-format-valign-top' />
-        </Fab>
       </Page>
     );
   }
