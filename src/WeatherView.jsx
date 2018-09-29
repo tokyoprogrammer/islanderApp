@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import {Icon, Button, List, ListItem, Row, Col} from 'react-onsenui';
 
 import LocalizedStrings from 'react-localization';
-import VirtualList from 'react-tiny-virtual-list';
 
 export default class WeatherView extends React.Component {
   constructor(props) {
