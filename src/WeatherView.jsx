@@ -151,6 +151,12 @@ export default class WeatherView extends React.Component {
       let item = this.state.forecast[i];
       let dt = new Date(item.dt * 1000);
 
+      if(current.getDate() == dt.getDate() || prevdt.getDate() == current.getDate()) {
+        // skip today
+        prevdt = dt;
+        continue;
+      }
+
       if(dt.getHours() == 12) { 
         weatherIcon = "http://openweathermap.org/img/w/" + item.weather[0].icon + ".png";
         needUpdate = true;
