@@ -92,6 +92,13 @@ export default class CreateFlightPlan extends React.Component {
   }
 
   goNext() {
+    console.log(this.state.arrivalTime);
+    console.log(this.state.departureTime);
+    if(this.state.arrivalTime == null || this.state.arrivalTime.length < 1 ||
+       this.state.departureTime == null || this.state.departureTime.length < 1) {
+      notification.alert(this.props.strings.cannotempty);
+      return;
+    }
     let arrivalTime = this.state.arrivalTime.split(":");
     let arrivalDateTime = this.state.arrivalDate;
     arrivalDateTime.setHours(arrivalTime[0], arrivalTime[1], 0);

@@ -98,7 +98,8 @@
     "sunday" : "일",
     "year" : "년",
     "month" : "월",
-    "date" : "일"
+    "date" : "일",
+    "cannotempty" : "빈 정보가 있습니다. 모두 채워주세요."
   },
   "en": {
     "home": "Home",
@@ -199,6 +200,7 @@
     "sunday" : "Sun",
     "year" : "Year",
     "month" : "Month",
-    "date" : "Date"
+    "date" : "Date",
+    "cannotempty" : "There are empty fields. Please fill out all empty fields."
   }
 }
