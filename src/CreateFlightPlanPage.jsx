@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem, Card} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem, Card, Input} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import Stepper from 'react-stepper-horizontal';
@@ -104,26 +104,21 @@ export default class CreateFlightPlan extends React.Component {
       notification.alert(this.props.strings.cannotsame);
       return;
     }
-/*    
-    let string = 
-      "<b>" + this.props.strings.confirmschedule + "</b>" + "<br/>" + 
-      "<b>" + this.props.strings.arrivaltime + "</b>" + "<br/>" + 
-      arrivalDateTime + "<br/>" + 
-      "<b>" + this.props.strings.departuretime + "</b>" + "<br/>" + 
-      departureDateTime + "<br/>" + 
-      "<b>" + this.props.strings.areyousure + "</b>";
-    notification.confirm(string).then((response) => {
-      if(response == 1) {
-*/
-        localStorage.setItem("flightScheduleInfo", JSON.stringify({
-          arrivalTime: arrivalDateTime.toString(),
-          departureTime: departureDateTime.toString()
-        }));
-        this.props.navigator.pushPage({ 
-          component: CreateAccomodationPlanPage 
-        });
-//      }
-//    }); 
+    localStorage.setItem("flightScheduleInfo", JSON.stringify({
+      arrivalTime: arrivalDateTime.toString(),
+      departureTime: departureDateTime.toString()
+    }));
+    this.props.navigator.pushPage({ 
+      component: CreateAccomodationPlanPage 
+    });
+  }
+
+  onTimeChange(options) {
+    console.log(options);
+  }
+
+  onFocusChange(focusStatus) {
+    console.log(focusStatus);
   }
 
   render() {
@@ -163,13 +158,13 @@ export default class CreateFlightPlan extends React.Component {
           </h3>
           <div style={{width: "100%", textAlign: "center"}}>
             <Calendar value={this.state.arrivalDate} calendarType="US" className="calendar_width_100"
-              onChange={this.handleArrivalDateChange.bind(this)} 
-              formatMonth={(value) => formatDate(value, 'MM')}/>
+              onChange={this.handleArrivalDateChange.bind(this)} minDate={new Date()}/>
           </div>
           <section>
             <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
             <b>{this.props.strings.arrivaltime} :</b>
-            <input type="time" value={this.state.arrivalTime} style={{width: "40%", height: "30px"}} 
+            <Input type="time" modifier='material'
+              value={this.state.arrivalTime} style={{width: "40%", height: "30px"}} 
               onChange={this.handleArrivalTimeChange.bind(this)} />
           </section>
           <h3>
@@ -179,13 +174,13 @@ export default class CreateFlightPlan extends React.Component {
           <div style={{width: "100%", textAlign: "center"}}>
             <Calendar value={this.state.departureDate} calendarType="US" className="calendar_width_100"
               onChange={this.handleDepartureDateChange.bind(this)}
-              formatMonth={(value) => formatDate(value, 'MM')}
               minDate={this.state.arrivalDate} />
           </div>
           <section>
             <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
             <b>{this.props.strings.departuretime} :</b>
-            <input type="time" value={this.state.departureTime} style={{width: "40%", height: "30px"}} 
+            <Input type="time" modifier='material'
+              value={this.state.departureTime} style={{width: "40%", height: "30px"}} 
               onChange={this.handleDepartureTimeChange.bind(this)} />
           </section>
           <div style={{padding: "1%"}}>
