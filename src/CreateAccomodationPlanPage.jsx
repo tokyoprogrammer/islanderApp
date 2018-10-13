@@ -24,6 +24,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let flightSchedule = JSON.parse(localStorage.getItem("flightScheduleInfo"));
     let arrivalDateTime = new Date(flightSchedule.arrivalTime);
     let departureDateTime = new Date(flightSchedule.departureTime);
+    let hotelInfo = null;
 
     this.state = {
       arrivalDateTime: arrivalDateTime,
@@ -32,7 +33,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
       nights: departureDateTime.getDate() - arrivalDateTime.getDate(),
       accomodationList: [],
       isOpen: false,
-      currentAccomodation: {}
+      selectedRow: {},
+      currentAccomodation: {},
+      hotelInfo : hotelInfo
     };
 
     this.activeSteps = 1;
@@ -87,12 +90,6 @@ export default class CreateAccomodationPlanPage extends React.Component {
 
   
   convertTime(datetime){
-/*    let timeArray = time.split(' ');
-    console.log("timeArray : "+timeArray[0]);
-    console.log("timeArray : "+timeArray[1]);
-    console.log("timeArray : "+timeArray[2]);
-    console.log("timeArray : "+timeArray[3]);
-*/
     let dateInfo;
     let year = datetime.getFullYear();
     let month = datetime.getMonth() + 1;
@@ -121,7 +118,6 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let minutes = datetime.getMinutes();
     minutes = minutes < 10 ? '0'+minutes : minutes;
     
-    console.log("year:"+year+", month:"+month+", date:"+date+"day:"+day+"hour:"+hours+"minutes"+minutes);
     dateInfo = year+this.state.strings.year+" "
                +month+this.state.strings.month+" "
                +date+this.state.strings.date+" "
@@ -129,7 +125,22 @@ export default class CreateAccomodationPlanPage extends React.Component {
     console.log("dateInfo : "+dateInfo);
     return dateInfo;
   }
-  goNext() {
+  goNext(arrivalDateTime,departureDateTime) {
+    localStorage.setItem("test",JSON.stringify([
+      {
+        hotelInfo:  {
+          name : " name1",
+          addr : "addr1",
+          lat: 33.50566000000001,
+          lng: 126.52616999999998
+        },
+        scheduleInfo:  [
+          arrivalDateTime.toString(),
+          departureDateTime.toString()
+        ]
+      }
+    ]));
+  
     localStorage.setItem("accomodationInfo", JSON.stringify([
       {
         hotelInfo: {
@@ -146,7 +157,8 @@ export default class CreateAccomodationPlanPage extends React.Component {
       {
         hotelInfo: {
           name: "Hyatt Regency Jeju",
-          addr: "114, Jungmungwangwang-ro 72 beon-gil, 색달동 Seogwipo-si, Jeju-do, South Korea",
+          addr: "114, Jungmungwangwang-ro 72 beon-gil, "
+               + "색달동 Seogwipo-si, Jeju-do, South Korea",
           lat: 33.244488,
           lng: 126.40593799999999
         },
@@ -162,12 +174,23 @@ export default class CreateAccomodationPlanPage extends React.Component {
     });
   }
 
+  copy(mainObj) {
+    let objCopy = {}; // objCopy will store a copy of the mainObj
+    let key;
+    for (key in mainObj) {
+      objCopy[key] = mainObj[key]; // copies each property to the objCopy object
+    }
+    return objCopy;
+  }
+
   addToAccomodationList() {
     if(this.state.currentAccomodation.name != null && 
        this.state.currentAccomodation.lat != null && 
        this.state.currentAccomodation.lng != null) {
       let accomodationList = this.state.accomodationList;
-      accomodationList.push(this.state.currentAccomodation);
+      let accomodationToAdd = this.copy(this.state.currentAccomodation);
+      accomodationToAdd.key = accomodationList.length + 1;
+      accomodationList.push(accomodationToAdd);
       this.setState({accomodationList: accomodationList});
     } else {
       this.setState({});
@@ -177,26 +200,39 @@ export default class CreateAccomodationPlanPage extends React.Component {
   onSearchDone(places) {
     for(let i = 0; i < places.length; i++) {
       let place = places[i];
+      place.scheduleInfo = [];
       this.setState({currentAccomodation: place});
     }
   }
 
   addToSchedule(row) {
     console.log(row);
-    this.setState({isOpen: true});
+    this.setState({isOpen: true, selectedRow: row});
   }
 
   renderAccomodationList(row, index) {
+    const calendarIconSize = {
+      default: 25,
+      material: 23
+    };
+
     return (
       <ListItem key={"al" + index}>
         <div className="left">
           {row.name}
         </div>
         <div className="center">
-          yyyy.mm.dd - yyyy.mm.dd
+          {row.scheduleInfo != null && row.scheduleInfo.length >= 2 ? 
+            row.scheduleInfo[0] + " - " + row.scheduleInfo[1] : 
+            "Test"}
         </div>
         <div className="right">
-          <Button onClick={this.addToSchedule.bind(this, row)}>{this.state.strings.addtoschedule}</Button>
+          <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet' >
+            <Icon icon="md-calendar" size={calendarIconSize} />
+          </Button>
+          <Button modifier='quiet' style={{color: 'black'}} >
+            <Icon icon='md-delete' size={calendarIconSize} />
+          </Button>
         </div>
       </ListItem>
     ); 
@@ -204,7 +240,17 @@ export default class CreateAccomodationPlanPage extends React.Component {
   
   onCalendarChange(value) {
     console.log(value);
-    this.setState({isOpen: false});
+    let accomodationListCopy = this.state.accomodationList;
+
+    for(let i = 0; i < accomodationListCopy.length; i++) {
+      let item = accomodationListCopy[i];
+      if(this.state.selectedRow == item) {
+        console.log(item);
+        item.scheduleInfo = value.slice(0);
+      }
+    }
+    
+    this.setState({isOpen: false, accomodationList: accomodationListCopy});
   }
 
   render() {
@@ -232,7 +278,6 @@ export default class CreateAccomodationPlanPage extends React.Component {
       default: 25,
       material: 23
     };
-
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}
        renderModal={() => (
@@ -245,6 +290,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
                   maxDate={this.state.departureDateTime}
                   selectRange={true}
                   returnValue="range"
+                  onActiveDateChange={this.onCalendarChange.bind(this)}
                   onChange={this.onCalendarChange.bind(this)}
                   calendarType="US" className="calendar_width_100"
                   formatMonth={(value) => formatDate(value, 'MM')} />
@@ -302,7 +348,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
           <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
-            onClick={this.goNext.bind(this)}>
+            onClick={this.goNext.bind(this,this.state.arrivalDateTime,this.state.departureDateTime)}>
             {this.state.strings.gonext}
           </Button>          
         </div>

@@ -198,9 +198,9 @@
     "friday" : "Fri",
     "saturday" : "Sat",
     "sunday" : "Sun",
-    "year" : "Year",
-    "month" : "Month",
-    "date" : "Date",
-    "cannotempty" : "There are empty fields. Please fill out all empty fields."
+    "cannotempty" : "There are empty fields. Please fill out all empty fields.",
+    "year" : ".",
+    "month" : ".",
+    "date" : " "
   }
 }
