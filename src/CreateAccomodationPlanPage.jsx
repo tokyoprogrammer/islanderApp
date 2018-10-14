@@ -122,9 +122,21 @@ export default class CreateAccomodationPlanPage extends React.Component {
                +month+this.state.strings.month+" "
                +date+this.state.strings.date+" "
                +day+" "+hours+ ":"+minutes;
-    console.log("dateInfo : "+dateInfo);
     return dateInfo;
   }
+
+  convertDate(datetime){
+    let dateInfo;
+    let year = datetime.getFullYear();
+    let month = datetime.getMonth() + 1;
+    let date = datetime.getDate();
+    let day =  datetime.getDay();
+    dateInfo = year+this.state.strings.year+" "
+               +month+this.state.strings.month+" "
+               +date+this.state.strings.date+" ";
+    return dateInfo;
+  }
+
   goNext(arrivalDateTime,departureDateTime) {
     localStorage.setItem("test",JSON.stringify([
       {
@@ -223,8 +235,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
         </div>
         <div className="center">
           {row.scheduleInfo != null && row.scheduleInfo.length >= 2 ? 
-            row.scheduleInfo[0] + " - " + row.scheduleInfo[1] : 
-            "Test"}
+            this.convertDate(row.scheduleInfo[0]) + " ~ " + 
+            this.convertDate(row.scheduleInfo[1]) :
+            this.state.strings.accomodationDateDefault}
         </div>
         <div className="right">
           <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet' >
@@ -330,7 +343,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
                 +this.convertTime(this.state.departureDateTime)}
               </p>
               <p>{this.state.nights + this.state.strings.nights+" "}
-                {this.state.nights+1}{this.state.strings.date}
+                {this.state.nights+1}{this.state.strings.days}
               </p>
             </div>
           </Card>

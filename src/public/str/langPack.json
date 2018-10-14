@@ -99,7 +99,8 @@
     "year" : "년",
     "month" : "월",
     "date" : "일",
-    "cannotempty" : "빈 정보가 있습니다. 모두 채워주세요."
+    "cannotempty" : "빈 정보가 있습니다. 모두 채워주세요.",
+    "accomodationDateDefault" : "숙박 날짜를 선택해주세요."
   },
   "en": {
     "home": "Home",
@@ -198,9 +199,10 @@
     "friday" : "Fri",
     "saturday" : "Sat",
     "sunday" : "Sun",
-    "cannotempty" : "There are empty fields. Please fill out all empty fields.",
     "year" : ".",
     "month" : ".",
-    "date" : " "
+    "date" : " ",
+    "cannotempty" : "There are empty fields. Please fill out all empty fields.",
+    "accomodationDateDefault" : "Please select accomodation date information"
   }
 }
