@@ -71,7 +71,8 @@ export default class ShowMyPlan extends React.Component {
   render() {
     const centerDiv = {textAlign: "center"};
     
-    let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView />) : 
+    let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView 
+      navigator={this.props.navigator}/>) : 
       (<div style={{textAlign: "center"}}>
         <h3 style={{margin: "5%"}}>{this.props.strings.thereisnoplan}</h3>
         <Button style={{width: "80%"}} onClick={this.loadPage.bind(this, "CreateFlightPlanPage")}>

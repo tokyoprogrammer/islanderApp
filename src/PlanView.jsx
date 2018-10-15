@@ -8,11 +8,25 @@ import Timeline from 'react-image-timeline';
 require('react-image-timeline/dist/timeline.css');
 require('./CustomTimeLineStyle.css');
 
+import TMapPage from './TMapPage';
 import MapContainer from './MapContainer';
 import Marker from './Marker';
 
 const CustomLabel = (props) => {
-    return null;
+  return null;
+};
+
+const CustomFooter = (props) => {
+  let {index, strings, onClicked} = props.event;
+  const iconSize = {
+    default: 32,
+    material: 40
+  };
+
+  if(index == 0) return null;
+  return (<Button modifier="large" onClick={onClicked}>
+    <Icon size={iconSize} icon="ion-map" /> {strings.navigate}
+  </Button>);
 };
 
 export default class PlanView extends React.Component {
@@ -35,7 +49,7 @@ export default class PlanView extends React.Component {
     let accomodationInfo = localStoragePlan.accomodationInfo;
     let accomodationArr = [];
     for(let i = 0; i < days - 1; i++) {
-      let day = new Date();
+      let day = new Date(schedule.arrivalTime);
       day.setDate(arrivalTime.getDate() + i);
       for(let j = 0; j < accomodationInfo.length; j++) {
         let accomodation = accomodationInfo[j];
@@ -48,7 +62,7 @@ export default class PlanView extends React.Component {
         }
       }
     }
-    
+   
     let maxLen = 0;
     let timeline = [];
 
@@ -59,34 +73,52 @@ export default class PlanView extends React.Component {
       dateTime.setDate(arrivalTime.getDate() + i);
       dateTime.setHours(0);
       let timeline_sub = [];
+      let prev = {};
+
       for(let j = 0; j < planForDay.length; j++) {
         dateTime.setHours(j + 1);
         let place = planForDay[j];
         let singleEvent = {};
         if((j == 0 && i == 0) || (j == planForDay.length - 1 && i == plan.length - 1)) {
           singleEvent = {
+            index: j,
             date: new Date(dateTime.getTime()),
             text: strings.airportdesc + "\n" + place.addr,
             title: place.name,
-            imageUrl: "img/airport-bg.jpg"
+            imageUrl: "img/airport-bg.jpg",
+            strings: strings,
+            lat: place.lat,
+            lng: place.lng,
+            onClicked: this.onNavClicked.bind(this, place, prev)
           };
         } else if(j == planForDay.length - 1 || j == 0) {
           let desc = strings.hoteldesc.replace("HOTELNAME", place.name);
           singleEvent = {
+            index: j,
             date: new Date(dateTime.getTime()),
             text: desc,
             title: place.name,
-            imageUrl: "img/hotel-bg.jpg"
+            imageUrl: "img/hotel-bg.jpg",
+            strings: strings,
+            lat: place.lat,
+            lng: place.lng,
+            onClicked: this.onNavClicked.bind(this, place, prev)
           };
         } else {
           singleEvent = {
+            index: j,
             date: new Date(dateTime.getTime()),
             text: place.addr,
             title: place.name,
-            imageUrl: place.image 
+            imageUrl: place.image,
+            strings: strings,
+            lat: place.lat,
+            lng: place.lng,
+            onClicked: this.onNavClicked.bind(this, place, prev)
           };
         }
         timeline_sub.push(singleEvent);
+        prev = singleEvent;
       }
       timeline.push(timeline_sub);
     }
@@ -120,6 +152,16 @@ export default class PlanView extends React.Component {
       this.state.strings.setLanguage(lang);
       this.setState({});
     }
+  }
+
+  onNavClicked(current, prev) {
+    localStorage.setItem("tmapLatLng", JSON.stringify({
+      prev: {lat: prev.lat, lng: prev.lng},
+      target: {lat: current.lat, lng: current.lng}
+    }));
+    this.props.navigator.pushPage({ 
+      component: TMapPage 
+    });
   }
 
   prevItem() {
@@ -286,8 +328,12 @@ export default class PlanView extends React.Component {
         {carousel}
         <Timeline events={this.state.timeline[this.state.itemCarouselIndex]} 
           customStartLabel={CustomLabel} customEndLabel={CustomLabel}
-          customFooter={CustomLabel}/>
+          customFooter={CustomFooter}/>
       </div>
     )
   }
+}
+
+PlanView.propTypes = {
+  navigator: React.PropTypes.object
 }

@@ -59,8 +59,8 @@ export default class CreatePlanPage extends React.Component {
       name: this.state.strings.jejuairport,
       addr: this.state.strings.jejuairportaddr,
       dfrom: 0,
-      lat: 33.510440,
-      lng: 126.491353
+      lat: "33.510440",
+      lng: "126.491353"
     };
     this.makePlan();
   }
