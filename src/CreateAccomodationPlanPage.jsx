@@ -138,48 +138,26 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   goNext(arrivalDateTime,departureDateTime) {
-    localStorage.setItem("test",JSON.stringify([
-      {
-        hotelInfo:  {
-          name : " name1",
-          addr : "addr1",
-          lat: 33.50566000000001,
-          lng: 126.52616999999998
-        },
-        scheduleInfo:  [
-          arrivalDateTime.toString(),
-          departureDateTime.toString()
-        ]
-      }
-    ]));
-  
-    localStorage.setItem("accomodationInfo", JSON.stringify([
+    let accomodationList = this.state.accomodationList;
+    let tmp = [];
+      
+    for (let i=0; i<accomodationList.length; i++){   
+      let item = accomodationList[i];
+      tmp.push(       
       {
         hotelInfo: {
-          name: "Kal Hotel Jeju",
-          addr: "South Korea, Jeju-do, Cheju, Ido 1(il)-dong, 중앙로 151",
-          lat: 33.50566000000001,
-          lng: 126.52616999999998
+          name: item.name,
+          addr: item.addr,
+          lat: item.lat,
+          lng: item.lng
         },
         scheduleInfo: [
-          "Sat Sep 22 2018 00:00:00 GMT+0900 (한국 표준시)",
-          "Wed Sep 24 2018 00:00:00 GMT+0900 (한국 표준시)"
+          item.scheduleInfo[0].toString(),
+          item.scheduleInfo[1].toString()
         ] 
-      },
-      {
-        hotelInfo: {
-          name: "Hyatt Regency Jeju",
-          addr: "114, Jungmungwangwang-ro 72 beon-gil, "
-               + "색달동 Seogwipo-si, Jeju-do, South Korea",
-          lat: 33.244488,
-          lng: 126.40593799999999
-        },
-        scheduleInfo: [
-          "Sat Sep 24 2018 00:00:00 GMT+0900 (한국 표준시)",
-          "Wed Sep 26 2018 00:00:00 GMT+0900 (한국 표준시)"
-        ] 
-      }
-    ]));
+      });
+    }  
+    localStorage.setItem("accomodationInfo", JSON.stringify(tmp));
 
     this.props.navigator.pushPage({ 
       component: CreateVisitListPage 
@@ -218,7 +196,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   addToSchedule(row) {
-    console.log(row);
+   /* console.log(row)*/
     this.setState({isOpen: true, selectedRow: row});
   }
 
@@ -252,13 +230,13 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
   
   onCalendarChange(value) {
-    console.log(value);
+   /* console.log(value);*/
     let accomodationListCopy = this.state.accomodationList;
 
     for(let i = 0; i < accomodationListCopy.length; i++) {
       let item = accomodationListCopy[i];
       if(this.state.selectedRow == item) {
-        console.log(item);
+       /* console.log(item); */
         item.scheduleInfo = value.slice(0);
       }
     }
