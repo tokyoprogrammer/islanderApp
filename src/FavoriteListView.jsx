@@ -204,7 +204,7 @@ export default class FavoriteListView extends React.Component {
     return (
       <ListItem key={row.contentid._text} tappable modifier="longdivider">
         <Row style={{marginTop: "10px", marginBotton: "10px"}}>
-          <Col width="15%">
+          <Col width="20%">
             {this.props.showStar ? 
               (<Button modifier='quiet' 
                 style={{
@@ -224,7 +224,7 @@ export default class FavoriteListView extends React.Component {
               (<img src={row.firstimage._text} className='list-item__thumbnail' />) :
               (<img src="img/noimage.png" className='list-item__thumbnail' />)}
           </Col>
-          <Col width="45%">
+          <Col width="40%">
             <label htmlFor={"checkbox-" + row.contentid._text}>
               {row.title._text}
             </label>
