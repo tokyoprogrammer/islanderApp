@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, Segment, SearchInput, Carousel, CarouselItem, Row, Col, ProgressCircular, Fab, Card} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular} from 'react-onsenui';
 
 import postscribe from 'postscribe';
 
 export default class TmapView extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loaded: false
+    };
   }
 
   componentDidMount() {
@@ -15,6 +18,7 @@ export default class TmapView extends React.Component {
     let childs = block.children;
     if(childs.length > 1) {
       this.loadMap();
+      this.setState({loaded: true});
       return;
     }
 
@@ -32,6 +36,7 @@ export default class TmapView extends React.Component {
         done: function() {
           console.log("Tmap Script loaded");
           this_.loadMap();
+          this_.setState({loaded: true});
         }
       });
     }
@@ -235,6 +240,12 @@ export default class TmapView extends React.Component {
   render() {
     return (
       <Page renderToolbar = {this.renderToolbar.bind(this)}>
+        {this.state.loaded ? null : (
+          <div style={{textAlign: "center"}}>
+            <label>Loading... </label>
+            <ProgressCircular indeterminate />
+          </div>
+        )}
         <p id="result"></p>
         <div id="map_div">
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {List, ListItem, Checkbox, Button, ListHeader, Icon} from 'react-onsenui';
+import {List, ListItem, Checkbox, Button, ListHeader, Icon, Row, Col} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
@@ -203,34 +203,38 @@ export default class FavoriteListView extends React.Component {
  
     return (
       <ListItem key={row.contentid._text} tappable modifier="longdivider">
-        <label className='left'>
-          {this.props.showStar ? 
-            (<Button modifier='quiet' 
-              style={{
-                width: '100%', 
-                textAlign: "center", 
-                color: this.state.favorites.includes(row.contentid._text) ? 
-                  goldColor : grayColor
-                }}
-              onClick={this.toggleFavorite.bind(this, row.contentid._text)}>
-              <Icon icon='md-star' size={starIconSize}/>
-            </Button>) :
-            (<Checkbox onChange={this.onChange.bind(this, row.contentid._text)} 
-              inputId={"checkbox-" + row.contentid._text}/>)}
-        </label>
-        <div className='left'>
-          {row.firstimage != null ? 
-            (<img src={row.firstimage._text} className='list-item__thumbnail' />) :
-            (<img src="img/noimage.png" className='list-item__thumbnail' />)}
-        </div>
-        <label htmlFor={"checkbox-" + row.contentid._text} className='center'>
-          {row.title._text}
-        </label>
-        <div className='right'>
-          <Button onClick={this.props.onMoreClicked.bind(this, row.contentid._text, row.contenttypeid._text)}>
-            {this.state.strings.moredetails}
-          </Button>
-        </div>
+        <Row style={{marginTop: "10px", marginBotton: "10px"}}>
+          <Col width="15%">
+            {this.props.showStar ? 
+              (<Button modifier='quiet' 
+                style={{
+                  width: '100%', 
+                  textAlign: "center", 
+                  color: this.state.favorites.includes(row.contentid._text) ? 
+                    goldColor : grayColor
+                  }}
+                onClick={this.toggleFavorite.bind(this, row.contentid._text)}>
+                <Icon icon='md-star' size={starIconSize}/>
+              </Button>) :
+              (<Checkbox onChange={this.onChange.bind(this, row.contentid._text)} 
+                inputId={"checkbox-" + row.contentid._text}/>)}
+          </Col>
+          <Col width="15%">
+            {row.firstimage != null ? 
+              (<img src={row.firstimage._text} className='list-item__thumbnail' />) :
+              (<img src="img/noimage.png" className='list-item__thumbnail' />)}
+          </Col>
+          <Col width="45%">
+            <label htmlFor={"checkbox-" + row.contentid._text}>
+              {row.title._text}
+            </label>
+          </Col>
+          <Col width="25%">
+            <Button onClick={this.props.onMoreClicked.bind(this, row.contentid._text, row.contenttypeid._text)}>
+              {this.state.strings.moredetails}
+            </Button>
+          </Col>
+        </Row>
       </ListItem>
     )
   }

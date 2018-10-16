@@ -222,7 +222,8 @@ export default class CreatePlanPage extends React.Component {
       material: 28
     };
 
-    let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView />) : null;
+    let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView 
+      navigator={this.props.navigator}/>) : null;
     
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}
