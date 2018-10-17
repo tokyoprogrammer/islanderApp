@@ -88,7 +88,7 @@ export default class WeatherView extends React.Component {
         let item = this.state.forecast[i];
         let dt = new Date(item.dt * 1000);
         let hours = dt.getHours();
-        let icon = "http://openweathermap.org/img/w/" + item.weather[0].icon + ".png";
+        let icon = "img/weather/" + item.weather[0].icon + ".png";
         let degree = (item.main.temp - 273.15).toFixed(1);
         let colItem = (
           <Col key={"24-col-" + i}>
@@ -158,7 +158,7 @@ export default class WeatherView extends React.Component {
       }
 
       if(dt.getHours() == 12) { 
-        weatherIcon = "http://openweathermap.org/img/w/" + item.weather[0].icon + ".png";
+        weatherIcon = "img/weather/" + item.weather[0].icon + ".png";
         needUpdate = true;
       }
       if(prevdt.getDate() != dt.getDate()) {
@@ -245,7 +245,7 @@ export default class WeatherView extends React.Component {
         <Row>
           <Col width="35%"></Col>
           <Col width="15%">
-            <img src={this.state.cache.weatherIcon} />
+            <img src={this.state.cache.weatherIcon} style={{width: "90px"}}/>
           </Col>
           <Col width="15%">
             <h2 style={{marginTop: "9px", marginBottom: "9px"}}>

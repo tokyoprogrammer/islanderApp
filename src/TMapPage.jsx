@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, List, ListItem, ListHeader} from 'react-onsenui';
+import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular, List, ListItem, ListHeader, Row, Col} from 'react-onsenui';
 
 import postscribe from 'postscribe';
 
@@ -255,11 +255,17 @@ export default class TmapView extends React.Component {
   renderRow(row, index) {
     let direction = row.split(":")[0];
     let desc = row.split(":")[1];
+    let directionIcon = "img/directions/" + direction + ".png"
     return (
       <ListItem key={"details-" + index}>
-        <div className="center">
-          {desc}
-        </div>
+        <Row style={{marginTop: "8px", marginBottom: "8px"}}>
+          <Col width="15%">
+            <img src={directionIcon} style={{width: "30px", height: "30px"}} />
+          </Col>
+          <Col width="85%">
+            {desc}
+          </Col>
+        </Row>
       </ListItem>
     );
   }
