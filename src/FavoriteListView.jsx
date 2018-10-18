@@ -281,7 +281,7 @@ export default class FavoriteListView extends React.Component {
             renderHeader={() => (
               <ListHeader>{this.state.strings.favorite}</ListHeader>)}
             renderRow={this.renderCheckboxRow.bind(this)}/>) :
-          (<h3 style={{width: "100%", textAlign: "center"}}>
+          (<h3 style={{width: "100%", textAlign: "center", padding: "3%"}}>
             {this.state.strings.nofavorites}
           </h3>)}
       </div>

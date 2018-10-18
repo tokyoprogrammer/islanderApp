@@ -9,6 +9,8 @@ require('onsenui/css/onsenui.css');
 
 import App from './App';
 
+localStorage.setItem("pageToLoad", "HomePage");
+
 const rootElement = document.getElementById('app');
 ReactDOM.render(
   <AppContainer>

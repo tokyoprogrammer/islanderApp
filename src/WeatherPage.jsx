@@ -50,7 +50,7 @@ export default class WeatherPage extends React.Component {
     const centerDiv = {textAlign: "center"};
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div>
+        <div style={{height: "100%", backgroundColor: "#FFFFFF"}}>
           <WeatherView />
         </div>
       </Page>

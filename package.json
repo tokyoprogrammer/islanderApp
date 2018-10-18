@@ -24,6 +24,7 @@
     "react-image-timeline": "^0.2.4",
     "react-localization": "^1.0.10",
     "react-onsenui": "^1.11.1",
+    "react-search-field": "0.0.3",
     "react-stepper-horizontal": "^1.0.11",
     "xml-js": "^1.6.7"
   },

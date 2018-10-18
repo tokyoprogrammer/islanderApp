@@ -156,8 +156,8 @@ export default class PlanView extends React.Component {
 
   onNavClicked(current, prev) {
     localStorage.setItem("tmapLatLng", JSON.stringify({
-      prev: {lat: prev.lat, lng: prev.lng},
-      target: {lat: current.lat, lng: current.lng}
+      prev: {lat: prev.lat, lng: prev.lng, title: prev.title},
+      target: {lat: current.lat, lng: current.lng, title: current.name}
     }));
     this.props.navigator.pushPage({ 
       component: TMapPage 
@@ -322,9 +322,9 @@ export default class PlanView extends React.Component {
             {accomodationStrings.map((item, index) => (<li key={"hli-" + index}>{item}</li>))}
           </div>
         </Card>
-        <h3>{this.state.strings.entireplan}</h3>
+        <h3 style={{marginLeft: "3%"}}>{this.state.strings.entireplan}</h3>
         {map}
-        <p>{this.state.strings.swipemoredetail}</p>
+        <p style={{marginLeft: "3%"}}>{this.state.strings.swipemoredetail}</p>
         {carousel}
         <Timeline events={this.state.timeline[this.state.itemCarouselIndex]} 
           customStartLabel={CustomLabel} customEndLabel={CustomLabel}

@@ -113,10 +113,11 @@ export default class AllFavoritesPage extends React.Component {
           <Button style={{width: "80%", margin: "2%"}} onClick={this.loadPage.bind(this, "HomePage")}>
             {this.state.strings.moresights}
           </Button>
-          <Button style={{width: "80%", margin: "2%"}} 
-            onClick={this.loadPage.bind(this, "CourseRecommandationPage")}>
-            {this.state.strings.moreplans}
-          </Button>
+          {this.state.strings.getLanguage() == "kr" ? 
+            (<Button style={{width: "80%", margin: "2%"}} 
+              onClick={this.loadPage.bind(this, "CourseRecommandationPage")}>
+              {this.state.strings.moreplans}
+            </Button>) : null }
         </div>
       </Page>
     );

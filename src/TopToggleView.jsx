@@ -26,7 +26,8 @@ export default class TopToggleView extends React.Component {
 
     return (
       <div style={innerDiv}>
-        <Segment index={this.props.segmentIndex} tabberId="tabber" style={{ width: '55%' }}>
+        <Segment index={this.props.segmentIndex} tabberId="tabber" 
+          style={{ width: '95%', marginTop: "3%"}}>
           <Button onClick={this.onButtonAllClicked.bind(this)}>{this.props.strings.all}</Button>
           <Button onClick={this.onButtonSeoguipoClicked.bind(this)}>{this.props.strings.seoguipo}</Button>
           <Button onClick={this.onButtonJejuClicked.bind(this)}>{this.props.strings.jeju}</Button>

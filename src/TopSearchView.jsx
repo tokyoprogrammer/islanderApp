@@ -1,15 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button, SearchInput, Icon} from 'react-onsenui';
+import {Icon} from 'react-onsenui';
+import SearchField from "react-search-field" ;
+
+require('./searchfield.css');
 
 export default class TopSearchView extends React.Component {
   constructor(props) { 
     super(props);
   }
 
+  onEnter(value, event) {
+    this.props.onClick();
+  }
+
+  onSearchClick(value) {
+    this.props.onClick();
+  }
+
   render() {
     const innerDiv = {
-      margin: '1%'
+      margin: '1%',
+      textAlign: "center"
     };
     const searchIconSize = {
       default: 24,
@@ -18,12 +30,11 @@ export default class TopSearchView extends React.Component {
 
     return (
       <div style={innerDiv}>
-        <SearchInput
-          placeholder='Search...' onChange={this.props.onChange} />
-        <Button onClick={this.props.onClick} 
-          modifier='quiet' style={{margin: '2px', padding: '2px'}}>
-          <Icon icon='md-search' size={searchIconSize} />
-        </Button>
+        <SearchField
+          placeholder="Search..."
+          onChange={this.props.onChange} 
+          onEnter={this.onEnter.bind(this)}
+          onSearchClick={this.onSearchClick.bind(this)} />
       </div>
     );
   }

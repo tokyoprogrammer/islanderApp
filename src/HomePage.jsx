@@ -196,7 +196,7 @@ export default class HomePage extends React.Component {
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
                 onClick={this.pushPage.bind(this, sightCode)}>
                 <div className = "left">
-                  <img src = "img/sightseeing.png" style = {{height: "60px"}} />
+                  <img src = "img/sightseeing.png" style = {{width: "50px", marginRight: "3%"}} />
                 </div>
                 <div className = "center">
                   <h3>{this.props.strings.sight}</h3>
@@ -205,7 +205,7 @@ export default class HomePage extends React.Component {
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
                 onClick={this.pushPage.bind(this, foodsCode)}>
                 <div className = "left">
-                  <img src = "img/food.png" style = {{height: "60px"}} />
+                  <img src = "img/food.png" style = {{width: "50px", marginRight: "3%"}} />
                 </div>
                 <div className = "center">
                   <h3>{this.props.strings.foods}</h3>
@@ -214,7 +214,7 @@ export default class HomePage extends React.Component {
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
                 onClick={this.pushPage.bind(this, cultureCode)}>
                 <div className = "left">
-                  <img src = "img/culture.png" style = {{height: "60px"}} />
+                  <img src = "img/culture.png" style = {{width: "50px", marginRight: "3%"}} />
                 </div>
                 <div className = "center">
                   <h3>{this.props.strings.art}</h3>
@@ -223,7 +223,7 @@ export default class HomePage extends React.Component {
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
                 onClick={this.pushPage.bind(this, festivalCode)}>
                 <div className = "left">
-                  <img src = "img/festival.png" style = {{height: "60px"}} />
+                  <img src = "img/festival.png" style = {{width: "50px", marginRight: "3%"}} />
                 </div>
                 <div className = "center">
                   <h3>{this.props.strings.festival}</h3>
@@ -232,7 +232,7 @@ export default class HomePage extends React.Component {
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
                 onClick={this.pushPage.bind(this, activityCode)}>
                 <div className = "left">
-                  <img src = "img/activity.png" style = {{height: "60px"}} />
+                  <img src = "img/activity.png" style = {{width: "50px", marginRight: "3%"}} />
                 </div>
                 <div className = "center">
                   <h3>{this.props.strings.activity}</h3>
@@ -241,7 +241,7 @@ export default class HomePage extends React.Component {
               <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
                 onClick={this.pushPage.bind(this, shoppingCode)}>
                 <div className = "left">
-                  <img src = "img/shopping.png" style = {{height: "60px"}} />
+                  <img src = "img/shopping.png" style = {{width: "50px", marginRight: "3%"}} />
                 </div>
                 <div className = "center">
                   <h3>{this.props.strings.shopping}</h3>

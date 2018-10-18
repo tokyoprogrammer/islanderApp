@@ -136,8 +136,8 @@ export default class ListView extends React.Component {
     console.log(string);
   } 
  
-  handleSearchBox(e) {
-    let searchString = e.target.value;
+  handleSearchBox(value) {
+    let searchString = value;
     if(searchString.length <= 0) {
       // clear search
       this.searchUsingSearchString("");
@@ -204,9 +204,9 @@ export default class ListView extends React.Component {
 
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
-    const imageWidth = 100;
+    const imageWidth = 90;
     const imageHeight = this.listItemHeight - 10;
-    const imageStyle = {width: imageWidth + "px", maxHeight: imageHeight + "px"};
+    const imageStyle = {maxWidth: imageWidth + "px", maxHeight: imageHeight + "px", padding: "5%"};
     const grayColor = "#D3D3D3";
     const goldColor = "#FFD700";
     const starIconSize = {
@@ -229,6 +229,10 @@ export default class ListView extends React.Component {
     if(contentId == null || contentTypeId == null || mapX == null || mapY == null) return null;
  
     let title = itemInfo.title == null ? "" : itemInfo.title._text;
+    if(this.state.strings.getLanguage() != "kr") {
+      let tempTitle = title.split("(");
+      if(tempTitle.length > 0) title = tempTitle[0];
+    }
     
     let itemImage = itemInfo.firstimage == null ? 
       (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {imageHeight} 
@@ -255,9 +259,11 @@ export default class ListView extends React.Component {
           {itemImage}
         </Col>
         <Col width="50%">
-          <h3 style={{margin:"1px"}}>{title}</h3>
-          <p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>
-          {tel != null ? (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
+          <h4 style={{margin:"1px"}}>{title}</h4>
+          {this.state.strings.getLanguage() == "kr" ? 
+            (<p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>) : null }
+          {tel != null && this.state.strings.getLanguage() == "kr" ? 
+            (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
         </Col>
         <Col width="20%">
           <Button modifier='quiet' 

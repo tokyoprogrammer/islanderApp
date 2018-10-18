@@ -237,7 +237,7 @@ export default class WeatherView extends React.Component {
 
     return (
       <div style={centerDiv}>
-        <h2>{this.state.strings.jeju}</h2>
+        <h2 style={{marginTop: "0px", paddingTop: "2%"}}>{this.state.strings.jeju}</h2>
         <h4>
           {current.getFullYear() + "/" + (current.getMonth() + 1) + 
             "/" + current.getDate() + " " + this.getDayInStr(current)}

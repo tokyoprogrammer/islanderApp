@@ -10,8 +10,11 @@ export default class TmapView extends React.Component {
     super(props);
     this.state = {
       loaded: false,
-      paths: []
+      paths: [],
+      tmapLatLng: JSON.parse(localStorage.getItem("tmapLatLng"))
     };
+    this.fromtotext = this.state.tmapLatLng.prev.title + " -> " + 
+      this.state.tmapLatLng.target.title;
   }
 
   componentDidMount() {
@@ -35,7 +38,6 @@ export default class TmapView extends React.Component {
     for(let i = 0; i < scripts.length; i++) {
       postscribe('#tmapscript', scripts[i], {
         done: function() {
-          console.log("Tmap Script loaded");
           this_.loadMap();
           this_.setState({loaded: true});
         }
@@ -51,7 +53,7 @@ export default class TmapView extends React.Component {
       width : "100%", // map의 width 설정
       height : "50%", // map의 height 설정
     });
-    let tmapLatLng = JSON.parse(localStorage.getItem("tmapLatLng"));
+    let tmapLatLng = this.state.tmapLatLng;
            
     map.setCenter(new Tmap.LonLat(
       "126.9850380932383", "37.566567545861645").transform("EPSG:4326", "EPSG:3857"), 15);
@@ -124,12 +126,12 @@ export default class TmapView extends React.Component {
         let tTime = " 총 시간 : " + 
           ($intRate[0].getElementsByTagName("tmap:totalTime")[0].
           childNodes[0].nodeValue/60).toFixed(0)+"분,";
-        let tFare = " 총 요금 : " + 
-          $intRate[0].getElementsByTagName("tmap:totalFare")[0].childNodes[0].nodeValue+"원,";
+//        let tFare = " 총 요금 : " + 
+//          $intRate[0].getElementsByTagName("tmap:totalFare")[0].childNodes[0].nodeValue+"원,";
         let taxiFare = " 예상 택시 요금 : " + 
           $intRate[0].getElementsByTagName("tmap:taxiFare")[0].childNodes[0].nodeValue+"원";
 
-        $("#result").text(tDistance+tTime+tFare+taxiFare);
+        $("#result").text(tDistance+tTime+taxiFare);
   
         routeLayer.removeAllFeatures();//레이어의 모든 도형을 지웁니다.
 
@@ -142,7 +144,6 @@ export default class TmapView extends React.Component {
           let placeDesc = places[i].getElementsByTagName("description")[0].childNodes[0].nodeValue;
           paths.push(turnType + ":" + placeDesc);
         }
-        console.log(paths);
   		
         let traffic = $intRate[0].getElementsByTagName("traffic")[0];
         //교통정보가 포함되어 있으면 교통정보를 포함한 경로를 그려주고
@@ -274,12 +275,13 @@ export default class TmapView extends React.Component {
     return (
       <Page renderToolbar = {this.renderToolbar.bind(this)}>
         {this.state.loaded ? null : (
-          <div style={{textAlign: "center"}}>
+          <div style={{textAlign: "center", margin: "3%"}}>
             <label>Loading... </label>
             <ProgressCircular indeterminate />
           </div>
         )}
-        <p id="result"></p>
+        <b style={{margin: "3%"}}>{this.fromtotext}</b>
+        <p id="result" style={{marginLeft: "3%", marginRight: "3%", marginBottom: "2%"}}></p>
         <div id="map_div">
         </div>
         <List dataSource = {this.state.paths} 

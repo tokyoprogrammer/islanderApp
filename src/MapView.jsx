@@ -208,6 +208,11 @@ export default class MapView extends React.Component {
       markers.push(marker);
       // make markers on the map and push it in the array
 
+      if(this.state.strings.getLanguage() != "kr") {
+        let tempTitle = title.split("(");
+        if(tempTitle.length > 0) title = tempTitle[0];
+      }
+
       let carouselKey = "carousel-" + contentId;
       let imageKey = "image-" + realIndex;
       let titleKey = "title-" + realIndex++;
@@ -215,7 +220,7 @@ export default class MapView extends React.Component {
       let imageSrc = image == null ? 
         (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
           placeTitle = {title} listThumbnail = {false} multi = {false} />) :
-        (<img id={imageKey} src={image._text} style={{width: "100%"}} />);
+        (<img id={imageKey} src={image._text} style={{width: "100%", padding: "5%"}} />);
   
       let detailButton = (
         <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
@@ -464,8 +469,8 @@ export default class MapView extends React.Component {
       segmentIndex: index});
   }
 
-  handleSearchBox(e) {
-    let searchString = e.target.value;
+  handleSearchBox(value) {
+    let searchString = value;
     if(searchString.length <= 0) {
       // clear search
       this.searchUsingSearchString("");
