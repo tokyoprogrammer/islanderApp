@@ -38,9 +38,9 @@ jobs:
       - run: 
           name: Install node modules
           command: npm install # install npm packages
-      - run:
-          name: Update Monaca
-          command: monaca update --force 
+#      - run:
+#          name: Update Monaca
+#          command: monaca update --force 
 
       - save_cache:
           paths:
