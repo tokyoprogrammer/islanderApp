@@ -230,13 +230,11 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
   
   onCalendarChange(value) {
-   /* console.log(value);*/
     let accomodationListCopy = this.state.accomodationList;
 
     for(let i = 0; i < accomodationListCopy.length; i++) {
       let item = accomodationListCopy[i];
       if(this.state.selectedRow == item) {
-       /* console.log(item); */
         item.scheduleInfo = value.slice(0);
       }
     }

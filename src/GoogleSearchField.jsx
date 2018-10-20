@@ -42,7 +42,6 @@ export class GoogleSearchField extends React.Component {
       var this_ = this;
       // Bias the SearchBox results towards current map's viewport.
       this.map.addListener('bounds_changed', function() {
-        console.log("dd");
         this_.searchBox.setBounds(this_.map.getBounds());
       });
 

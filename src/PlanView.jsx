@@ -50,11 +50,13 @@ export default class PlanView extends React.Component {
     let accomodationArr = [];
     for(let i = 0; i < days - 1; i++) {
       let day = new Date(schedule.arrivalTime);
-      day.setDate(arrivalTime.getDate() + i);
+      day.setDate(day.getDate() + i);
       for(let j = 0; j < accomodationInfo.length; j++) {
         let accomodation = accomodationInfo[j];
         let start = new Date(accomodation.scheduleInfo[0]);
+        start.setHours(0, 0, 0);
         let end = new Date(accomodation.scheduleInfo[1]);
+        end.setHours(0, 0, 0);
         // 0: start day, 1: end day
         if(day >= start && day < end) {
           accomodationArr.push(accomodation.hotelInfo);
