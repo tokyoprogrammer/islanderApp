@@ -36,14 +36,11 @@ export default class CreatePlanPage extends React.Component {
         end.setHours(0, 0, 0);
         // 0: start day, 1: end day
         if(day >= start && day < end) {
-          console.log(start);
-          console.log(end);
           accomodationArr.push(accomodation.hotelInfo);
           break;
         }
       }
     }
-    console.log(accomodationArr);
 
     this.state = {
       strings: strings,

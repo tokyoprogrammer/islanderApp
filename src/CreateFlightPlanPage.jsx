@@ -92,8 +92,6 @@ export default class CreateFlightPlan extends React.Component {
   }
 
   goNext() {
-    console.log(this.state.arrivalTime);
-    console.log(this.state.departureTime);
     if(this.state.arrivalTime == null || this.state.arrivalTime.length < 1 ||
        this.state.departureTime == null || this.state.departureTime.length < 1) {
       notification.alert(this.props.strings.cannotempty);
@@ -118,14 +116,6 @@ export default class CreateFlightPlan extends React.Component {
     this.props.navigator.pushPage({ 
       component: CreateAccomodationPlanPage 
     });
-  }
-
-  onTimeChange(options) {
-    console.log(options);
-  }
-
-  onFocusChange(focusStatus) {
-    console.log(focusStatus);
   }
 
   render() {

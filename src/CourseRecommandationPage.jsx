@@ -348,6 +348,7 @@ export default class CourseRecommandationPage extends React.Component {
     if(this.overScrolled) {
       this.overScrolled = false;
       this.setState({});
+      console.log(e.activeIndex);
       return;
     }
     var this_ = this;

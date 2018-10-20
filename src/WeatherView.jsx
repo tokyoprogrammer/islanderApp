@@ -94,7 +94,7 @@ export default class WeatherView extends React.Component {
           <Col key={"24-col-" + i}>
             <Row>
               <div style={centerDiv}>
-                <p style={{color: "#FFFFFF"}}>{hours}</p>
+                <p style={{color: "#000000"}}>{hours}</p>
               </div>
             </Row>
             <Row>
@@ -104,7 +104,7 @@ export default class WeatherView extends React.Component {
             </Row>
             <Row>
               <div style={centerDiv}>
-                <p style={{color: "#FFFFFF"}}>{degree}</p>
+                <p style={{color: "#000000"}}>{degree}</p>
               </div>
             </Row>
           </Col>
@@ -139,7 +139,7 @@ export default class WeatherView extends React.Component {
     let jump = 8;
     const centerDiv = {width: "100%", textAlign: "center"};
     const imageWidth = {width: "35px"};
-    const fontColor = {color: "#FFFFFF", paddingTop: "5px"}
+    const fontColor = {color: "#000000", paddingTop: "5px"}
     let minTemp = 9999;
     let maxTemp = 0;
     let prevdt = new Date(this.state.forecast[0].dt * 1000);
@@ -245,20 +245,20 @@ export default class WeatherView extends React.Component {
         <Row>
           <Col width="35%"></Col>
           <Col width="15%">
-            <img src={this.state.cache.weatherIcon} style={{width: "90px"}}/>
+            <img src={this.state.cache.weatherIcon} style={{width: "50px"}}/>
           </Col>
           <Col width="15%">
-            <h2 style={{marginTop: "9px", marginBottom: "9px"}}>
+            <h1 style={{marginTop: "9px", marginBottom: "9px"}}>
               {this.state.cache.weatherDegree + "ºC"}
-            </h2>
+            </h1>
           </Col>
           <Col width="35%"></Col>
         </Row>
-        <div style={{borderRadius: "6px", backgroundColor: "rgba(0, 0, 0, .4)", padding: "3%", 
+        <div style={{borderRadius: "6px", backgroundColor: "rgba(255, 255, 255, .4)", padding: "3%", 
           marginLeft: "2%", marginRight: "2%", marginTop: "5%"}}>
           {forecast24}
         </div>
-        <div style={{borderRadius: "6px", backgroundColor: "rgba(0, 0, 0, .4)", padding: "3%", 
+        <div style={{borderRadius: "6px", backgroundColor: "rgba(255, 255, 255, .4)", padding: "3%", 
           marginLeft: "2%", marginRight: "2%", marginTop: "5%"}}>
           {forecastList}
         </div>

@@ -117,7 +117,8 @@ export class GoogleSearchField extends React.Component {
     return (
       <div style={{textAlign: "center"}}>
         <input id="pac-input" type="text" placeholder="Search Place..." 
-          style={{width: "95%", height: "30px"}} onFocus={this.onFocus.bind(this)}/> 
+          style={{width: "95%", height: "40px", margin: "2.5%", marginBottom: "1%"}} 
+          onFocus={this.onFocus.bind(this)}/> 
         <div ref="map" style={style}>
         </div>
       </div>

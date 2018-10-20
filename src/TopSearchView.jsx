@@ -31,6 +31,7 @@ export default class TopSearchView extends React.Component {
     return (
       <div style={innerDiv}>
         <SearchField
+          style={{height: "60px"}}
           placeholder="Search..."
           onChange={this.props.onChange} 
           onEnter={this.onEnter.bind(this)}

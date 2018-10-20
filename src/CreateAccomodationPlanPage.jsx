@@ -307,7 +307,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
               </p>
             </div>
           </Card>
-          <b>{this.state.strings.yourplan}</b>
+          <b style={{margin: "2%"}}>{this.state.strings.yourplan}</b>
           <Card>
             <div>
               <p>
@@ -323,7 +323,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
               </p>
             </div>
           </Card>
-          <b>{this.state.strings.findaccomodation}</b>
+          <b style={{margin: "2%"}}>{this.state.strings.findaccomodation}</b>
           <GoogleSearchField initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
             height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
           <Button style={{width: "80%", margin: "10%", 
