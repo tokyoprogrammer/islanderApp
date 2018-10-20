@@ -25,7 +25,7 @@ try {
   let webpackConfig = require('./webpack.dev.new.config.js');
   
   if (webpackConfig.devServer.inline) {
-    let packUrl = "http://localhost:" + port + "/";
+    let packUrl = "http://192.168.33.11:" + port + "/";
 
     if (process.env.MONACA_TERMINAL) {
       packUrl = "https://0.0.0.0/";

@@ -124,7 +124,8 @@ module.exports = {
     colors: true,
     inline: true,
     historyApiFallback: true,
-    host: '0.0.0.0',
+    disableHostCheck: true,
+    host: 'localhost',
     stats: 'minimal',
     hot: true
   }
