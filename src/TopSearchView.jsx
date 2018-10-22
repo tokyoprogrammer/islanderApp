@@ -11,8 +11,9 @@ export default class TopSearchView extends React.Component {
     this.props.onChange(event.target.value);
   }
 
-  onEnter(value, event) {
-    this.props.onClick();
+  onKeyPressed(event) {
+    if(event.key == 'Enter')
+      this.props.onClick();
   }
 
   onSearchClick(value) {
@@ -21,7 +22,8 @@ export default class TopSearchView extends React.Component {
 
   render() {
     const innerDiv = {
-      margin: '1%',
+      marginTop: '1%',
+      marginBottom: "1%",
       textAlign: "center",
       width: "100%",
       display: "flex",
@@ -48,12 +50,16 @@ export default class TopSearchView extends React.Component {
       paddingLeft: "1%"
     };
     const iconStyle = {
-      width: "20px"
+      width: "20px",
+      margin: "auto"
     };
 
     return (
       <div style={innerDiv}>
-        <input style={inputField} onChange={this.onChange.bind(this)} placeholder="search..." />
+        <input style={inputField} 
+          onChange={this.onChange.bind(this)} 
+          placeholder="search..." 
+          onKeyPress={this.onKeyPressed.bind(this)}/>
         <button style={searchButton} onClick={this.onSearchClick.bind(this)}>
           <img src="img/search.png" style={iconStyle} />
         </button>
