@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Icon} from 'react-onsenui';
-import SearchField from "react-search-field" ;
-
-require('./searchfield.css');
 
 export default class TopSearchView extends React.Component {
   constructor(props) { 
     super(props);
+  }
+
+  onChange(event) {
+    this.props.onChange(event.target.value);
   }
 
   onEnter(value, event) {
@@ -21,23 +22,43 @@ export default class TopSearchView extends React.Component {
   render() {
     const innerDiv = {
       margin: '1%',
-      textAlign: "center"
+      textAlign: "center",
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
     };
-    const searchIconSize = {
-      default: 24,
-      material: 22
+    const inputField = {
+      WebkitAppearance: "none",
+      width: "78%", 
+      height: "50px", 
+      padding: "0px", 
+      border: "1px solid #D3D3D3",
+      borderRightStyle: "none",
+      fontSize: "15px",
+      textIndent: "3%"
+    };
+    const searchButton = {    
+      border: "1px solid #D3D3D3",
+      backgroundColor: "white",
+      color: "black",
+      height: "50px",
+      width: "50px",
+      padding: "0px",
+      paddingLeft: "1%"
+    };
+    const iconStyle = {
+      width: "20px"
     };
 
     return (
       <div style={innerDiv}>
-        <SearchField
-          style={{height: "60px"}}
-          placeholder="Search..."
-          onChange={this.props.onChange} 
-          onEnter={this.onEnter.bind(this)}
-          onSearchClick={this.onSearchClick.bind(this)} />
+        <input style={inputField} onChange={this.onChange.bind(this)} placeholder="search..." />
+        <button style={searchButton} onClick={this.onSearchClick.bind(this)}>
+          <img src="img/search.png" style={iconStyle} />
+        </button>
       </div>
-    );
+    )
   }
 }
 

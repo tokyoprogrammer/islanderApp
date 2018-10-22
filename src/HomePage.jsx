@@ -169,13 +169,37 @@ export default class HomePage extends React.Component {
       backgroundColor: "rgba(255, 255, 255, 1.0)", 
       marginBottom: "1%",
       boxShadow: "0px 2px 2px 2px #9E9E9E",
+      width: "100%"
     };
 
-    let listDivStyle = {
+    const listContainerDivStyle = {
       margin: "3%",
       marginTop: "-15%",
       boxShadow: "2px 0px 2px 2px #9E9E9E",
     };
+
+    const innerDiv = {
+      margin: '1%',
+      textAlign: "center",
+      width: "100%",
+      height: "70px",
+      display: "flex"
+    };
+
+    const iconStyle = {
+      width: "50px",
+      height: "50px",
+      marginTop: "auto",
+      marginBottom: "auto",
+      marginRight: "3%"
+    };
+
+    const textStyle= {
+      fontSize: "20px",
+      color: "#000000",
+      marginTop: "auto",
+      marginBottom: "auto"      
+    }
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
@@ -190,63 +214,43 @@ export default class HomePage extends React.Component {
               {this.state.weatherDegree + "ºC"}
             </span>
           </Button>
-          <div style={listDivStyle}>
-            <List style={{backgroundColor: "rgba(255, 255, 255, 1.0)", boxShadow: "2px 2px 2px 2px #9E9E9E"}}>
-              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
-                onClick={this.pushPage.bind(this, sightCode)}>
-                <div className = "left">
-                  <img src = "img/sightseeing.png" style = {{width: "50px", marginRight: "3%"}} />
-                </div>
-                <div className = "center">
-                  <h3>{this.props.strings.sight}</h3>
-                </div>
-              </ListItem>
-              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
-                onClick={this.pushPage.bind(this, foodsCode)}>
-                <div className = "left">
-                  <img src = "img/food.png" style = {{width: "50px", marginRight: "3%"}} />
-                </div>
-                <div className = "center">
-                  <h3>{this.props.strings.foods}</h3>
-                </div>
-              </ListItem>
-              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
-                onClick={this.pushPage.bind(this, cultureCode)}>
-                <div className = "left">
-                  <img src = "img/culture.png" style = {{width: "50px", marginRight: "3%"}} />
-                </div>
-                <div className = "center">
-                  <h3>{this.props.strings.art}</h3>
-                </div>
-              </ListItem>
-              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
-                onClick={this.pushPage.bind(this, festivalCode)}>
-                <div className = "left">
-                  <img src = "img/festival.png" style = {{width: "50px", marginRight: "3%"}} />
-                </div>
-                <div className = "center">
-                  <h3>{this.props.strings.festival}</h3>
-                </div>
-              </ListItem>
-              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
-                onClick={this.pushPage.bind(this, activityCode)}>
-                <div className = "left">
-                  <img src = "img/activity.png" style = {{width: "50px", marginRight: "3%"}} />
-                </div>
-                <div className = "center">
-                  <h3>{this.props.strings.activity}</h3>
-                </div>
-              </ListItem>
-              <ListItem style={listItemStyle} tappable={true} modifier="nodivider" 
-                onClick={this.pushPage.bind(this, shoppingCode)}>
-                <div className = "left">
-                  <img src = "img/shopping.png" style = {{width: "50px", marginRight: "3%"}} />
-                </div>
-                <div className = "center">
-                  <h3>{this.props.strings.shopping}</h3>
-                </div>
-              </ListItem>
-            </List>
+          <div style={listContainerDivStyle}>
+            <Button style={listItemStyle} onClick={this.pushPage.bind(this, sightCode)}>
+              <div style={innerDiv}>
+                <img src="img/sightseeing.png" style={iconStyle} />
+                <p style={textStyle}>{this.props.strings.sight}</p>
+              </div>
+            </Button>
+            <Button style={listItemStyle} onClick={this.pushPage.bind(this, foodsCode)}>
+              <div style={innerDiv}>
+                <img src = "img/food.png" style={iconStyle} />
+                <p style={textStyle}>{this.props.strings.foods}</p>
+              </div>
+            </Button>
+            <Button style={listItemStyle} onClick={this.pushPage.bind(this, cultureCode)}>
+              <div style={innerDiv}>
+                <img src = "img/culture.png" style={iconStyle} />
+                <p style={textStyle}>{this.props.strings.art}</p>
+              </div>
+            </Button>
+            <Button style={listItemStyle} onClick={this.pushPage.bind(this, festivalCode)}>
+              <div style={innerDiv}>
+                <img src = "img/festival.png" style = {iconStyle} />
+                <p style={textStyle}>{this.props.strings.festival}</p>
+              </div>
+            </Button>
+            <Button style={listItemStyle} onClick={this.pushPage.bind(this, activityCode)}>
+              <div style={innerDiv}>
+                <img src = "img/activity.png" style = {iconStyle} />
+                <p style={textStyle}>{this.props.strings.activity}</p>
+              </div>
+            </Button>
+            <Button style={listItemStyle} onClick={this.pushPage.bind(this, shoppingCode)}>
+              <div style={innerDiv}>
+                <img src = "img/shopping.png" style = {iconStyle} />
+                <p style={textStyle}>{this.props.strings.shopping}</p>
+              </div>
+            </Button>
           </div>
         </div>
       </Page>
