@@ -394,6 +394,10 @@ export default class CourseRecommandationPage extends React.Component {
   }
   
   goDetails(contentId) {
+    if(contentId == 2473487) contentId = 2554574; 
+    // API BUG. 오설록 티 뮤지엄. 
+    // Manual correction is NOT A GOOD WAY. 
+    // TODO Change This line when we can manage API server.
     localStorage.setItem("contentId", contentId);
     let additional = this.state.additionalInfo;
     for(let i = 0; i < additional.length; i++) {

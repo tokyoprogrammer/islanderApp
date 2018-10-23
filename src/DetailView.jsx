@@ -85,7 +85,6 @@ export default class DetailView extends React.Component {
         var convert = require('xml-js');
         var options = {compact: true, ignoreComment: true, spaces: 4};
         var xml = convert.xml2js(xhr.responseText, options);
-        console.log(xml);
         this_.setState({itemDetailCommon: xml.response.body.items.item});
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
@@ -105,7 +104,6 @@ export default class DetailView extends React.Component {
         var convert = require('xml-js');
         var options = {compact: true, ignoreComment: true, spaces: 4};
         var xml = convert.xml2js(xhr.responseText, options);
-        console.log(xml);
         this_.setState({itemDetailIntro: xml.response.body.items.item});
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }
@@ -126,7 +124,6 @@ export default class DetailView extends React.Component {
         var convert = require('xml-js');
         var options = {compact: true, ignoreComment: true, spaces: 4};
         var xml = convert.xml2js(xhr.responseText, options);
-        console.log(xml.response.body.items.item);
         if(xml.response.body.items.item != null) 
           this_.setState({itemDetailImage: xml.response.body.items.item});
         resolve(new Response(xhr.responseText, {status: xhr.status}));
@@ -147,7 +144,6 @@ export default class DetailView extends React.Component {
         var convert = require('xml-js');
         var options = {compact: true, ignoreComment: true, spaces: 4};
         var xml = convert.xml2js(xhr.responseText, options);
-        console.log(xml.response.body.items.item);
         if(xml.response.body.totalCount._text > 1) {
           this_.setState({itemDetailImageMenu: xml.response.body.items.item});
         }
@@ -236,6 +232,18 @@ export default class DetailView extends React.Component {
       let key2 = '2';
       let carouselItem = null;
       let images = [];
+
+      let coverImage = this.state.itemDetailCommon.firstimage != null ? (
+        <CarouselItem>
+          <img src={this.state.itemDetailCommon.firstimage._text}
+            className="image-cover"
+            style={{width: "100%", height: "220px"}} 
+            onClick={this.openModal.bind(this, 
+              this.state.itemDetailCommon.firstimage._text)}/>
+         </CarouselItem>) : null;
+
+      if(coverImage != null) images.push(coverImage);
+
       for(let i = 0; i < this.state.itemDetailImage.length; i++) {
         let item = this.state.itemDetailImage[i];
         let imageURL = item.originimgurl._text;
@@ -272,15 +280,8 @@ export default class DetailView extends React.Component {
 	(<Carousel swipeable autoScroll overscrollable autoScrollRatio={0.5} 
            index={this.state.counter}
            onPostChange={this.handleChange.bind(this)}>
-           <CarouselItem>
-             <img src={this.state.itemDetailCommon.firstimage._text}
-               className="image-cover"
-               style={{width: "100%", height: "220px"}} 
-               onClick={this.openModal.bind(this, 
-                 this.state.itemDetailCommon.firstimage._text)}/>
-           </CarouselItem>
            {images}
-         </Carousel>) ;
+         </Carousel>);
 
       const grayColor = "#D3D3D3";
       const goldColor = "#FFD700";
@@ -303,7 +304,14 @@ export default class DetailView extends React.Component {
       let commonField = (
         <div>
           <Card>
-	    <div>{imageSrc}</div>    
+            <div style={{width: "100%", textAlign: "center", fontSize: "11px"}}>
+              {images.map((item, index) => (
+                <span key={"imagedot-" + index} style={{cursor: 'pointer'}}>
+                  {images.length > 1 ? this.state.counter == index ? '\u25CF' : '\u25CB' : null}
+                </span>
+              ))}
+            </div>
+            <div>{imageSrc}</div>
             <div className="title left">
               <Row>
                 <Col width="80%">  
@@ -362,7 +370,6 @@ export default class DetailView extends React.Component {
         <p>{this.state.itemDetailIntro.infocenterculture._text}</p>
       </ListItem>);
     ret.push(infocenter);
-    console.log(this.state.strings);
     let worktime = this.state.itemDetailIntro.usetimeculture  == null ?
       null :
       this.state.itemDetailIntro.usetimeculture._text == null ?
