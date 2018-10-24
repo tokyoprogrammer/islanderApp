@@ -25,6 +25,21 @@ export default class ListView extends React.Component {
     let strings = new LocalizedStrings(langFile);
     strings.setLanguage(lang);
 
+    let categories = [];
+    if(lang == "kr") {
+      categories = require('public/category/category_kr.json');
+    } else {
+      categories = require('public/category/category_en.json');
+    }
+
+    let categoriesMap = {};
+    for(let i = 0; i < categories.length; i++) {
+      let item = categories[i]; 
+      categoriesMap[item.key] = item.value;
+    }
+
+    this.categories = categoriesMap;
+
     let selectedCode = localStorage.getItem("code");
     let cache = JSON.parse(localStorage.getItem("items" + selectedCode));
     
@@ -131,9 +146,8 @@ export default class ListView extends React.Component {
     } else {
       searchedItems = filteredItems;
     }
-
-    this.setState({filteredItems: searchedItems});
-    console.log(string);
+     
+    return searchedItems;
   } 
  
   handleSearchBox(value) {
@@ -165,7 +179,8 @@ export default class ListView extends React.Component {
   }
  
   handleSearchButton() {
-    this.searchUsingSearchString(this.state.searchString);
+    let searchedItems = this.searchUsingSearchString(this.state.searchString);
+    this.setState({filteredItems: searchedItems});
   }
   
   processFilter(sigunguCode, filtered) {
@@ -251,6 +266,22 @@ export default class ListView extends React.Component {
       }
     }
 
+    let cat3 = itemInfo.cat3 != null ? this.categories[itemInfo.cat3._text] : null;
+    const badgeStyle = {
+      color: "#ffffff",
+      backgroundColor: "#17a2b8",
+      marginLeft: "1%",
+      padding: ".25em .4em",
+      fontSize: "75%",
+      lineHeight: "1",
+      verticalAlign: "baseline",
+      textAlign: "center",
+      display: "inline-block",
+      borderRadius: ".25rem"
+      
+    };
+    let badge = cat3 != null ? (<span style={badgeStyle}>{cat3}</span>) : null;
+
     return (
       <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable
         onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
@@ -259,7 +290,7 @@ export default class ListView extends React.Component {
           {itemImage}
         </Col>
         <Col width="50%">
-          <h4 style={{margin:"1px"}}>{title}</h4>
+          <b style={{margin:"1px"}}>{title}</b>{badge}
           {this.state.strings.getLanguage() == "kr" ? 
             (<p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>) : null }
           {tel != null && this.state.strings.getLanguage() == "kr" ? 

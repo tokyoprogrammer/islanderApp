@@ -45,7 +45,6 @@ export default class WeatherView extends React.Component {
         setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
       }).then(function(result) {
         let forecast = cache.data;
-        console.log(forecast);
         this_.setState({
           forecast: forecast
         });
@@ -234,6 +233,11 @@ export default class WeatherView extends React.Component {
     let forecast24 = this.render24Forecast();
     const current = new Date();
     let forecastList = this.renderForecastList();
+    const tempFont = {
+      fontSize: "35px",
+      marginTop: "9px",
+      marginBottom: "9px"
+    };
 
     return (
       <div style={centerDiv}>
@@ -244,13 +248,13 @@ export default class WeatherView extends React.Component {
         </h4>
         <Row>
           <Col width="35%"></Col>
-          <Col width="15%">
-            <img src={this.state.cache.weatherIcon} style={{width: "50px"}}/>
+          <Col width="10%">
+            <img src={this.state.cache.weatherIcon} style={{width: "40px", margin: "auto"}}/>
           </Col>
-          <Col width="15%">
-            <h1 style={{marginTop: "9px", marginBottom: "9px"}}>
+          <Col width="20%">
+            <p style={tempFont}>
               {this.state.cache.weatherDegree + "ºC"}
-            </h1>
+            </p>
           </Col>
           <Col width="35%"></Col>
         </Row>

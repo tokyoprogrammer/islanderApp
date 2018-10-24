@@ -24,7 +24,22 @@ export default class MapView extends React.Component {
     } else {
       serviceLang = "EngService";
     }
-  
+
+    let categories = [];
+    if(lang == "kr") {
+      categories = require('public/category/category_kr.json');
+    } else {
+      categories = require('public/category/category_en.json');
+    }
+
+    let categoriesMap = {};
+    for(let i = 0; i < categories.length; i++) {
+      let item = categories[i]; 
+      categoriesMap[item.key] = item.value;
+    }
+
+    this.categories = categoriesMap;
+
     let favorites = JSON.parse(localStorage.getItem('favorites'));
     if(favorites == null) {
       favorites = [];
@@ -184,6 +199,21 @@ export default class MapView extends React.Component {
         }
       }
 
+      let cat3Text = cat3.length > 1 ? this.categories[cat3] : null;
+      const badgeStyle = {
+        color: "#ffffff",
+        backgroundColor: "#17a2b8",
+        marginLeft: "1%",
+        padding: ".25em .4em",
+        fontSize: "75%",
+        lineHeight: "1",
+        verticalAlign: "baseline",
+        textAlign: "center",
+        display: "inline-block",
+        borderRadius: ".25rem"
+      };
+      let badge = cat3 != null ? (<span style={badgeStyle}>{cat3Text}</span>) : null;
+
       if(!proceed && filtered.length >= 1) continue; // if filter activated && not proceed,
 
       let mapX = item.mapx == null ? null : item.mapx._text;
@@ -244,7 +274,7 @@ export default class MapView extends React.Component {
             <div className="card__title">
               <Row>
                 <Col width="80%">
-                  <h2 id={titleKey} style={{margin: "1%"}}>{title}</h2>
+                  <b id={titleKey} style={{margin: "1%"}}>{title}</b>{badge}
                 </Col>
                 <Col width="20%">
                   <div style={{textAligh: "center"}}>
