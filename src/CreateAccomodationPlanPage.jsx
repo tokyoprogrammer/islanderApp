@@ -25,12 +25,10 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let arrivalDateTime = new Date(flightSchedule.arrivalTime);
     let departureDateTime = new Date(flightSchedule.departureTime);
     let hotelInfo = null;
-
     this.state = {
       arrivalDateTime: arrivalDateTime,
       departureDateTime: departureDateTime,
       strings: strings,
-      nights: departureDateTime.getDate() - arrivalDateTime.getDate(),
       accomodationList: [],
       isOpen: false,
       selectedRow: {},
@@ -137,10 +135,43 @@ export default class CreateAccomodationPlanPage extends React.Component {
     return dateInfo;
   }
 
-  goNext(arrivalDateTime,departureDateTime) {
+  validateOneDayTravel(){
+    let arrivalDateTime = this.state.arrivalDateTime;
+    let departureDateTime = this.state.departureDateTime;
+
+    let arrivalYear = arrivalDateTime.getFullYear();
+    let arrivalMonth = arrivalDateTime.getMonth() +1;
+    let arrivalDate = arrivalDateTime.getDate();
+    let departYear = departureDateTime.getFullYear();
+    let departMonth = departureDateTime.getMonth() +1;
+    let departDate = departureDateTime.getDate();
+    if(arrivalYear == departYear &&
+       arrivalMonth == departMonth &&
+       arrivalDate == departDate){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+
+  goNext() {
     let accomodationList = this.state.accomodationList;
+    let arrivalDateTime = this.state.arrivalDateTime;
+    let departureDateTime = this.state.departureDateTime;
+
+    let travelTotalNight = this.getAccomodationDate(arrivalDateTime,departureDateTime);
     let tmp = [];
-      
+    let accomodationSum = parseInt(0); 
+    if(this.validateOneDayTravel()){
+      /* don't require accomodation info */ 
+      this.props.navigator.pushPage({ 
+        component: CreateVisitListPage 
+      });
+    }
+
+    
+
+    /* save accomodation information */
     for (let i=0; i<accomodationList.length; i++){   
       let item = accomodationList[i];
       tmp.push(       
@@ -156,12 +187,30 @@ export default class CreateAccomodationPlanPage extends React.Component {
           item.scheduleInfo[1].toString()
         ] 
       });
+      let eachAccomodationDate = this.getAccomodationDate(item.scheduleInfo[0], item.scheduleInfo[1]); 
+      accomodationSum = accomodationSum + eachAccomodationDate;
     }  
     localStorage.setItem("accomodationInfo", JSON.stringify(tmp));
+ 
+    
+    /* condition 1 : aaccomodation sum is same with travel total night  */
+    if(accomodationSum > travelTotalNight){
+      /* duplicated accomodation case */
+      notification.alert(this.state.strings.duplicateaccomodation);
+      localStorage.removeItem("accomodationInfo");
+      return;
+    }else if(accomodationSum < travelTotalNight){
+      /* lack of  accomodation case */
+      notification.alert(this.state.strings.emptyaccomodation);
+      return; 
+    }else{
+      /* accomodationSum == travelTotalNight */
+    }
 
-    this.props.navigator.pushPage({ 
-      component: CreateVisitListPage 
-    });
+
+      this.props.navigator.pushPage({ 
+        component: CreateVisitListPage 
+      });
   }
 
   copy(mainObj) {
@@ -174,6 +223,20 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   addToAccomodationList() {
+    /* alert - one day travel case */
+    if(this.validateOneDayTravel()){
+      notification.alert(this.state.strings.onedaytravel);
+      return ;
+    }
+    /* alert - out of jeju hotel information */
+    let addrInfo = this.state.currentAccomodation.addr;
+    let retJeju = addrInfo.search(/jeju/i);
+    let retSeogwipo = addrInfo.search(/seogwipo/i);
+    if(retJeju == -1 && retSeogwipo == -1){
+      notification.alert(this.state.strings.notjejuaccomodation);
+      return ;
+    }
+
     if(this.state.currentAccomodation.name != null && 
        this.state.currentAccomodation.lat != null && 
        this.state.currentAccomodation.lng != null) {
@@ -221,7 +284,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
           <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet' >
             <Icon icon="md-calendar" size={calendarIconSize} />
           </Button>
-          <Button modifier='quiet' style={{color: 'black'}} >
+          <Button  modifier='quiet' style={{color: 'black'}} >
             <Icon icon='md-delete' size={calendarIconSize} />
           </Button>
         </div>
@@ -229,9 +292,10 @@ export default class CreateAccomodationPlanPage extends React.Component {
     ); 
   }
   
+
   onCalendarChange(value) {
     let accomodationListCopy = this.state.accomodationList;
-
+    console.log(value);
     for(let i = 0; i < accomodationListCopy.length; i++) {
       let item = accomodationListCopy[i];
       if(this.state.selectedRow == item) {
@@ -240,6 +304,14 @@ export default class CreateAccomodationPlanPage extends React.Component {
     }
     
     this.setState({isOpen: false, accomodationList: accomodationListCopy});
+  }
+
+  getAccomodationDate(startDate,endDate){
+    let accomodationDate;
+    let diff = Math.abs(startDate - endDate);
+    accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
+
+    return accomodationDate;
   }
 
   render() {
@@ -318,8 +390,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
                 {this.state.strings.flightdeparting + " : " 
                 +this.convertTime(this.state.departureDateTime)}
               </p>
-              <p>{this.state.nights + this.state.strings.nights+" "}
-                {this.state.nights+1}{this.state.strings.days}
+              <p>
+                 {this.getAccomodationDate(this.state.arrivalDateTime, this.state.departureDateTime) + this.state.strings.nights+" "}
+                 {this.getAccomodationDate(this.state.arrivalDateTime, this.state.departureDateTime)+1}{this.state.strings.days}
               </p>
             </div>
           </Card>
@@ -337,7 +410,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
           <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
-            onClick={this.goNext.bind(this,this.state.arrivalDateTime,this.state.departureDateTime)}>
+            onClick={this.goNext.bind(this)}>
             {this.state.strings.gonext}
           </Button>          
         </div>

@@ -101,7 +101,11 @@
     "date" : "일",
     "cannotempty" : "빈 정보가 있습니다. 모두 채워주세요.",
     "accomodationDateDefault" : "숙박 날짜를 선택해주세요.",
-    "navigate" : "가는 법 보기"
+    "navigate" : "가는 법 보기",
+    "emptyaccomodation" : "숙소날짜가 비어있습니다.모두 채워주세요.",
+    "duplicateaccomodation" : "숙소날짜가 중복되었습니다. ",
+    "notjejuaccomodation" : "제주도내의 숙소가 아닙니다.",
+    "onedaytravel" : "당일여행은 숙소를 입력할 수 없습니다."
   },
   "en": {
     "home": "Home",
@@ -205,6 +209,10 @@
     "date" : " ",
     "cannotempty" : "There are empty fields. Please fill out all empty fields.",
     "accomodationDateDefault" : "Please select accomodation date information",
-    "navigate" : "Navigate to here"
+    "navigate" : "Navigate to here",
+    "emptyaccomodation" : "Please add accomodation information",
+    "duplicateaccomodation" : "There is duplicated accomodation information",
+    "notjejuaccomodation" : "Please select accomodation in Jeju",
+    "onedaytravl" : "We don't provide select accomodation for one day travel"
   }
 }
