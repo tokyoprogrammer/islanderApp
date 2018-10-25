@@ -6,6 +6,8 @@ import MapView from './MapView';
 import PixabayImage from './PixabayImage';
 import WeatherPage from './WeatherPage';
 
+import {DivH100Style, ToolbarStyle, HomeStyle} from './Styles';
+
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
@@ -114,16 +116,13 @@ export default class HomePage extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle = {
-      height: '15px',
-      marginTop: '5%'
-    };
-    
     const imgTag = this.props.strings.getLanguage() == 'kr' ? 
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/english.png" 
-         style={{width: "33px"}}/></Button>) :
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/korean.png" 
-         style={{width: "33px"}}/></Button>);
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+        <img src={ToolbarStyle.btns.lang.imgs.eng} 
+          style={ToolbarStyle.btns.lang.imgs.style}/></Button>) :
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+        <img src={ToolbarStyle.btns.lang.imgs.kor}
+          style={ToolbarStyle.btns.lang.imgs.style}/></Button>);
 
     return (
       <Toolbar>
@@ -131,11 +130,11 @@ export default class HomePage extends React.Component {
           {imgTag}
         </div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+        Islander Jeju <img src={ToolbarStyle.title.imgs.milgam} style={ToolbarStyle.title.imgs.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon size={ToolbarStyle.menu.size} icon={ToolbarStyle.menu.icon} />
           </ToolbarButton>
         </div>
      </Toolbar>
@@ -143,19 +142,6 @@ export default class HomePage extends React.Component {
   }
 
   render() {
-    const buttonStyle = {
-      margin: '3%',
-      width: '40%'
-    };
-
-    const imageStyle = {
-      width: '100%'
-    };
-
-    const divCenter = {
-      textAlign: 'center'
-    };
-
     const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
     
     let sightCode = isKr ? 12 : 76; 
@@ -164,91 +150,63 @@ export default class HomePage extends React.Component {
     let activityCode = isKr ? 28 : 75;
     let shoppingCode = isKr ? 38 : 79;
     let foodsCode = isKr ? 39 : 82;
-    const minHeightForBG = "200px";
-    let listItemStyle = {
-      backgroundColor: "rgba(255, 255, 255, 1.0)", 
-      marginBottom: "1%",
-      boxShadow: "0px 2px 2px 2px #9E9E9E",
-      width: "100%"
-    };
 
-    const listContainerDivStyle = {
-      margin: "3%",
-      marginTop: "-15%",
-      boxShadow: "2px 0px 2px 2px #9E9E9E",
-    };
-
-    const innerDiv = {
-      margin: '1%',
-      textAlign: "center",
-      width: "100%",
-      height: "70px",
-      display: "flex"
-    };
-
-    const iconStyle = {
-      width: "50px",
-      height: "50px",
-      marginTop: "auto",
-      marginBottom: "auto",
-      marginRight: "3%"
-    };
-
-    const textStyle= {
-      fontSize: "20px",
-      color: "#000000",
-      marginTop: "auto",
-      marginBottom: "auto"      
-    }
+    const weatherStyles = HomeStyle.weather;
+    const listStyles = HomeStyle.list;
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={{height: "100%"}}>
+        <div style={DivH100Style}>
           <PixabayImage />
 	  <Button modifier="quiet"
-            style={{position: "absolute", top: "10px", textAlign: "center", borderRadius: "6px", 
-              right: "10px", backgroundColor: "rgba(255, 250, 250, .4)"}} 
+            style={weatherStyles.container.style} 
             onClick={this.pushWeatherPage.bind(this)}>
-            <img src={this.state.weatherIcon} style={{width: "40px", float: "left"}} />
-            <span style={{float: "left", marginTop: "10%", color: "#000000"}}>
-              {this.state.weatherDegree + "ºC"}
+            <img src={this.state.weatherIcon} style={weatherStyles.icon.style} />
+            <span style={weatherStyles.text.style}>
+              {this.state.weatherDegree + weatherStyles.text.degree}
             </span>
           </Button>
-          <div style={listContainerDivStyle}>
-            <Button style={listItemStyle} onClick={this.pushPage.bind(this, sightCode)}>
-              <div style={innerDiv}>
-                <img src="img/sightseeing.png" style={iconStyle} />
-                <p style={textStyle}>{this.props.strings.sight}</p>
+          <div style={listStyles.container.style}>
+            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, sightCode)}>
+              <div style={listStyles.btns.inner.container.style}>
+                <img src={listStyles.btns.inner.icon.imgs.sightseeing} 
+                  style={listStyles.btns.inner.icon.style} />
+                <p style={listStyles.btns.inner.text.style}>{this.props.strings.sight}</p>
               </div>
             </Button>
-            <Button style={listItemStyle} onClick={this.pushPage.bind(this, foodsCode)}>
-              <div style={innerDiv}>
-                <img src = "img/food.png" style={iconStyle} />
-                <p style={textStyle}>{this.props.strings.foods}</p>
+            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, foodsCode)}>
+              <div style={listStyles.btns.inner.container.style}>
+                <img src={listStyles.btns.inner.icon.imgs.food} 
+                  style={listStyles.btns.inner.icon.style} />
+                <p style={listStyles.btns.inner.text.style}>{this.props.strings.foods}</p>
               </div>
             </Button>
-            <Button style={listItemStyle} onClick={this.pushPage.bind(this, cultureCode)}>
-              <div style={innerDiv}>
-                <img src = "img/culture.png" style={iconStyle} />
-                <p style={textStyle}>{this.props.strings.art}</p>
+            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, cultureCode)}>
+              <div style={listStyles.btns.inner.container.style}>
+                <img src={listStyles.btns.inner.icon.imgs.culture} 
+                  style={listStyles.btns.inner.icon.style} />
+                <p style={listStyles.btns.inner.text.style}>{this.props.strings.art}</p>
               </div>
             </Button>
-            <Button style={listItemStyle} onClick={this.pushPage.bind(this, festivalCode)}>
-              <div style={innerDiv}>
-                <img src = "img/festival.png" style = {iconStyle} />
-                <p style={textStyle}>{this.props.strings.festival}</p>
+            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, festivalCode)}>
+              <div style={listStyles.btns.inner.container.style}>
+                <img src={listStyles.btns.inner.icon.imgs.festival} 
+                  style={listStyles.btns.inner.icon.style} />
+                <p style={listStyles.btns.inner.text.style}>{this.props.strings.festival}</p>
               </div>
             </Button>
-            <Button style={listItemStyle} onClick={this.pushPage.bind(this, activityCode)}>
-              <div style={innerDiv}>
-                <img src = "img/activity.png" style = {iconStyle} />
-                <p style={textStyle}>{this.props.strings.activity}</p>
+            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, activityCode)}>
+              <div style={listStyles.btns.inner.container.style}>
+                <img src={listStyles.btns.inner.icon.imgs.activity} 
+                  style={listStyles.btns.inner.icon.style} />
+                <p style={listStyles.btns.inner.text.style}>{this.props.strings.activity}</p>
               </div>
             </Button>
-            <Button style={listItemStyle} onClick={this.pushPage.bind(this, shoppingCode)}>
-              <div style={innerDiv}>
-                <img src = "img/shopping.png" style = {iconStyle} />
-                <p style={textStyle}>{this.props.strings.shopping}</p>
+            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, shoppingCode)}>
+              <div style={listStyles.btns.inner.container.style}>
+                <img src={listStyles.btns.inner.icon.imgs.shopping} 
+                  style={listStyles.btns.inner.icon.style} />
+                <p style={listStyles.btns.inner.text.style}>{this.props.strings.shopping}</p>
               </div>
             </Button>
           </div>

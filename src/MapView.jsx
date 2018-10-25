@@ -11,7 +11,9 @@ import Marker from './Marker';
 import TopToggleView from './TopToggleView';
 import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
-import GooglePlaceImageView from './GooglePlaceImageView'
+import GooglePlaceImageView from './GooglePlaceImageView';
+
+import {MapViewStyle, ToolbarStyle} from './Styles';
 
 export default class MapView extends React.Component {
   constructor(props) {
@@ -164,18 +166,9 @@ export default class MapView extends React.Component {
   }
 
   makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode, searchString) {
-    const arrowIconSize = {
-      default: 30,
-      material: 28
-    };
-
-    const starIconSize = {
-      default: 30,
-      material: 28
-    };
-
-    const grayColor = "#D3D3D3";
-    const goldColor = "#FFD700";
+    const starIconSize = MapViewStyle.carouselItem.favoriteBtn.size;
+    const grayColor = MapViewStyle.carouselItem.favoriteBtn.colors.gray;
+    const goldColor = MapViewStyle.carouselItem.favoriteBtn.colors.gold;
 
     let placeCarouselItems = []; // carousel items
     let markers = [];
@@ -200,18 +193,7 @@ export default class MapView extends React.Component {
       }
 
       let cat3Text = cat3.length > 1 ? this.categories[cat3] : null;
-      const badgeStyle = {
-        color: "#ffffff",
-        backgroundColor: "#17a2b8",
-        marginLeft: "1%",
-        padding: ".25em .4em",
-        fontSize: "75%",
-        lineHeight: "1",
-        verticalAlign: "baseline",
-        textAlign: "center",
-        display: "inline-block",
-        borderRadius: ".25rem"
-      };
+      const badgeStyle = MapViewStyle.carouselItem.badge.style;
       let badge = cat3 != null ? (<span style={badgeStyle}>{cat3Text}</span>) : null;
 
       if(!proceed && filtered.length >= 1) continue; // if filter activated && not proceed,
@@ -248,9 +230,11 @@ export default class MapView extends React.Component {
       let titleKey = "title-" + realIndex++;
 
       let imageSrc = image == null ? 
-        (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
+        (<GooglePlaceImageView 
+          maxWidth={MapViewStyle.carouselItem.img.google.width} 
+          maxHeight={MapViewStyle.carouselItem.img.google.height} 
           placeTitle = {title} listThumbnail = {false} multi = {false} />) :
-        (<img id={imageKey} src={image._text} style={{width: "100%", padding: "5%"}} />);
+        (<img id={imageKey} src={image._text} style={MapViewStyle.carouselItem.img.style} />);
   
       let detailButton = (
         <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
@@ -269,53 +253,57 @@ export default class MapView extends React.Component {
       }
 
       let placeCarouselItem = (
-        <div style={{height: "35%", padding: "1px 0 0 0", textAlign: "center"}}>
+        <div style={MapViewStyle.carouselItem.container.style}>
           <div className="card">
             <div className="card__title">
               <Row>
-                <Col width="80%">
-                  <b id={titleKey} style={{margin: "1%"}}>{title}</b>{badge}
+                <Col width={MapViewStyle.carouselItem.titleRow.col1.width}>
+                  <b id={titleKey} style={MapViewStyle.carouselItem.title.style}>{title}</b>{badge}
                 </Col>
-                <Col width="20%">
-                  <div style={{textAligh: "center"}}>
+                <Col width={MapViewStyle.carouselItem.titleRow.col2.width}>
+                  <div style={MapViewStyle.carouselItem.titleRow.col2.containerDiv.style}>
                     <Button modifier='quiet' 
                       style={{width: '100%', textAlign: "center", color: starColor}}
                       onClick={this.toggleFavorite.bind(this, contentId)}>
-                      <Icon icon='md-star' size={starIconSize}/>
+                      <Icon icon={MapViewStyle.carouselItem.favoriteBtn.icon} size={starIconSize}/>
                     </Button>
                   </div>
                 </Col>
               </Row>
             </div>
             <div className="card__content">
-              <Row style={{width: "100%"}}>
-                <Col width="5%">
+              <Row style={MapViewStyle.carouselItem.contentRow.style}>
+                <Col width={MapViewStyle.carouselItem.contentRow.col1.width}>
                   <Button modifier='quiet' 
                     onClick={this.prevItem.bind(this)} 
-                    style={{width: '100%', padding: "5%"}}>
-                    <Icon icon='md-chevron-left' size={arrowIconSize} />
+                    style={MapViewStyle.carouselItem.contentRow.col1.arrowIcon.button.style}>
+                    <Icon icon={MapViewStyle.carouselItem.contentRow.col1.arrowIcon.iconLeft} 
+                      size={MapViewStyle.carouselItem.contentRow.col1.arrowIcon.size} />
                   </Button>
                 </Col>
-                <Col width="37%">
-                  <div style={{textAlign: "center", padding: "1%"}}>
+                <Col width={MapViewStyle.carouselItem.contentRow.col2.width}>
+                  <div style={MapViewStyle.carouselItem.contentRow.col2.container.style}>
                     {imageSrc}
                   </div>
                 </Col>
-                <Col width="53%">
-                  <div style={{padding: "1%"}}>
-                    <p style={{margin: "1%"}}>{addr}</p>
-                    <p style={{color: "#A9A9A9", margin: "1%"}}>{zipCodeString}</p>
+                <Col width={MapViewStyle.carouselItem.contentRow.col3.width}>
+                  <div style={MapViewStyle.carouselItem.contentRow.col3.container.style}>
+                    <p style={MapViewStyle.carouselItem.contentRow.col3.container.addrText.style}>{addr}</p>
+                    <p style={MapViewStyle.carouselItem.contentRow.col3.container.zipCode.style}>
+                      {zipCodeString}
+                    </p>
                     {tel != null ? (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
-                    <div style={{margin: "2%"}}>
+                    <div style={MapViewStyle.carouselItem.contentRow.col3.container.detailBtn.style}>
                       {detailButton}
                     </div>
                   </div>
                 </Col>
-                <Col width="5%">
+                <Col width={MapViewStyle.carouselItem.contentRow.col4.width}>
                   <Button modifier='quiet' 
                     onClick={this.nextItem.bind(this)} 
-                    style={{width: '100%', padding: "5%"}}>
-                    <Icon icon='md-chevron-right' size={arrowIconSize} />
+                    style={MapViewStyle.carouselItem.contentRow.col4.arrowIcon.button.style}>
+                    <Icon icon={MapViewStyle.carouselItem.contentRow.col4.arrowIcon.iconRight} 
+                      size={MapViewStyle.carouselItem.contentRow.col4.arrowIcon.size} />
                   </Button>
                 </Col>
               </Row>
@@ -421,20 +409,17 @@ export default class MapView extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle= {
-      height: '15px',
-      marginTop: '5%'
-    };
+    const imgStyle = ToolbarStyle.title.imgs;
 
     return (
       <Toolbar>
         <div className="left"><BackButton></BackButton></div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+        Islander Jeju <img src={imgStyle.milgam} style={imgStyle.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon icon={ToolbarStyle.menu.icon} size={ToolbarStyle.menu.size} />
           </ToolbarButton>
         </div>
      </Toolbar>
@@ -443,8 +428,8 @@ export default class MapView extends React.Component {
 
   renderFixed() {
     return (
-      <Fab onClick={this.loadListView.bind(this)} position="bottom right">
-        <Icon icon='fa-bars' />
+      <Fab onClick={this.loadListView.bind(this)} position={MapViewStyle.fixedFab.position}>
+        <Icon icon={MapViewStyle.fixedFab.icon} />
       </Fab>
     );
   }
@@ -532,7 +517,7 @@ export default class MapView extends React.Component {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} text="%E2%80%A2"/>);
+             onClick = {this.markerClicked.bind(this)} text={MapViewStyle.mapMarker.dotText} />);
   }
 
   createMarkup(text) {
