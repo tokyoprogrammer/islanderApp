@@ -32,8 +32,7 @@ export default class CourseRecommandationPage extends React.Component {
     }
     const fixedAreaCode = 39; /* jeju island area code */
     const fixedContentType = 25;
-    const serviceKey = 
-      "XU3%2BCzeg%2BV5ML42ythVLdLSe05DgiBqmS1wCZJfnhdpQ6X5y%2BB5W%2BJ3E%2B98cXaALAMFCqZQxlMdzLYrSy4fUrw%3D%3D";
+    const serviceKey = process.env.REACT_APP_VISIT_KOREA_API_KEY; 
     const contentId = "__CONTENTID__";
 
     this.state = {

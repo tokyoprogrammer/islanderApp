@@ -1,3 +1,5 @@
+const Dotenv = require('dotenv-webpack');
+
 try {
   var path = require('path');
 
@@ -133,7 +135,8 @@ module.exports = {
       from: path.join(__dirname, 'src', 'public'),
       ignore: ['index.html.ejs']
     }]),
-    new ProgressBarPlugin()
+    new ProgressBarPlugin(),
+    new Dotenv()
   ],
 
   resolveLoader: {

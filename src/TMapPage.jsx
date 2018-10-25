@@ -31,7 +31,7 @@ export default class TmapView extends React.Component {
 
     const scripts = [  
       "<script src = https://api2.sktelecom.com/tmap/js?version=1&format=javascript&" + 
-      "appKey=a53a0843-aa54-43c3-b8e0-e8202a107d2b><\/script>"
+      "appKey=" + process.env.REACT_APP_TMAP_API_KEY + "><\/script>"
     ];
 
     let this_ = this;
@@ -85,7 +85,7 @@ export default class TmapView extends React.Component {
     markerLayer.addMarker(marker_e);//마커 레이어에 마커 추가
   
     let headers = {}; 
-    headers["appKey"]="a53a0843-aa54-43c3-b8e0-e8202a107d2b";
+    headers["appKey"] = process.env.REACT_APP_TMAP_API_KEY;
     //실행을 위한 키 입니다. 발급받으신 AppKey를 입력하세요.
     $.ajax({
       method:"POST",

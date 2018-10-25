@@ -30,8 +30,7 @@ export default class DetailView extends React.Component {
     let langFile = require('public/str/langPack.json'); /* load lang pack */
     let strings = new LocalizedStrings(langFile);
 
-    const serviceKey = 
-      "XU3%2BCzeg%2BV5ML42ythVLdLSe05DgiBqmS1wCZJfnhdpQ6X5y%2BB5W%2BJ3E%2B98cXaALAMFCqZQxlMdzLYrSy4fUrw%3D%3D";
+    const serviceKey = process.env.REACT_APP_VISIT_KOREA_API_KEY; 
  
     let contentId = localStorage.getItem("contentId");
     let contentTypeId = localStorage.getItem("contentTypeId");
@@ -348,7 +347,7 @@ export default class DetailView extends React.Component {
         const zoom = 16;
         const mapSize = "600x250";
 
-        const google = "AIzaSyDQlA7ERwcmbPVr8iFH-QGV8uS-_B6c2jQ";
+        const google = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
         let mapURL = "https://maps.googleapis.com/maps/api/staticmap?" + 
           "center=" + lat + "," + lng + "&zoom=" + zoom + 
           "&size=" + mapSize + "&maptype=roadmap&markers=color:red%7C" + 

@@ -49,7 +49,7 @@ export default class HomePage extends React.Component {
     var this_ = this;
     let lang = this.props.strings.getLanguage();
     let URL = "https://api.openweathermap.org/data/2.5/weather?q=Jeju,kr" + 
-      "&appid=8e0c89b8e26008044c73cb82ed5e4d60" + 
+      "&appid=" + process.env.REACT_APP_WEATHER_API_KEY + 
       "&lang=" + lang;
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;

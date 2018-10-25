@@ -1,3 +1,5 @@
+const Dotenv = require('dotenv-webpack');
+
 try {
   var path = require('path');
 
@@ -110,7 +112,8 @@ module.exports = {
       template: 'src/public/index.html.ejs',
       chunksSortMode: 'dependency'
     }),
-    new ProgressBarPlugin()
+    new ProgressBarPlugin(),
+    new Dotenv()
   ],
 
   resolveLoader: {

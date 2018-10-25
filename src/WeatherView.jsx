@@ -55,7 +55,7 @@ export default class WeatherView extends React.Component {
 
     var this_ = this;
     let URL = "https://api.openweathermap.org/data/2.5/forecast?q=Jeju,kr" + 
-      "&appid=8e0c89b8e26008044c73cb82ed5e4d60";
+      "&appid=" + process.env.REACT_APP_WEATHER_API_KEY;
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {

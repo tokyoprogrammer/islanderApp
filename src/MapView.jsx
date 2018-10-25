@@ -52,8 +52,8 @@ export default class MapView extends React.Component {
     strings.setLanguage(lang);
 
     const fixedAreaCode = 39; /* jeju island area code */
-    const serviceKey = 
-      "XU3%2BCzeg%2BV5ML42ythVLdLSe05DgiBqmS1wCZJfnhdpQ6X5y%2BB5W%2BJ3E%2B98cXaALAMFCqZQxlMdzLYrSy4fUrw%3D%3D";
+    const serviceKey = process.env.REACT_APP_VISIT_KOREA_API_KEY; 
+
     this.state = {
       urlForContentBase: "https://api.visitkorea.or.kr/openapi/service/rest/" + 
         serviceLang + "/areaBasedList?ServiceKey=" + 
