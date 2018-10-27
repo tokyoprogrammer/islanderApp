@@ -222,17 +222,17 @@ export default class CourseRecommandationPage extends React.Component {
       xhr.onload = function() {
         let ret = this_.readItemsFromResponseText(xhr.responseText);
         let listItemForDistance = ret.distance != null ?
-          (<ListItem key="li-dist"> 
+          (<ListItem key="li-dist" modifier="longdivider"> 
             <b>{this_.state.strings.coursedistance} : </b> {ret.distance._text} 
           </ListItem>) :
-          (<ListItem key="li-dist">
+          (<ListItem key="li-dist" modifier="longdivider">
             <b>{this_.state.strings.coursedistance} : </b> Unknown 
           </ListItem>) ;
         let listItemForRequiredTime = ret.taketime != null ?
-          (<ListItem key="li-time">
+          (<ListItem key="li-time" modifier="longdivider">
             <b>{this_.state.strings.coursetime} : </b> {ret.taketime._text} 
           </ListItem>) :
-          (<ListItem key="li-time">
+          (<ListItem key="li-time" modifier="longdivider">
             <b>{this_.state.strings.coursetime} : </b> Unknown 
           </ListItem>) ;
         let listArray = [];
