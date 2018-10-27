@@ -543,17 +543,18 @@ export default class CourseRecommandationPage extends React.Component {
           <div style={{marginLeft: "1%", marginRight: "1%"}} id="content">
             <List>
               <ListHeader>{this.state.strings.courseinfo}</ListHeader>
-              <ListItem key="li-overview" expandable={true}>
+              <ListItem key="li-overview" expandable={true} modifier="longdivider">
                 <b>{this.state.strings.courseoverview} : </b><p>{this.state.strings.taptoexpand}</p>
                 <div className="expandable-content">
                   {this.state.currentOverview}
                 </div>
               </ListItem>
-              <ListItem key="li-course-list">
+              <ListItem key="li-course-list" modifier="longdivider">
                 <List modifier="inset" style={{width: "100%"}}>
                   <ListHeader>{this.state.strings.course}</ListHeader> 
                   {this.state.courseDetails.map((item, index) => (
-                    <ListItem key={"li-course-list-item" + index} style={{height: "60px"}}>
+                    <ListItem key={"li-course-list-item" + index} 
+                      style={{height: "60px"}} modifier="longdivider">
                       {item.subdetailimg != null ?
                       (<div className="left">
                         <img src={item.subdetailimg._text} className = "list-item__thumbnail"/>

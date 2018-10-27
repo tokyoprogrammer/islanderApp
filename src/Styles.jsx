@@ -186,7 +186,7 @@ export const HomeStyle = {
             margin: '1%',
             textAlign: "center",
             width: "100%",
-            height: "70px",
+            height: "60px",
             display: "flex" 
           }
         },
