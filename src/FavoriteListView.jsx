@@ -8,6 +8,8 @@ import LocalizedStrings from 'react-localization';
 import MapContainer from './MapContainer';
 import Marker from './Marker';
 
+import {FavoritesListViewStyle} from './Styles';
+
 export default class FavoriteListView extends React.Component {
   constructor(props) {
     super(props);
@@ -193,42 +195,37 @@ export default class FavoriteListView extends React.Component {
   }
 
   renderCheckboxRow(row) {
-    const grayColor = "#D3D3D3";
-    const goldColor = "#FFD700";
-    const starIconSize = {
-      default: 30,
-      material: 28
-    };
+    const Styles = FavoritesListViewStyle.listitem;
+    const grayColor = Styles.star.colors.gray;
+    const goldColor = Styles.star.colors.gold;
  
     return (
       <ListItem key={row.contentid._text} tappable modifier="longdivider">
-        <Row style={{marginTop: "10px", marginBotton: "10px"}}>
-          <Col width="20%">
+        <Row style={Styles.row.style}>
+          <Col width={Styles.cols.col1.width}>
             {this.props.showStar ? 
               (<Button modifier='quiet' 
-                style={{
-                  width: '100%', 
-                  textAlign: "center", 
+                style={Object.assign({
                   color: this.state.favorites.includes(row.contentid._text) ? 
                     goldColor : grayColor
-                  }}
+                  }, Styles.cols.col1.btn.style)}
                 onClick={this.toggleFavorite.bind(this, row.contentid._text)}>
-                <Icon icon='md-star' size={starIconSize}/>
+                <Icon icon={Styles.star.icon} size={Styles.star.size}/>
               </Button>) :
               (<Checkbox onChange={this.onChange.bind(this, row.contentid._text)} 
                 inputId={"checkbox-" + row.contentid._text}/>)}
           </Col>
-          <Col width="15%">
+          <Col width={Styles.cols.col2.width}>
             {row.firstimage != null ? 
               (<img src={row.firstimage._text} className='list-item__thumbnail' />) :
               (<img src="img/noimage.png" className='list-item__thumbnail' />)}
           </Col>
-          <Col width="40%">
+          <Col width={Styles.cols.col3.width}>
             <label htmlFor={"checkbox-" + row.contentid._text}>
               {row.title._text}
             </label>
           </Col>
-          <Col width="25%">
+          <Col width={Styles.cols.col4.width}>
             <Button onClick={this.props.onMoreClicked.bind(this, row.contentid._text, row.contenttypeid._text)}>
               {this.state.strings.moredetails}
             </Button>
@@ -245,32 +242,30 @@ export default class FavoriteListView extends React.Component {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} text="%E2%80%A2"/>);
+             onClick = {this.markerClicked.bind(this)} 
+             text={FavoritesListViewStyle.map.marker.dotText}/>);
   }
 
   render() {
-    const markerGray = 'C0C0C0';
-    const markerChrimsonRed = 'DC134C'
-    const mapCenter = {
-      lat: 33.356432,
-      lng: 126.5268767
-    };
-
-    const mapZoom = 9;
+    const mapStyles = FavoritesListViewStyle.map;
+    const markerGray = mapStyles.marker.gray;
+    const markerRed = mapStyles.marker.red;
+    const mapCenter = mapStyles.center;
+    const mapZoom = mapStyles.zoom;
 
     return (
       <div>
         {this.state.favoritesInfo.length > 0 ?
         (<MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
-          width = "100vw" height = "30vh">
+          width={mapStyles.size.width}  height={mapStyles.size.height}>
           {this.state.favoritesInfo.map((item, index) => { 
             if(this.props.showStar) {
               return this.state.favorites.includes(item.contentid._text) ? 
-                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerChrimsonRed, index, index) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerRed, index, index) :
                 this.drawSingleMarker(item.mapy._text, item.mapx._text, markerGray, index, index);
             } else {
               return this.state.checkedSights.includes(item.contentid._text) ? 
-                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerChrimsonRed, index, index) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerRed, index, index) :
                 this.drawSingleMarker(item.mapy._text, item.mapx._text, markerGray, index, index);
             }
           })}
@@ -280,7 +275,7 @@ export default class FavoriteListView extends React.Component {
             renderHeader={() => (
               <ListHeader>{this.state.strings.favorite}</ListHeader>)}
             renderRow={this.renderCheckboxRow.bind(this)}/>) :
-          (<h3 style={{width: "100%", textAlign: "center", padding: "3%"}}>
+          (<h3 style={FavoritesListViewStyle.nofavorite.style}>
             {this.state.strings.nofavorites}
           </h3>)}
       </div>

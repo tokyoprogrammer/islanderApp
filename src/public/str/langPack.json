@@ -213,6 +213,6 @@
     "emptyaccomodation" : "Please add accomodation information",
     "duplicateaccomodation" : "There is duplicated accomodation information",
     "notjejuaccomodation" : "Please select accomodation in Jeju",
-    "onedaytravl" : "We don't provide select accomodation for one day travel"
+    "onedaytravel" : "We don't provide select accomodation for one day travel"
   }
 }

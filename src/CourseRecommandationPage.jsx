@@ -8,7 +8,7 @@ import LocalizedStrings from 'react-localization';
 import DetailView from './DetailView';
 import MapContainer from './MapContainer';
 import Marker from './Marker';
-import {ToolbarStyle} from './Styles';
+import {ToolbarStyle, CourseStyle, CenterDivStyle} from './Styles';
 
 export default class CourseRecommandationPage extends React.Component {
   constructor(props) {
@@ -333,8 +333,8 @@ export default class CourseRecommandationPage extends React.Component {
 
   renderFixed() {
     return (
-      <Fab onClick={this.goTopScroll.bind(this)} position="bottom right">
-        <Icon icon='md-format-valign-top' />
+      <Fab onClick={this.goTopScroll.bind(this)} position={CourseStyle.fab.position}>
+        <Icon icon={CourseStyle.fab.icon} />
       </Fab>
     );
   }
@@ -385,7 +385,8 @@ export default class CourseRecommandationPage extends React.Component {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} text="%E2%80%A2" />);
+             onClick = {this.markerClicked.bind(this)} 
+             text={CourseStyle.map.marker.dotText} />);
   }
   
   goDetails(contentId) {
@@ -413,33 +414,16 @@ export default class CourseRecommandationPage extends React.Component {
   }
 
   render() {
-    const centerDiv = {
-      textAlign: 'center'
-    };
+    const arrowIconSize = CourseStyle.carousel.arrow.size;
+    const mapCenter = CourseStyle.map.center;
+    const mapZoom = CourseStyle.map.zoom;
+    const markerGray = CourseStyle.map.marker.gray;
+    const markerRed = CourseStyle.map.marker.red;
 
-    const arrowIconSize = {
-      default: 30,
-      material: 28
-    };
-
-    const mapCenter = {
-      lat: 33.356432,
-      lng: 126.5268767
-    };
-
-    const mapZoom = 9;
-
-    const markerGray = 'C0C0C0';
-    const marginTopForArrow = "80px";
-
-    const grayColor = "#D3D3D3";
-    const goldColor = "#FFD700";
-    const starIconSize = {
-      default: 30,
-      material: 28
-    };
+    const grayColor = CourseStyle.star.colors.gray;
+    const goldColor = CourseStyle.star.colors.gold;
+    const starIconSize = CourseStyle.star.size;
     
-    const markerChrimsonRed = 'DC134C'
     let additionalInfo = this.state.additionalInfo;
     let markers = [];
     if(additionalInfo.length > 0) {
@@ -449,7 +433,7 @@ export default class CourseRecommandationPage extends React.Component {
         let lat = info.mapY;
         let marker = null;
         if(i == 0 || i == additionalInfo.length - 1) 
-          marker = this.drawSingleMarker(lat, lng, markerChrimsonRed, i, i);
+          marker = this.drawSingleMarker(lat, lng, markerRed, i, i);
         else
           marker = this.drawSingleMarker(lat, lng, markerGray, i, i);
         markers.push(marker);
@@ -458,7 +442,8 @@ export default class CourseRecommandationPage extends React.Component {
 
     let map = (
       <MapContainer initialCenter={mapCenter} zoom={mapZoom}
-        width="100vw" height = "35vh" drawLine = {true}>
+        width={CourseStyle.map.size.width} height={CourseStyle.map.size.height} 
+        drawLine = {true}>
         {markers}
       </MapContainer>
     );
@@ -475,37 +460,35 @@ export default class CourseRecommandationPage extends React.Component {
          {this.state.items.map((item, index) => (
            <CarouselItem key={"carousel-" + index}>
              {this.state.itemCarouselIndex - 1 <= index && this.state.itemCarouselIndex + 1 >= index ?
-               <div style={{padding: "1px 0 0 0", textAlign: "center"}}>
+               <div style={CourseStyle.carousel.container.style}>
                  <div className="card">
                    <div className="card__title">
                      {item.title._text}
                    </div>
                    <div className="card__content">
-                     <Row style={{width: "100%"}}>
-                       <Col width="5%">
+                     <Row>
+                       <Col width={CourseStyle.carousel.cols.col1.width}>
                          <Button modifier='quiet' 
                            onClick={this.prevItem.bind(this)} 
-                           style={{width: '100%', padding: "5%", marginTop: marginTopForArrow}}>
-                           <Icon icon='md-chevron-left' size={arrowIconSize} />
+                           style={CourseStyle.carousel.arrow.style}>
+                           <Icon icon={CourseStyle.carousel.arrow.icons.left} 
+                             size={arrowIconSize} />
                          </Button>
                        </Col>
-                       <Col width="90%">
+                       <Col width={CourseStyle.carousel.cols.col2.width}>
                          <div>
                            <img src = {item.firstimage == null ? "img/noimage.png" : item.firstimage._text} 
-                             style={{width: "100%", height: "200px"}} />
+                             style={CourseStyle.carousel.cols.col2.style} />
                          </div>
                        </Col>
-                       <Col width="5%">
+                       <Col width={CourseStyle.carousel.cols.col3.width}>
                          <Button modifier='quiet' 
                            onClick={this.nextItem.bind(this)} 
-                           style={{width: '100%', padding: "5%", marginTop: marginTopForArrow}}>
-                           <Icon icon='md-chevron-right' size={arrowIconSize} />
+                           style={CourseStyle.carousel.arrow.style}>
+                           <Icon icon={CourseStyle.carousel.arrow.icons.right} 
+                             size={arrowIconSize} />
                          </Button>
                        </Col>
-                     </Row>
-                     <Row style={{width: "100%"}}>
-                       <p>
-                       </p>
                      </Row>
                    </div>
                  </div>
@@ -526,7 +509,7 @@ export default class CourseRecommandationPage extends React.Component {
         renderModal={() => (
           <Modal
             isOpen={this.state.isOpen}>
-            <div style={{width: "100%", display: "inline-block", position: "relative"}}>
+            <div style={CourseStyle.modal.style}>
               <h3>Loading...</h3>
               <ProgressCircular indeterminate />
             </div>
@@ -534,13 +517,13 @@ export default class CourseRecommandationPage extends React.Component {
         )}>
  
         <div id="top">
-          <div style = {{marginTop: '1%', marginBottom: '1%'}}>
+          <div style = {CourseStyle.map.style}>
             {map}
           </div>
           <div>
             {courseCarousel}
           </div>
-          <div style={{marginLeft: "1%", marginRight: "1%"}} id="content">
+          <div style={CourseStyle.list.style} id="content">
             <List>
               <ListHeader>{this.state.strings.courseinfo}</ListHeader>
               <ListItem key="li-overview" expandable={true} modifier="longdivider">
@@ -550,11 +533,11 @@ export default class CourseRecommandationPage extends React.Component {
                 </div>
               </ListItem>
               <ListItem key="li-course-list" modifier="longdivider">
-                <List modifier="inset" style={{width: "100%"}}>
+                <List modifier="inset" style={CourseStyle.list.inset.style}>
                   <ListHeader>{this.state.strings.course}</ListHeader> 
                   {this.state.courseDetails.map((item, index) => (
                     <ListItem key={"li-course-list-item" + index} 
-                      style={{height: "60px"}} modifier="longdivider">
+                      style={CourseStyle.list.inset.item.style} modifier="longdivider">
                       {item.subdetailimg != null ?
                       (<div className="left">
                         <img src={item.subdetailimg._text} className = "list-item__thumbnail"/>
@@ -568,14 +551,12 @@ export default class CourseRecommandationPage extends React.Component {
                         </div>) : null}
                       <div className='right'>
                         <Button modifier='quiet' 
-                          style={{
-                            width: '100%', 
-                            textAlign: "center", 
+                          style={Object.assign({
                             color: this.state.favorites.includes(item.subcontentid._text) ? 
                               goldColor : grayColor
-                          }}
+                          }, CourseStyle.star.btn.style)}
                           onClick={this.toggleFavorite.bind(this, item.subcontentid._text)}>
-                          <Icon icon='md-star' size={starIconSize}/>
+                          <Icon icon={CourseStyle.star.icon} size={starIconSize}/>
                         </Button>
                       </div>
                     </ListItem>
@@ -584,29 +565,29 @@ export default class CourseRecommandationPage extends React.Component {
               </ListItem>
               {this.state.detailListItems}
             </List>
-            <div style={{margin: '1%'}}><h4><b>{this.state.strings.godetails}</b></h4></div>
+            <div style={CourseStyle.details.title.style}>
+              <h4><b>{this.state.strings.godetails}</b></h4>
+            </div>
             {this.state.courseDetails.map((item, index) => (
               <Card key={"detail-card" + index}>
                 {item.subdetailimg != null ?
-                (<img src={item.subdetailimg._text} style={{width: "100%"}} />) :
-                (<img src="img/noimage.png" style={{width: "100%"}} />)}
+                (<img src={item.subdetailimg._text} style={CourseStyle.details.card.imgs.style} />) :
+                (<img src="img/noimage.png" style={CourseStyle.details.card.imgs.style} />)}
                 <div className="card__title">
                   <Row>
-                    <Col width="80%">  
-                      <h2 style={{margin: "1%"}}>
+                    <Col width={CourseStyle.details.cols.col1.width}>  
+                      <h2 style={CourseStyle.details.card.title.style}>
                         {item.subname != null ? item.subname._text : null}
                       </h2>
                     </Col>
-                    <Col width="20%">
+                    <Col width={CourseStyle.details.cols.col2.width}>
                       <Button modifier='quiet' 
-                        style={{
-                          width: '100%', 
-                          textAlign: "center", 
+                        style={Object.assign({
                           color: this.state.favorites.includes(item.subcontentid._text) ? 
                             goldColor : grayColor
-                        }}
+                        }, CourseStyle.star.btn.style)}
                         onClick={this.toggleFavorite.bind(this, item.subcontentid._text)}>
-                        <Icon icon='md-star' size={starIconSize}/>
+                        <Icon icon={CourseStyle.star.icon} size={starIconSize}/>
                       </Button>
                     </Col>
                   </Row> 
@@ -614,9 +595,9 @@ export default class CourseRecommandationPage extends React.Component {
                 <div className="card__content">
                   {item.subdetailoverview != null? item.subdetailoverview._text : null}
                 </div>
-                <Button style={{width: "80%", marginLeft: "10%", marginRight: "10%"}}
+                <Button style={CourseStyle.details.btn.style}
                   onClick={this.goDetails.bind(this, item.subcontentid._text)} >
-                  <div style={centerDiv}>
+                  <div style={CenterDivStyle}>
                     {this.state.strings.moredetails}
                   </div>
                 </Button>

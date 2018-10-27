@@ -30,6 +30,14 @@ const commonBadgeStyle = {
 const commonGrayColor = "D3D3D3";
 const commonGoldColor = "FFD700";
 const commonRedColor = "DC124C";
+const commonStarSize = {
+  default: 30
+};
+const commonMapCenter = {
+  lat: 33.356432,
+  lng: 126.5268767
+}
+ 
 // App / Navigator / Menu
 export const MenuStyle = {
   logo: {
@@ -257,8 +265,7 @@ export const MapViewStyle = {
           },
           iconLeft: "md-chevron-left",
           size: {
-            default: 30,
-            material: 28
+            default: 30
           }
         },
       },
@@ -306,8 +313,7 @@ export const MapViewStyle = {
           },
           iconRight: "md-chevron-right",
           size: {
-            default: 30,
-            material: 28
+            default: 30
           }
         }
       }
@@ -331,9 +337,7 @@ export const MapViewStyle = {
       }
     },
     favoriteBtn: {
-      size: {
-        default: 30
-      },
+      size: commonStarSize,
       colors: {
         gray: "#" + commonGrayColor,
         gold: "#" + commonGoldColor
@@ -382,9 +386,7 @@ export const ListViewStyle = {
       width: "100%"
     },
     starIcon: {
-      size: {
-        default: 30
-      },
+      size: commonStarSize,
       icon: "md-star",
       color: {
         gray: "#" + commonGrayColor,
@@ -541,9 +543,7 @@ export const DetailViewStyle = {
         gray: "#" + commonGrayColor,
         gold: "#" + commonGoldColor
       },
-      size: {
-        default: 30
-      }
+      size: commonStarSize
     },
     image: {
       indicator: {
@@ -629,6 +629,227 @@ export const DetailViewStyle = {
         top: "5%",
         right: "5%",
         color: "#" + commonGrayColor
+      }
+    }
+  }
+};
+// AllFavoritesPage
+export const FavoritePageStyle = {
+  loadingModal: {
+    style: {
+      width: "100%", 
+      display: "inline-block", 
+      position: "relative"
+    }
+  },
+  btns: {
+    moresights: {
+      style: {
+        width: "80%",
+        margin: "2%"
+      }
+    },
+    moreplans: {
+      style: {
+        width: "80%",
+        margin: "2%"
+      }
+    }
+  }
+};
+// FavoritesListView
+export const FavoritesListViewStyle = {
+  listitem: {
+    star: {
+      colors: {
+        gray: "#" + commonGrayColor,
+        gold: "#" + commonGoldColor
+      },
+      size: commonStarSize,
+      icon: "md-star"
+    },
+    row: {
+      style: {
+        marginTop: "10px",
+        marginBottom: "10px"
+      }
+    },
+    cols: {
+      col1: {
+        width: "20%",
+        btn: {
+          style: {
+            width: "100%",
+            textAlign: "center"
+          }
+        }
+      },
+      col2: {
+        width: "15%"
+      },
+      col3: {
+        width: "40%"
+      },
+      col4: {
+        width: "25%"
+      }
+    }
+  },
+  map: {
+    marker: {
+      dotText: "%E2%80%A2",
+      gray: commonGrayColor,
+      red: commonRedColor
+    },
+    center: commonMapCenter,
+    zoom: 9,
+    size: {
+      width: "100vw",
+      height: "30vh"
+    }
+  },
+  nofavorite: {
+    style: {
+      width: "100%",
+      textAlign: "center",
+      padding: "3%"
+    }
+  }
+};
+// Marker
+export const MarkerStyle = {
+  markerStrokeColor: "E0E0E0",
+  markerLabelColor: "FFFFFF"
+};
+// CourseRecommandationPage
+export const CourseStyle = {
+  fab: {
+    position: "bottom right",
+    icon: "md-format-valign-top"
+  },
+  modal: {
+    style: {
+      width: "100%",
+      display: "inline-block",
+      position: "relative"
+    }
+  },
+  map: {
+    marker: {
+      dotText: "%E2%80%A2",
+      gray: commonGrayColor,
+      red: commonRedColor
+    },
+    center: commonMapCenter,
+    zoom: 9,
+    size: {
+      width: "100vw",
+      height: "35vh"
+    },
+    style: {
+      marginTop: "1%",
+      marginBottom: "1%"
+    }
+  },
+  star: {
+    colors: {
+      gray: "#" + commonGrayColor,
+      gold: "#" + commonGoldColor
+    },
+    size: commonStarSize,
+    icon: "md-star",
+    btn: {
+      style: {
+        width: "100%",
+        textAlign: "center"
+      }
+    }
+  },
+  carousel: {
+    arrow: {
+      size: {
+        default: 30
+      },
+      style: {
+        width: "100%",
+        padding: "5%",
+        marginTop: "80px" 
+      },
+      icons: {
+        left: "md-chevron-left",
+        right: "md-chevron-right"
+      }
+    },
+    container: {
+      style: {
+        padding: "1px 0 0 0",
+        textAlign: "center"
+      }
+    },
+    cols: {
+      col1: {
+        width: "5%"
+      },
+      col2: {
+        width: "90%",
+        style: {
+          width: "100%",
+          height: "200px"
+        }
+      },
+      col3: {
+        width: "5%"
+      }
+    } 
+  },
+  list: {
+    style: {
+      marginLeft: "1%",
+      marginRight: "1%"
+    },
+    inset: {
+      style: {
+        width: "100%"
+      },
+      item: {
+        style: {
+          height: "60px"
+        }
+      }
+    }
+  },
+  details: {
+    title: {
+      style: {
+        margin: "1%"
+      }
+    },
+    card: {
+      title: {
+        style: {
+          margin: "1%"
+        }
+      },
+      imgs: {
+        style: {
+          width: "100%"
+        }
+      }
+    },
+    cols: {
+      col1: {
+        width: "80%"
+      },
+      col2: {
+        width: "20%"
+      }
+    },
+    btn: {
+      style: {
+        width: "80%",
+        marginLeft: "10%",
+        marginRight: "10%",
+        marginTop: "3%"
       }
     }
   }

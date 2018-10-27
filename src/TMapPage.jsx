@@ -5,6 +5,8 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular
 
 import postscribe from 'postscribe';
 
+import {ToolbarStyle} from './Styles';
+
 export default class TmapView extends React.Component {
   constructor(props) {
     super(props);
@@ -233,20 +235,15 @@ export default class TmapView extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle= {
-      height: '15px',
-      marginTop: '5%'
-    };
-
     return (
       <Toolbar>
         <div className="left"><BackButton></BackButton></div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon icon={ToolbarStyle.menu.icon} size={ToolbarStyle.menu.size} />
           </ToolbarButton>
         </div>
      </Toolbar>
