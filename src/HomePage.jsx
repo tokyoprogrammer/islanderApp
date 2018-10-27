@@ -130,7 +130,7 @@ export default class HomePage extends React.Component {
           {imgTag}
         </div>
         <div className="center">
-        Islander Jeju <img src={ToolbarStyle.title.imgs.milgam} style={ToolbarStyle.title.imgs.style} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>

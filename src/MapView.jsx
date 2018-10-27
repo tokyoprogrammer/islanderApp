@@ -13,7 +13,7 @@ import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
 import GooglePlaceImageView from './GooglePlaceImageView';
 
-import {MapViewStyle, ToolbarStyle} from './Styles';
+import {MapViewStyle, ToolbarStyle, CenterDivStyle} from './Styles';
 
 export default class MapView extends React.Component {
   constructor(props) {
@@ -166,9 +166,10 @@ export default class MapView extends React.Component {
   }
 
   makeItemCarouselAndMarkers(items, favorites, filtered, sigunguCode, searchString) {
-    const starIconSize = MapViewStyle.carouselItem.favoriteBtn.size;
-    const grayColor = MapViewStyle.carouselItem.favoriteBtn.colors.gray;
-    const goldColor = MapViewStyle.carouselItem.favoriteBtn.colors.gold;
+    const Style = MapViewStyle.carouselItem;
+    const starIconSize = Style.favoriteBtn.size;
+    const grayColor = Style.favoriteBtn.colors.gray;
+    const goldColor = Style.favoriteBtn.colors.gold;
 
     let placeCarouselItems = []; // carousel items
     let markers = [];
@@ -193,7 +194,7 @@ export default class MapView extends React.Component {
       }
 
       let cat3Text = cat3.length > 1 ? this.categories[cat3] : null;
-      const badgeStyle = MapViewStyle.carouselItem.badge.style;
+      const badgeStyle = Style.badge.style;
       let badge = cat3 != null ? (<span style={badgeStyle}>{cat3Text}</span>) : null;
 
       if(!proceed && filtered.length >= 1) continue; // if filter activated && not proceed,
@@ -231,10 +232,10 @@ export default class MapView extends React.Component {
 
       let imageSrc = image == null ? 
         (<GooglePlaceImageView 
-          maxWidth={MapViewStyle.carouselItem.img.google.width} 
-          maxHeight={MapViewStyle.carouselItem.img.google.height} 
+          maxWidth={Style.img.google.width} 
+          maxHeight={Style.img.google.height} 
           placeTitle = {title} listThumbnail = {false} multi = {false} />) :
-        (<img id={imageKey} src={image._text} style={MapViewStyle.carouselItem.img.style} />);
+        (<img id={imageKey} src={image._text} style={Style.img.style} />);
   
       let detailButton = (
         <Button key={contentId} onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
@@ -253,57 +254,57 @@ export default class MapView extends React.Component {
       }
 
       let placeCarouselItem = (
-        <div style={MapViewStyle.carouselItem.container.style}>
+        <div style={Style.container.style}>
           <div className="card">
             <div className="card__title">
               <Row>
-                <Col width={MapViewStyle.carouselItem.titleRow.col1.width}>
-                  <b id={titleKey} style={MapViewStyle.carouselItem.title.style}>{title}</b>{badge}
+                <Col width={Style.titleRow.col1.width}>
+                  <b id={titleKey} style={Style.title.style}>{title}</b>{badge}
                 </Col>
-                <Col width={MapViewStyle.carouselItem.titleRow.col2.width}>
-                  <div style={MapViewStyle.carouselItem.titleRow.col2.containerDiv.style}>
+                <Col width={Style.titleRow.col2.width}>
+                  <div style={Style.titleRow.col2.containerDiv.style}>
                     <Button modifier='quiet' 
-                      style={{width: '100%', textAlign: "center", color: starColor}}
+                      style={Object.assign({color: starColor}, Style.favoriteBtn.style)}
                       onClick={this.toggleFavorite.bind(this, contentId)}>
-                      <Icon icon={MapViewStyle.carouselItem.favoriteBtn.icon} size={starIconSize}/>
+                      <Icon icon={Style.favoriteBtn.icon} size={starIconSize}/>
                     </Button>
                   </div>
                 </Col>
               </Row>
             </div>
             <div className="card__content">
-              <Row style={MapViewStyle.carouselItem.contentRow.style}>
-                <Col width={MapViewStyle.carouselItem.contentRow.col1.width}>
+              <Row style={Style.contentRow.style}>
+                <Col width={Style.contentRow.col1.width}>
                   <Button modifier='quiet' 
                     onClick={this.prevItem.bind(this)} 
-                    style={MapViewStyle.carouselItem.contentRow.col1.arrowIcon.button.style}>
-                    <Icon icon={MapViewStyle.carouselItem.contentRow.col1.arrowIcon.iconLeft} 
-                      size={MapViewStyle.carouselItem.contentRow.col1.arrowIcon.size} />
+                    style={Style.contentRow.col1.arrowIcon.button.style}>
+                    <Icon icon={Style.contentRow.col1.arrowIcon.iconLeft} 
+                      size={Style.contentRow.col1.arrowIcon.size} />
                   </Button>
                 </Col>
-                <Col width={MapViewStyle.carouselItem.contentRow.col2.width}>
-                  <div style={MapViewStyle.carouselItem.contentRow.col2.container.style}>
+                <Col width={Style.contentRow.col2.width}>
+                  <div style={Style.contentRow.col2.container.style}>
                     {imageSrc}
                   </div>
                 </Col>
-                <Col width={MapViewStyle.carouselItem.contentRow.col3.width}>
-                  <div style={MapViewStyle.carouselItem.contentRow.col3.container.style}>
-                    <p style={MapViewStyle.carouselItem.contentRow.col3.container.addrText.style}>{addr}</p>
-                    <p style={MapViewStyle.carouselItem.contentRow.col3.container.zipCode.style}>
+                <Col width={Style.contentRow.col3.width}>
+                  <div style={Style.contentRow.col3.container.style}>
+                    <p style={Style.contentRow.col3.container.addrText.style}>{addr}</p>
+                    <p style={Style.contentRow.col3.container.zipCode.style}>
                       {zipCodeString}
                     </p>
                     {tel != null ? (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
-                    <div style={MapViewStyle.carouselItem.contentRow.col3.container.detailBtn.style}>
+                    <div style={Style.contentRow.col3.container.detailBtn.style}>
                       {detailButton}
                     </div>
                   </div>
                 </Col>
-                <Col width={MapViewStyle.carouselItem.contentRow.col4.width}>
+                <Col width={Style.contentRow.col4.width}>
                   <Button modifier='quiet' 
                     onClick={this.nextItem.bind(this)} 
-                    style={MapViewStyle.carouselItem.contentRow.col4.arrowIcon.button.style}>
-                    <Icon icon={MapViewStyle.carouselItem.contentRow.col4.arrowIcon.iconRight} 
-                      size={MapViewStyle.carouselItem.contentRow.col4.arrowIcon.size} />
+                    style={Style.contentRow.col4.arrowIcon.button.style}>
+                    <Icon icon={Style.contentRow.col4.arrowIcon.iconRight} 
+                      size={Style.contentRow.col4.arrowIcon.size} />
                   </Button>
                 </Col>
               </Row>
@@ -409,13 +410,11 @@ export default class MapView extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle = ToolbarStyle.title.imgs;
-
     return (
       <Toolbar>
         <div className="left"><BackButton></BackButton></div>
         <div className="center">
-        Islander Jeju <img src={imgStyle.milgam} style={imgStyle.style} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
@@ -525,14 +524,6 @@ export default class MapView extends React.Component {
   }
 
   render() {
-    const centerDiv = {
-      textAlign: 'center'
-    };
-
-    const hrStyle = {
-      margin: '1px'
-    };
-
     let fullWidth = window.innerWidth + "px";
     let placeCarousel = this.state.items.length <= 0 ? (<ProgressCircular indeterminate />) :
       (<Carousel
@@ -562,8 +553,8 @@ export default class MapView extends React.Component {
     };
 
     const mapZoom = 9;
-    const markerGray = 'C0C0C0';
-    const markerChrimsonRed = 'DC134C'
+    const markerGray = MapViewStyle.mapMarker.gray;
+    const markerRed = MapViewStyle.mapMarker.red;
 
     let itemCarouselIndex = this.state.itemCarouselIndex;
     let markersInfo = this.state.markers.length <= 0 ? 
@@ -579,7 +570,7 @@ export default class MapView extends React.Component {
           let markerInfo = markersInfo[i];
           let marker = null;
           if(i == itemCarouselIndex) {
-            marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerChrimsonRed, topMost, i);
+            marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerRed, topMost, i);
           }
           else {
             marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerGray, i, i);
@@ -588,37 +579,35 @@ export default class MapView extends React.Component {
         }
       } else {
         let markerInfo = markersInfo[itemCarouselIndex];
-        markers.push(this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerChrimsonRed, 9999));
+        markers.push(this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerRed, 9999));
       }
     }
 
     let map = (
       <MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
-        width = "100vw" height = "35vh">
+        width={MapViewStyle.map.size.width} height={MapViewStyle.map.size.height}>
         {markers}
       </MapContainer>);
 
     return (
       <Page renderToolbar = {this.renderToolbar.bind(this)}
         renderFixed={this.renderFixed.bind(this)}>
-        <div style = {centerDiv}>
+        <div style = {CenterDivStyle}>
           <TopToggleView index = {this.state.segmentIndex} 
             onPostChange = {this.handleAddressFilter.bind(this)} 
             strings = {this.state.strings}/>
           <TopSearchView onChange = {this.handleSearchBox.bind(this)} 
             onClick = {this.handleSearchButton.bind(this)}/> 
-          <div style = {{marginTop: '1%', marginBottom: '1%'}}>
+          <div style = {MapViewStyle.map.container.style}>
             {map}
           </div>
           <div>
-            <hr style = {hrStyle}/>
             <FilterCarouselView 
               width = {fullWidth}
               strings = {this.state.strings} 
               items = {this.state.items}
               onFilterClicked = {this.toggleFilterStatus.bind(this)}
             />
-            <hr style={hrStyle}/>
           </div>
           <div>
             {placeCarousel}

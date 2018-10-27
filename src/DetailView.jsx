@@ -8,8 +8,8 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Carousel, CarouselItem
 import {notification} from 'onsenui';
 
 import GooglePlaceImageView from './GooglePlaceImageView';
-
 import './imagefit.css';
+import {ToolbarStyle, DetailViewStyle} from './Styles';
 
 export default class DetailView extends React.Component {
   constructor(props) {
@@ -165,24 +165,19 @@ export default class DetailView extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle= {
-      height: '15px',
-      marginTop: '5%'
-    };
-
     return (
       <Toolbar>
         <div className="left"><BackButton></BackButton></div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon icon={ToolbarStyle.menu.icon} size={ToolbarStyle.menu.size} />
           </ToolbarButton>
         </div>
-     </Toolbar>
-    );
+      </Toolbar>
+   );
   }
 
   createMarkup(text) {
@@ -221,14 +216,13 @@ export default class DetailView extends React.Component {
 
   renderCommon() {
     if(this.state.itemDetailCommon != null) {
+      const Styles = DetailViewStyle.common;
       let carouselItems = [];
       let title = this.state.itemDetailCommon.title == null ? 
         "" : this.state.itemDetailCommon.title._text;
       let overview = this.state.itemDetailCommon.overview == null ? 
         "" : this.state.itemDetailCommon.overview._text;
 
-      let key1 = '1';
-      let key2 = '2';
       let carouselItem = null;
       let images = [];
 
@@ -236,7 +230,7 @@ export default class DetailView extends React.Component {
         <CarouselItem>
           <img src={this.state.itemDetailCommon.firstimage._text}
             className="image-cover"
-            style={{width: "100%", height: "220px"}} 
+            style={Styles.image.style} 
             onClick={this.openModal.bind(this, 
               this.state.itemDetailCommon.firstimage._text)}/>
          </CarouselItem>) : null;
@@ -250,7 +244,7 @@ export default class DetailView extends React.Component {
           <CarouselItem>
             <img src={imageURL}
               className="image-cover"
-              style={{width: "100%", height: "220px"}} 
+              style={Styles.image.style} 
               onClick={this.openModal.bind(this, imageURL)}/>
           </CarouselItem>
         );
@@ -264,7 +258,7 @@ export default class DetailView extends React.Component {
           <CarouselItem>
             <img src={imageURL}
               className="image-cover"
-              style={{width: "100%", height: "220px"}}
+              style={Styles.image.style}
               onClick={this.openModal.bind(this, imageURL)}/>
           </CarouselItem>
         );
@@ -272,8 +266,10 @@ export default class DetailView extends React.Component {
       }
 
       let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
-        (<GooglePlaceImageView maxWidth = {400} maxHeight = {400} 
-           placeTitle = {this.state.itemDetailCommon.title._text} 
+        (<GooglePlaceImageView 
+           maxWidth={Styles.image.google.width} 
+           maxHeight={Styles.image.google.height} 
+           placeTitle={this.state.itemDetailCommon.title._text} 
            listThumbnail={false} multi={true}
            imageOnClick={this.openModal.bind(this)} />) : 
 	(<Carousel swipeable autoScroll overscrollable autoScrollRatio={0.5} 
@@ -282,12 +278,9 @@ export default class DetailView extends React.Component {
            {images}
          </Carousel>);
 
-      const grayColor = "#D3D3D3";
-      const goldColor = "#FFD700";
-      const starIconSize = {
-        default: 30,
-        material: 28
-      };
+      const grayColor = Styles.star.color.gray;
+      const goldColor = Styles.star.color.gold;
+      const starIconSize = Styles.star.size;
 
       let contentId = this.state.contentId;
       let starColor = grayColor;
@@ -303,9 +296,9 @@ export default class DetailView extends React.Component {
       let commonField = (
         <div>
           <Card>
-            <div style={{width: "100%", textAlign: "center", fontSize: "11px"}}>
+            <div style={Styles.image.indicator.container.style}>
               {images.map((item, index) => (
-                <span key={"imagedot-" + index} style={{cursor: 'pointer'}}>
+                <span key={"imagedot-" + index} style={Styles.image.indicator.dot.style}>
                   {images.length > 1 ? this.state.counter == index ? '\u25CF' : '\u25CB' : null}
                 </span>
               ))}
@@ -313,14 +306,14 @@ export default class DetailView extends React.Component {
             <div>{imageSrc}</div>
             <div className="title left">
               <Row>
-                <Col width="80%">  
-                  <h2 style={{margin: "1%"}}>{title}</h2>
+                <Col width={Styles.card.title.width}>  
+                  <h2 style={Styles.card.title.style}>{title}</h2>
                 </Col>
-                <Col width="20%">
+                <Col width={Styles.card.star.width}>
                 <Button modifier='quiet' 
-                  style={{width: '100%', textAlign: "center", color: starColor}}
+                  style={Object.assign({color: starColor}, Styles.card.star.style)}
                   onClick={this.toggleFavorite.bind(this, contentId)}>
-                  <Icon icon='md-star' size={starIconSize}/>
+                  <Icon icon={Styles.card.star.icon} size={starIconSize}/>
                 </Button>
                 </Col>
               </Row> 
@@ -344,15 +337,15 @@ export default class DetailView extends React.Component {
           lat: lat,
           lng: lng
         };
-        const zoom = 16;
-        const mapSize = "600x250";
+        const zoom = Styles.map.zoom;
+        const mapSize = Styles.map.size;
 
         const google = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
         let mapURL = "https://maps.googleapis.com/maps/api/staticmap?" + 
           "center=" + lat + "," + lng + "&zoom=" + zoom + 
           "&size=" + mapSize + "&maptype=roadmap&markers=color:red%7C" + 
           lat + "," + lng + "&key=" + google;
-        map = (<img src = {mapURL} style={{width: '100%'}} />);
+        map = (<img src = {mapURL} style={Styles.map.style} />);
       }
  
       return {commonField: commonField, listField: listField, map: map}; 
@@ -398,26 +391,28 @@ export default class DetailView extends React.Component {
       </ListItem>);
     ret.push(usefee);
 
-    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    const Styles = DetailViewStyle.list;
+
+    let iconSize = Styles.icon.style;
     let smoking = this.state.itemDetailIntro.smoking == null ? 
       null : 
       this.state.itemDetailIntro.smoking._text;
     let smokingIcon = smoking != null && 
       (smoking.includes("Non") || 
       smoking.includes("금연")) ? 
-        (<img src="img/smoking-ban.png" style={iconSize}/>) : null;
+        (<img src={Styles.icon.smoking-ban} style={iconSize}/>) : null;
     let creditcard = this.state.itemDetailIntro.chkcreditcardculture == null ? 
       null : 
       this.state.itemDetailIntro.chkcreditcardculture._text;
     let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
-      (<img src="img/card.png" style={iconSize} />) : null;
+      (<img src={Styles.icon.creditcard} style={iconSize} />) : null;
     let parking = this.state.itemDetailIntro.parkingculture == null ? 
       null : 
       this.state.itemDetailIntro.parkingculture._text;
     let parkingIcon = parking != null && 
       (parking.includes("가능") || parking.includes("주차") || 
        parking.includes("Available") || parking.includes("spaces")) ?
-      (<img src="img/parking.png" style={iconSize} />) : null;
+      (<img src={Styles.icon.parking} style={iconSize} />) : null;
     let etc = (
       <ListItem key="li-icons">
         {smokingIcon}
@@ -426,9 +421,6 @@ export default class DetailView extends React.Component {
       </ListItem>
     );
     ret.push(etc);
-
-
-
 
     return ret;
   }
@@ -467,25 +459,27 @@ export default class DetailView extends React.Component {
         </p>
       </ListItem>);
     ret.push(treatmenu);
+    
+    const Styles = DetailViewStyle.list;
 
-    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    let iconSize = Styles.icons.style;
     let smoking = this.state.itemDetailIntro.smoking == null ? 
       null : 
       this.state.itemDetailIntro.smoking._text;
     let smokingIcon = smoking != null && (smoking.includes("Non") || smoking.includes("금연")) ? 
-      (<img src="img/smoking-ban.png" style={iconSize}/>) : null;
+      (<img src={Styles.icons.nosmoking} style={iconSize}/>) : null;
     let creditcard = this.state.itemDetailIntro.chkcreditcardfood == null ? 
       null : 
       this.state.itemDetailIntro.chkcreditcardfood._text;
     let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
-      (<img src="img/card.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.creditcard} style={iconSize} />) : null;
     let parking = this.state.itemDetailIntro.parkingfood == null ? 
       null : 
       this.state.itemDetailIntro.parkingfood._text;
     let parkingIcon = parking != null && 
       (parking.includes("가능") || parking.includes("주차") || 
        parking.includes("Available") || parking.includes("spaces")) ?
-      (<img src="img/parking.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.parking} style={iconSize} />) : null;
 
     let reservation = this.state.itemDetailIntro.reservationfood == null ? 
       null : 
@@ -632,30 +626,31 @@ export default class DetailView extends React.Component {
         </ListItem>);
     ret.push(playAgeLimit);
 
-    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    const Styles = DetailViewStyle.list;
+    let iconSize = Styles.icons.style;
     let creditcard = this.state.itemDetailIntro.chkcreditcardleports == null ? 
       null : 
       this.state.itemDetailIntro.chkcreditcardleports._text;
     let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
-      (<img src="img/card.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.nosmoking} style={iconSize} />) : null;
     let parking = this.state.itemDetailIntro.parkingleports == null ? 
       null : 
       this.state.itemDetailIntro.parkingleports._text;
     let parkingIcon = parking != null && 
       (parking.includes("가능") || parking.includes("주차") || 
        parking.includes("Available") || parking.includes("spaces")) ?
-      (<img src="img/parking.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.parking} style={iconSize} />) : null;
     let stroller = this.state.itemDetailIntro.chkbabycarriageleports == null ? 
       null : 
       this.state.itemDetailIntro.chkbabycarriageleports._text;
     let strollerIcon = stroller != null && (stroller.includes("있음") || stroller.includes("Avail")) ? 
-      (<img src="img/stroller.png" style={iconSize}/>) : null;
+      (<img src={Styles.icons.stroller} style={iconSize}/>) : null;
     let pet = this.state.itemDetailIntro.chkpetleports == null ? 
       null : 
       this.state.itemDetailIntro.chkpetleports._text;
     let petIcon = (pet != null && pet.length > 0) && 
       (pet.includes("없음") || pet.includes("No") || pet.includes("N/A")) ? 
-      (<img src="img/nopet.png" style={iconSize}/>) : null;
+      (<img src={Styles.icons.nopet} style={iconSize}/>) : null;
 
     let etc = (
       <ListItem key="li-icons">
@@ -668,87 +663,84 @@ export default class DetailView extends React.Component {
     ret.push(etc);
     return ret;
   }
-  renderShoppingDetails(){
-  let ret = [];
 
-  let saleItem = this.state.itemDetailIntro.saleitem == null ? 
-    null : 
-    this.state.itemDetailIntro.saleitem._text == null ?
-      null :
-(<ListItem key="li-saleItem">
-        <b>{this.state.strings.saleitem + " : "}</b>
-        <p>{this.state.itemDetailIntro.saleitem._text}</p>
-      </ListItem>);
+  renderShoppingDetails(){
+    let ret = [];
+
+    let saleItem = this.state.itemDetailIntro.saleitem == null ? 
+      null : 
+      this.state.itemDetailIntro.saleitem._text == null ?
+        null :
+        (<ListItem key="li-saleItem">
+          <b>{this.state.strings.saleitem + " : "}</b>
+          <p>{this.state.itemDetailIntro.saleitem._text}</p>
+        </ListItem>);
     ret.push(saleItem);
-  let workingtime = this.state.itemDetailIntro.opendateshopping == null ? 
-    null : 
-    this.state.itemDetailIntro.opendateshopping._text == null ?
-      null :
-      (<ListItem key="li-workingtime">
-        <b>{this.state.strings.workingtime + " : "}</b>
-        <p>{this.state.itemDetailIntro.opendateshopping._text}</p>
-      </ListItem>);
+    let workingtime = this.state.itemDetailIntro.opendateshopping == null ? 
+      null : 
+      this.state.itemDetailIntro.opendateshopping._text == null ?
+        null :
+        (<ListItem key="li-workingtime">
+          <b>{this.state.strings.workingtime + " : "}</b>
+          <p>{this.state.itemDetailIntro.opendateshopping._text}</p>
+        </ListItem>);
     ret.push(workingtime);
-  let restDateShopping = this.state.itemDetailIntro.restdateshopping == null ? 
-    null : 
-    this.state.itemDetailIntro.restdateshopping._text == null ?
-      null :
-      (<ListItem key="li-restDateShopping">
-        <b>{this.state.strings.restdateshopping + " : "}</b>
-        <p>{this.state.itemDetailIntro.restdateshopping._text}</p>
-      </ListItem>);
+    let restDateShopping = this.state.itemDetailIntro.restdateshopping == null ? 
+      null : 
+      this.state.itemDetailIntro.restdateshopping._text == null ?
+        null :
+        (<ListItem key="li-restDateShopping">
+          <b>{this.state.strings.restdateshopping + " : "}</b>
+          <p>{this.state.itemDetailIntro.restdateshopping._text}</p>
+        </ListItem>);
     ret.push(restDateShopping);
-  let scale = this.state.itemDetailIntro.scaleshopping == null ? 
-    null : 
-    this.state.itemDetailIntro.scaleshopping._text == null ?
-      null :
-      (<ListItem key="li-scale">
-        <b>{this.state.strings.scale + " : "}</b>
-	    <p dangerouslySetInnerHTML = 
-          {this.createMarkup(this.state.itemDetailIntro.scaleshopping._text)}></p>
-      </ListItem>);
+    let scale = this.state.itemDetailIntro.scaleshopping == null ? 
+      null : 
+      this.state.itemDetailIntro.scaleshopping._text == null ?
+        null :
+        (<ListItem key="li-scale">
+          <b>{this.state.strings.scale + " : "}</b>
+          <p dangerouslySetInnerHTML = 
+            {this.createMarkup(this.state.itemDetailIntro.scaleshopping._text)}></p>
+        </ListItem>);
     ret.push(scale);
-  let shopGuide = this.state.itemDetailIntro.shopguide == null ? 
-    null :
-    this.state.itemDetailIntro.shopguide._text == null ?
+    let shopGuide = this.state.itemDetailIntro.shopguide == null ? 
       null :
-      (<ListItem key="li-shopGuide">
-        <b>{this.state.strings.shopguide + " : "}</b>
-        <p>{this.state.itemDetailIntro.shopguide._text}</p>
-      </ListItem>);
+      this.state.itemDetailIntro.shopguide._text == null ?
+        null :
+        (<ListItem key="li-shopGuide">
+          <b>{this.state.strings.shopguide + " : "}</b>
+          <p>{this.state.itemDetailIntro.shopguide._text}</p>
+        </ListItem>);
     ret.push(shopGuide);
 
-    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    const Styles = DetailViewStyle.list;
+    let iconSize = Styles.icons.style;
     let creditcard = this.state.itemDetailIntro.chkcreditcardshopping == null ? 
-      null : 
-        this.state.itemDetailIntro.chkcreditcardshopping._text;
+      null : this.state.itemDetailIntro.chkcreditcardshopping._text;
     let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
-      (<img src="img/card.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.creditcard} style={iconSize} />) : null;
     let parking = this.state.itemDetailIntro.parkingshopping == null ? 
-      null : 
-        this.state.itemDetailIntro.parkingshopping._text;
-    let parkingIcon = parking != null && 
-      (parking.includes("가능") || parking.includes("주차") || 
-       parking.includes("Available") || parking.includes("spaces")) ?
-      (<img src="img/parking.png" style={iconSize} />) : null;
+      null : this.state.itemDetailIntro.parkingshopping._text;
+    let parkingIcon = 
+      parking != null && (parking.includes("가능") || parking.includes("주차") || 
+        parking.includes("Available") || parking.includes("spaces")) ?
+          (<img src={Styles.icons.parking} style={iconSize} />) : null;
     let stroller = this.state.itemDetailIntro.chkbabycarriageshopping == null ? 
-      null : 
-        this.state.itemDetailIntro.chkbabycarriageshopping._text;
-    let strollerIcon = stroller != null && 
-      (stroller.includes("있음") || stroller.includes("Avail")) ? 
-        (<img src="img/stroller.png" style={iconSize}/>) : null;
+      null : this.state.itemDetailIntro.chkbabycarriageshopping._text;
+    let strollerIcon = 
+      stroller != null && (stroller.includes("있음") || stroller.includes("Avail")) ? 
+        (<img src={Styles.icons.stroller} style={iconSize}/>) : null;
     let pet = this.state.itemDetailIntro.chkpetshopping == null ? 
-      null : 
-        this.state.itemDetailIntro.chkpetshopping._text;
-    let petIcon = (pet != null && pet.length > 0) && 
-      (pet.includes("없음") || pet.includes("No") || pet.includes("N/A")) ? 
-        (<img src="img/nopet.png" style={iconSize}/>) : null;
+      null : this.state.itemDetailIntro.chkpetshopping._text;
+    let petIcon = 
+      (pet != null && pet.length > 0) && (pet.includes("없음") || pet.includes("No") || pet.includes("N/A")) ? 
+        (<img src={Styles.icons.nopet} style={iconSize}/>) : null;
     let restroom = this.state.itemDetailIntro.restroom  == null ? 
-      null : 
-        this.state.itemDetailIntro.restroom._text;
-    let restroomIcon = (restroom != null && restroom.length > 0) && 
-      (restroom.includes("있음") || restroom.includes("Avail")) ? 
-        (<img src="img/restroom.png" style={iconSize}/>) : null;
+      null : this.state.itemDetailIntro.restroom._text;
+    let restroomIcon = 
+      (restroom != null && restroom.length > 0) && (restroom.includes("있음") || restroom.includes("Avail")) ? 
+        (<img src={Styles.icons.restroom} style={iconSize}/>) : null;
     let etc = (
       <ListItem key="li-icons">
         {creditCardIcon}
@@ -759,7 +751,7 @@ export default class DetailView extends React.Component {
       </ListItem>
     );
     ret.push(etc);
-  return ret;
+    return ret;
   }
 
   renderSightDetails() {
@@ -816,32 +808,34 @@ export default class DetailView extends React.Component {
         </ListItem>);
     ret.push(usetime);
 
-    let iconSize={width: "50px", height : "50px", margin: '1%'};
+    const Styles = DetailViewStyle.list;
+
+    let iconSize = Styles.icons.style;
     let stroller = this.state.itemDetailIntro.chkbabycarriage == null ? 
       null : 
       this.state.itemDetailIntro.chkbabycarriage._text;
     let strollerIcon = stroller != null && (stroller.includes("있음") || stroller.includes("Avail")) ? 
-      (<img src="img/stroller.png" style={iconSize}/>) : null;
+      (<img src={Styles.icons.stroller} style={iconSize}/>) : null;
     let pet = this.state.itemDetailIntro.chkpet == null ? 
       null : 
       this.state.itemDetailIntro.chkpet._text;
     let petIcon = (pet != null && pet.length > 0) && 
       (pet.includes("없음") || pet.includes("No") || pet.includes("N/A")) ? 
-      (<img src="img/nopet.png" style={iconSize}/>) : null;
+      (<img src={Styles.icons.nopet} style={iconSize}/>) : null;
     let creditcard = this.state.itemDetailIntro.chkcreditcard == null ? 
       null : 
       this.state.itemDetailIntro.chkcreditcard._text;
     let creditCardIcon = creditcard != null && 
       (creditcard.includes("가능") || creditcard.includes("있음") || 
        creditcard.includes("Available")) ?
-      (<img src="img/card.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.creditcard} style={iconSize} />) : null;
     let parking = this.state.itemDetailIntro.parking == null ? 
       null : 
       this.state.itemDetailIntro.parking._text;
     let parkingIcon = parking != null && 
       (parking.includes("가능") || parking.includes("주차") || parking.includes("있음") ||
        parking.includes("Available") || parking.includes("spaces")) ?
-      (<img src="img/parking.png" style={iconSize} />) : null;
+      (<img src={Styles.icons.parking} style={iconSize} />) : null;
 
     let reservation = this.state.itemDetailIntro.reservationfood == null ? 
       null : 
@@ -916,14 +910,6 @@ export default class DetailView extends React.Component {
   } 
 
   render() {
-    const centerDiv = {
-      textAlign: 'center'
-    };
-
-    let textStyle = {
-      margin: '5px',
-    };
-    
     let {commonField, listField, map} = this.renderCommon();
     if(!commonField) {
       commonField = (
@@ -937,29 +923,25 @@ export default class DetailView extends React.Component {
         </Card>);
     }
 
-    const closeIconSize = {
-      default: 25,
-      material: 23
-    };
-
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}
        renderModal={() => (
           <Modal
             isOpen={this.state.isOpen}>
-            <div style={{width: "100%", display: "inline-block", position: "relative"}}>
-              <img src={this.state.imageForModal} style={{width: "100%", }} />
+            <div style={DetailViewStyle.modal.style}>
+              <img src={this.state.imageForModal} style={DetailViewStyle.modal.img.style} />
               <Button modifier='quiet' onClick={() => this.setState({isOpen: false})}
-                style={{position: "absolute", top: "5%", right: "5%", color: "#D3D3D3"}} >
-                <Icon icon="md-close-circle-o" size={closeIconSize} />
+                style={DetailViewStyle.modal.close.style} >
+                <Icon icon={DetailViewStyle.modal.close.icon} 
+                  size={DetailViewStyle.modal.close.size} />
               </Button>
             </div>
           </Modal>
         )}>
         <div>
-	  <div style={{margin: '1%'}}><h4><b>{this.state.strings.overview}</b></h4></div>
+	  <div style={DetailViewStyle.title.style}><h4><b>{this.state.strings.overview}</b></h4></div>
           {commonField}
-          <div style={{margin: '1%'}}><h4><b>{this.state.strings.godetails}</b></h4></div>
+          <div style={DetailViewStyle.title.style}><h4><b>{this.state.strings.godetails}</b></h4></div>
           {map}
           {listField}
         </div>

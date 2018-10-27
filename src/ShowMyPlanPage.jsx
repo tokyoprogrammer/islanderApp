@@ -5,6 +5,8 @@ import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem} from 'react-
 import PlanView from './PlanView';
 import App from './App';
 
+import {ToolbarStyle} from './Styles';
+
 export default class ShowMyPlan extends React.Component {
   constructor(props) {
     super(props);
@@ -32,16 +34,13 @@ export default class ShowMyPlan extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle = {
-      height: '15px',
-      marginTop: '5%'
-    };
-    
     const imgTag = this.props.strings.getLanguage() == 'kr' ? 
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/english.png" 
-         style={{width: "33px"}}/></Button>) :
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/korean.png" 
-         style={{width: "33px"}}/></Button>);
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+        <img src={ToolbarStyle.btns.lang.imgs.eng} 
+          style={ToolbarStyle.btns.lang.imgs.style}/></Button>) :
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+        <img src={ToolbarStyle.btns.lang.imgs.kor}
+          style={ToolbarStyle.btns.lang.imgs.style}/></Button>);
 
     return (
       <Toolbar>
@@ -49,11 +48,11 @@ export default class ShowMyPlan extends React.Component {
           {imgTag}
         </div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon size={ToolbarStyle.menu.size} icon={ToolbarStyle.menu.icon} />
           </ToolbarButton>
         </div>
      </Toolbar>

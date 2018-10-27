@@ -11,6 +11,7 @@ import FavoriteListView from './FavoriteListView';
 import App from './App';
 import DetailView from './DetailView';
 import CreatePlanPage from './CreatePlanPage';
+import {ToolbarStyle} from './Styles';
 
 export default class CreateVisitListPage extends React.Component {
   constructor(props) {
@@ -35,20 +36,15 @@ export default class CreateVisitListPage extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle = {
-      height: '15px',
-      marginTop: '5%'
-    };
-    
     return (
       <Toolbar>
         <div className="left"><BackButton></BackButton></div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon size={ToolbarStyle.menu.size} icon={ToolbarStyle.menu.icon} />
           </ToolbarButton>
         </div>
      </Toolbar>

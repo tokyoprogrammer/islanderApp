@@ -12,31 +12,77 @@ export const DivWH100Style = {
 export const CenterDivStyle = {
   textAlign: "center"
 };
+
+const logoURL = "img/logo.png";
+const commonBadgeStyle = {
+  color: "#ffffff",
+  backgroundColor: "#17a2b8",
+  marginLeft: "1%",
+  padding: ".25em .4em",
+  fontSize: "75%",
+  lineHeight: "1",
+  verticalAlign: "baseline",
+  textAlign: "center",
+  display: "inline-block",
+  borderRadius: ".25rem"
+};
+const commonGrayColor = "D3D3D3";
+const commonGoldColor = "FFD700";
+const commonRedColor = "DC124C";
 // App / Navigator / Menu
 export const MenuStyle = {
   logo: {
-    style: {
-      islander: {
+    img: {
+      url: logoURL,
+      style: {
+        height: "35px"
+      }
+    },
+    circleImg: {
+      url: "img/islander.png",
+      style: {
         width: '40%',
         marginLeft: '30%',
         marginRight: '30%',
         marginBotton: '4%',
         marginTop: '4%'
-      },
-      plane: {
-        color: "#00CED1"
-      },
-      milgam: {
-        marginTop: "5px",
-        height: "20px"
-      },
+      }
     },
-    imgs: {
-      islander: "img/islander.png",
-      milgam: "img/milgam.png"
-    },
-    icon: {
-      plane: "plane"
+    text: {
+      text: "JEJU",
+      style: {
+        marginTop: "0px",
+        fontSize: "15px",
+        fontWeight: "bold",
+        marginBottom: "10px",
+        textAlign: "center"
+      },
+      spanStyle: {
+        lineHeight: "0.5",
+        textAlign: "center",
+        display: "inline-block",
+        position: "relative"
+      },
+      className: "appName",
+      psuedoContent: [
+        ".appName span:after, .appName span:before {",
+        "  content: '';",
+        "  position: absolute;",
+        "  height: 5px;",
+        "  border-bottom: 1px solid #A9A9A9;",
+        "  border-top: 1px solid #A9A9A9;",
+        "  top: 0;",
+        "  width: 80%;",
+        "}",
+        ".appName span:before {",
+        "  right: 100%;",
+        "  margin-right: 10px;",
+        "}",
+        ".appName span:after {",
+        "  left: 100%;",
+        "  margin-left: 10px;",
+        "}"
+      ]
     }
   },
   list: {
@@ -66,7 +112,18 @@ export const ToolbarStyle = {
       style: {
         height: "15px",
         marginTop: "5%"
-      } 
+      },
+      logo: {
+        url: "img/logo.png",
+        style: {
+          padding: "3%",
+          height: "100%",
+          objectFit: "contain",
+          marginLeft: "auto",
+          marginRight: "auto",
+          display: "block" 
+        }
+      }
     }
   },
   menu: {
@@ -254,18 +311,7 @@ export const MapViewStyle = {
       }
     },
     badge: {
-      style: {
-        color: "#ffffff",
-        backgroundColor: "#17a2b8",
-        marginLeft: "1%",
-        padding: ".25em .4em",
-        fontSize: "75%",
-        lineHeight: "1",
-        verticalAlign: "baseline",
-        textAlign: "center",
-        display: "inline-block",
-        borderRadius: ".25rem"
-      }
+      style: commonBadgeStyle
     },
     img: {
       google: {
@@ -284,14 +330,17 @@ export const MapViewStyle = {
     },
     favoriteBtn: {
       size: {
-        default: 30,
-        material: 28
+        default: 30
       },
       colors: {
-        gray: "#D3D3D3",
-        gold: "#FFD700"
+        gray: "#" + commonGrayColor,
+        gold: "#" + commonGoldColor
       },
-      icon: "md-star"
+      icon: "md-star",
+      style: {
+        width: "100%",
+        textAlign: "center"
+      }
     }
   },
   fixedFab: {
@@ -299,6 +348,286 @@ export const MapViewStyle = {
     icon: "fa-bars"
   },
   mapMarker: {
-    dotText: "%E2%80%A2"
+    dotText: "%E2%80%A2",
+    gray: commonGrayColor,
+    red: commonRedColor
+  },
+  map: {
+    size: {
+      width: "100vw",
+      height: "35vh"
+    },
+    container: {
+      style: {
+        marginTop: "1%",
+        marginBottom: "1%"
+      }
+    }
+  }
+};
+// ListView
+const listRowImageWidth = 90;
+const listRowItemHeight = 130;
+
+export const ListViewStyle = {
+  listItemHeight: listRowItemHeight,
+  fixedFab: {
+    position: "bottom right",
+    icon: "md-format-valign-top"
+  },
+  listRow: {
+    style: {
+      width: "100%"
+    },
+    starIcon: {
+      size: {
+        default: 30
+      },
+      icon: "md-star",
+      color: {
+        gray: "#" + commonGrayColor,
+        gold: "#" + commonGoldColor
+      }
+    },
+    image: {
+      width: listRowImageWidth,
+      height: listRowItemHeight - 10,
+      style: {
+        maxWidth: listRowImageWidth + "px",
+        maxHeight: listRowItemHeight - 10 + "px",
+        padding: "5%" 
+      }
+    },
+    item: {
+      style: {
+        height: listRowItemHeight + "px",
+        paddingTop: "2px",
+        paddingBottom: "2px"
+      }
+    },
+    badge: {
+      style: commonBadgeStyle
+    },
+    cols: {
+      col1: {
+        width: "30%"
+      },
+      col2: {
+        width: "50%", 
+        title: {
+          style: {
+            margin: "1px"
+          }
+        },
+        addr: {
+          style: {
+            margin: "1px",
+            color: "#A9A9A9"
+          }
+        }
+
+      },
+      col3: {
+        width: "20%",
+        button: {
+          style: {
+            width: "100%",
+            textAlign: "center"
+          }
+        }
+      }
+    }
+  }
+};
+// TopToggleView
+export const TopToggleViewStyle = {
+  innerDiv: {
+    style: {
+      margin: "1%"
+    }
+  },
+  segment: {
+    style: {
+      width: "95%",
+      marginTop: "3%"
+    }
+  }
+};
+// TopSearchView
+export const TopSearchViewStyle = {
+  innerDiv: {
+    style: {
+      marginTop: "1%",
+      marginBottom: "1%",
+      textAlign: "center",
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+  },
+  input: {
+    style: {
+      WebkitAppearance: "none",
+      width: "78%", 
+      height: "50px", 
+      padding: "0px", 
+      border: "1px solid #D3D3D3",
+      borderRightStyle: "none",
+      fontSize: "15px",
+      textIndent: "3%"
+    }
+  },
+  searchBtn: {
+    style: {
+      border: "1px solid #D3D3D3",
+      backgroundColor: "white",
+      color: "black",
+      height: "50px",
+      width: "50px",
+      padding: "0px",
+      paddingLeft: "1%"
+    },
+    icon: {
+      img: "img/search.png",
+      style: {
+        width: "20px",
+        margin: "auto"
+      }
+    }
+  }
+};
+// FilterCarouselView
+export const FilterCarouselViewStyle = {
+  carouselitem: {
+    arrowBtn: {
+      style: {
+        width: '2%',
+        padding: '0px',
+        height: '30px',
+        fontSize: '0.7em'
+      },
+      innerDiv: {
+        style: {
+          textAlign: "center",
+          margin: '0%',
+          height: '30px'
+        }
+      }
+    },
+    filterBtn: {
+      style: {
+        width: '22%', // draw 4 buttons on single carousel
+        margin: '1%',
+        height: '30px',
+        fontSize: '0.7em',
+        padding: '1px'
+      }
+    }
+  }
+};
+// DetailView
+export const DetailViewStyle = {
+  title: {
+    style: {
+      margin: "1%"
+    }
+  },
+  common: {
+    star: {
+      color: {
+        gray: "#" + commonGrayColor,
+        gold: "#" + commonGoldColor
+      },
+      size: {
+        default: 30
+      }
+    },
+    image: {
+      indicator: {
+        container: {
+          style: {
+            width: "100%",
+            textAlign: "center",
+            fontSize: "11px"
+          }
+        },
+        dot: {
+          style: {
+            cursor: "pointer"
+          }
+        }
+      },
+      google: {
+        width: 400,
+        height: 400
+      },
+      style: {
+        width: "100%",
+        height: "220px"
+      }
+    },
+    card: {
+      title: {
+        width: "80%",
+        style: {
+          margin: "1%"
+        }
+      },
+      star: {
+        width: "20%",
+        icon: "md-star",
+        style: {
+          width: "100%",
+          textAlign: "center"
+        }
+      }
+    },
+    map: {
+      zoom: 16,
+      size: "600x250",
+      style: {
+        width: "100%"
+      }
+    }
+  },
+  list: {
+    icons: {
+      style: {
+        width: "50px",
+        height: "50px",
+        margin: "1%"
+      },
+      nosmoking: "img/smoking-ban.png",
+      creditcard: "img/card.png",
+      parking: "img/parking.png",
+      stroller: "img/stroller.png",
+      nopet: "img/nopet.png",
+      restroom: "img/restroom.png"
+    }
+  },
+  modal: {
+    style: {
+      width: "100%",
+      display: "inline-block",
+      position: "relative"
+    },
+    img: {
+      style: {
+        width: "100%"
+      }
+    },
+    close: {
+      size: {
+        default: 30
+      },
+      icon: "md-close-circle-o",
+      style: {
+        position: "absolute",
+        top: "5%",
+        right: "5%",
+        color: "#" + commonGrayColor
+      }
+    }
   }
 };

@@ -78,13 +78,20 @@ export default class App extends React.Component {
           swipeable={false}>
           <Page>
             <div style={DivH100Style}>
-              <img src={MenuStyle.logo.imgs.islander} 
+              <img src={MenuStyle.logo.circleImg.url} 
                 className="center" 
-                style={MenuStyle.logo.style.islander} />
+                style={MenuStyle.logo.circleImg.style} />
               <div style={CenterDivStyle} >
-                <h3>Islander <Icon icon={MenuStyle.logo.icon.plane} 
-                  style={MenuStyle.logo.style.plane}/> </h3>
-                <h3>Jeju <img src={MenuStyle.logo.imgs.milgam} style={MenuStyle.logo.style.milgam} /></h3> 
+                <img src={MenuStyle.logo.img.url} style={MenuStyle.logo.img.style} />
+                <style dangerouslySetInnerHTML={
+                  { __html: MenuStyle.logo.text.psuedoContent.join('\n')}}>
+                </style>
+                <p className={MenuStyle.logo.text.className} 
+                  style={MenuStyle.logo.text.style}>
+                  <span style={MenuStyle.logo.text.spanStyle}>
+                    {MenuStyle.logo.text.text}
+                  </span>
+                </p> 
               </div>
               <List>
                 <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 

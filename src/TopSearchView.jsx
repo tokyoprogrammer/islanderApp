@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Icon} from 'react-onsenui';
 
+import {TopSearchViewStyle} from './Styles';
+
 export default class TopSearchView extends React.Component {
   constructor(props) { 
     super(props);
@@ -21,38 +23,10 @@ export default class TopSearchView extends React.Component {
   }
 
   render() {
-    const innerDiv = {
-      marginTop: '1%',
-      marginBottom: "1%",
-      textAlign: "center",
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    };
-    const inputField = {
-      WebkitAppearance: "none",
-      width: "78%", 
-      height: "50px", 
-      padding: "0px", 
-      border: "1px solid #D3D3D3",
-      borderRightStyle: "none",
-      fontSize: "15px",
-      textIndent: "3%"
-    };
-    const searchButton = {    
-      border: "1px solid #D3D3D3",
-      backgroundColor: "white",
-      color: "black",
-      height: "50px",
-      width: "50px",
-      padding: "0px",
-      paddingLeft: "1%"
-    };
-    const iconStyle = {
-      width: "20px",
-      margin: "auto"
-    };
+    const innerDiv = TopSearchViewStyle.innerDiv.style;
+    const inputField = TopSearchViewStyle.input.style;
+    const searchButton = TopSearchViewStyle.searchBtn.style;
+    const iconStyle = TopSearchViewStyle.searchBtn.icon.style;
 
     return (
       <div style={innerDiv}>
@@ -61,7 +35,7 @@ export default class TopSearchView extends React.Component {
           placeholder="search..." 
           onKeyPress={this.onKeyPressed.bind(this)}/>
         <button style={searchButton} onClick={this.onSearchClick.bind(this)}>
-          <img src="img/search.png" style={iconStyle} />
+          <img src={TopSearchViewStyle.searchBtn.icon.img} style={iconStyle} />
         </button>
       </div>
     )
