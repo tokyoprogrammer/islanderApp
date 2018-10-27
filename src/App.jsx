@@ -82,7 +82,7 @@ export default class App extends React.Component {
                 className="center" 
                 style={MenuStyle.logo.circleImg.style} />
               <div style={CenterDivStyle} >
-                <img src={MenuStyle.logo.img.url} style={MenuStyle.logo.img.style} />
+                <img src={MenuStyle.logo.img.url2} style={MenuStyle.logo.img.style} />
                 <style dangerouslySetInnerHTML={
                   { __html: MenuStyle.logo.text.psuedoContent.join('\n')}}>
                 </style>

@@ -14,6 +14,7 @@ export const CenterDivStyle = {
 };
 
 const logoURL = "img/logo.png";
+const logoURL2 = "img/logo2.png"
 const commonBadgeStyle = {
   color: "#ffffff",
   backgroundColor: "#17a2b8",
@@ -34,8 +35,9 @@ export const MenuStyle = {
   logo: {
     img: {
       url: logoURL,
+      url2: logoURL2,
       style: {
-        height: "35px"
+        height: "70px"
       }
     },
     circleImg: {
