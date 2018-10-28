@@ -32,7 +32,7 @@ export default class Marker extends React.Component {
 
   renderMarker() {
     let {
-      map, google, position, mapCenter, color, zIndex, onClick, id, text
+      map, google, position, mapCenter, color, zIndex, onClick, id, text, textColor
     } = this.props;
     
     let pos = position || mapCenter;
@@ -40,7 +40,7 @@ export default class Marker extends React.Component {
 //    let icon = "https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + text + "|" + color;
     // Label/fill color/label color/stroke color/
     let icon = "http://www.googlemapsmarkers.com/v1/" + text + "/" + color + "/" + 
-      MarkerStyle.markerLabelColor + "/" + MarkerStyle.markerStrokeColor + "/"
+      textColor + "/" + MarkerStyle.markerStrokeColor + "/";
 
     const pref = {
       map: map,
@@ -69,5 +69,6 @@ Marker.propTypes = {
   zIndex: React.PropTypes.number,
   id: React.PropTypes.number,
   onClick: React.PropTypes.func,
-  text: React.PropTypes.string
+  text: React.PropTypes.string,
+  textColor: React.PropTypes.string
 }

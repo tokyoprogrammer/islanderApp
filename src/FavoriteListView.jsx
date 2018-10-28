@@ -238,18 +238,21 @@ export default class FavoriteListView extends React.Component {
   markerClicked(e, id) {
   }
 
-  drawSingleMarker(lat, lng, color, zIndex, id) {
+  drawSingleMarker(lat, lng, color, zIndex, id, textColor) {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
              onClick = {this.markerClicked.bind(this)} 
-             text={FavoritesListViewStyle.map.marker.dotText}/>);
+             text={FavoritesListViewStyle.map.marker.dotText}
+             textColor={textColor} />);
   }
 
   render() {
     const mapStyles = FavoritesListViewStyle.map;
     const markerGray = mapStyles.marker.gray;
     const markerRed = mapStyles.marker.red;
+    const markerDotGray = mapStyles.marker.dotgray;
+    const markerDotRed = mapStyles.marker.dotred;
     const mapCenter = mapStyles.center;
     const mapZoom = mapStyles.zoom;
 
@@ -261,12 +264,16 @@ export default class FavoriteListView extends React.Component {
           {this.state.favoritesInfo.map((item, index) => { 
             if(this.props.showStar) {
               return this.state.favorites.includes(item.contentid._text) ? 
-                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerRed, index, index) :
-                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerGray, index, index);
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerRed, index, index, markerDotRed) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerGray, index, index, markerDotGray);
             } else {
               return this.state.checkedSights.includes(item.contentid._text) ? 
-                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerRed, index, index) :
-                this.drawSingleMarker(item.mapy._text, item.mapx._text, markerGray, index, index);
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerRed, index, index, markerDotRed) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerGray, index, index, markerDotGray);
             }
           })}
         </MapContainer>) : null}

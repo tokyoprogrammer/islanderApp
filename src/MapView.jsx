@@ -512,11 +512,12 @@ export default class MapView extends React.Component {
     this.setState({itemCarouselIndex: id});
   }
 
-  drawSingleMarker(lat, lng, color, zIndex, id) {
+  drawSingleMarker(lat, lng, color, zIndex, id, textColor) {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
-             onClick = {this.markerClicked.bind(this)} text={MapViewStyle.mapMarker.dotText} />);
+             onClick = {this.markerClicked.bind(this)} text={MapViewStyle.mapMarker.dotText} 
+             textColor={textColor} />);
   }
 
   createMarkup(text) {
@@ -555,6 +556,8 @@ export default class MapView extends React.Component {
     const mapZoom = 9;
     const markerGray = MapViewStyle.mapMarker.gray;
     const markerRed = MapViewStyle.mapMarker.red;
+    const markerDotGray = MapViewStyle.mapMarker.dotgray;
+    const markerDotRed = MapViewStyle.mapMarker.dotred;
 
     let itemCarouselIndex = this.state.itemCarouselIndex;
     let markersInfo = this.state.markers.length <= 0 ? 
@@ -570,16 +573,20 @@ export default class MapView extends React.Component {
           let markerInfo = markersInfo[i];
           let marker = null;
           if(i == itemCarouselIndex) {
-            marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerRed, topMost, i);
+            marker = 
+              this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerRed, topMost, i, markerDotRed);
           }
           else {
-            marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerGray, i, i);
+            marker = 
+              this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerGray, i, i, markerDotGray);
           }
           markers.push(marker);
         }
       } else {
         let markerInfo = markersInfo[itemCarouselIndex];
-        markers.push(this.drawSingleMarker(markerInfo.lat, markerInfo.lng, markerRed, 9999));
+        let marker = this.drawSingleMarker(markerInfo.lat, markerInfo.lng, 
+          markerRed, 9999, itemCarouselIndex, markerDotRed);
+        markers.push(marker);
       }
     }
 

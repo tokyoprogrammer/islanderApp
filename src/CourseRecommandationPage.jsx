@@ -381,12 +381,12 @@ export default class CourseRecommandationPage extends React.Component {
   markerClicked(e, id) {
   } 
 
-  drawSingleMarker(lat, lng, color, zIndex, id) {
+  drawSingleMarker(lat, lng, color, zIndex, id, textColor) {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
              onClick = {this.markerClicked.bind(this)} 
-             text={CourseStyle.map.marker.dotText} />);
+             text={CourseStyle.map.marker.dotText} textColor={textColor}/>);
   }
   
   goDetails(contentId) {
@@ -419,6 +419,8 @@ export default class CourseRecommandationPage extends React.Component {
     const mapZoom = CourseStyle.map.zoom;
     const markerGray = CourseStyle.map.marker.gray;
     const markerRed = CourseStyle.map.marker.red;
+    const markerDotRed = CourseStyle.map.marker.dotred;
+    const markerDotGray = CourseStyle.map.marker.dotgray;
 
     const grayColor = CourseStyle.star.colors.gray;
     const goldColor = CourseStyle.star.colors.gold;
@@ -433,9 +435,9 @@ export default class CourseRecommandationPage extends React.Component {
         let lat = info.mapY;
         let marker = null;
         if(i == 0 || i == additionalInfo.length - 1) 
-          marker = this.drawSingleMarker(lat, lng, markerRed, i, i);
+          marker = this.drawSingleMarker(lat, lng, markerRed, i, i, markerDotRed);
         else
-          marker = this.drawSingleMarker(lat, lng, markerGray, i, i);
+          marker = this.drawSingleMarker(lat, lng, markerGray, i, i, markerDotGray);
         markers.push(marker);
       }
     }

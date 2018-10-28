@@ -29,7 +29,12 @@ const commonBadgeStyle = {
 };
 const commonGrayColor = "D3D3D3";
 const commonGoldColor = "FFD700";
-const commonRedColor = "DC124C";
+const commonRedColor = "721411";
+
+const commonMarkerGrayBGColor = "686868";
+const commonMarkerGrayDotColor = "D3D3D3"
+const commonMarkerRedBGColor = "EA4335";
+const commonMarkerRedDotColor = "721411";
 const commonStarSize = {
   default: 30
 };
@@ -355,8 +360,10 @@ export const MapViewStyle = {
   },
   mapMarker: {
     dotText: "%E2%80%A2",
-    gray: commonGrayColor,
-    red: commonRedColor
+    dotred: commonMarkerRedDotColor,
+    dotgray: commonMarkerGrayDotColor,
+    gray: commonMarkerGrayBGColor,
+    red: commonMarkerRedBGColor
   },
   map: {
     size: {
@@ -698,8 +705,10 @@ export const FavoritesListViewStyle = {
   map: {
     marker: {
       dotText: "%E2%80%A2",
-      gray: commonGrayColor,
-      red: commonRedColor
+      dotred: commonMarkerRedDotColor,
+      dotgray: commonMarkerGrayDotColor,
+      gray: commonMarkerGrayBGColor,
+      red: commonMarkerRedBGColor
     },
     center: commonMapCenter,
     zoom: 9,
@@ -737,8 +746,10 @@ export const CourseStyle = {
   map: {
     marker: {
       dotText: "%E2%80%A2",
-      gray: commonGrayColor,
-      red: commonRedColor
+      dotred: commonMarkerRedDotColor,
+      dotgray: commonMarkerGrayDotColor,
+      gray: commonMarkerGrayBGColor,
+      red: commonMarkerRedBGColor
     },
     center: commonMapCenter,
     zoom: 9,

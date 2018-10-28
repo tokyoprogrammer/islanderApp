@@ -209,11 +209,11 @@ export default class PlanView extends React.Component {
   markerClicked(e, id) {
   } 
 
-  drawSingleMarker(lat, lng, color, zIndex, id, text) {
+  drawSingleMarker(lat, lng, color, zIndex, id, text, textColor) {
     let markerKey = "marker-" + id;
     return (<Marker key = {markerKey} 
              position={{lat: lat, lng: lng}} color={color} zIndex={zIndex} id={id}
-             onClick={this.markerClicked.bind(this)} text={text} />);
+             onClick={this.markerClicked.bind(this)} text={text} textColor={textColor}/>);
   }
  
   render() {
@@ -252,10 +252,7 @@ export default class PlanView extends React.Component {
     };
 
     const mapZoom = 9;
-
-    const markerGray = 'C0C0C0';
     const marginTopForArrow = "80px";
-
     const grayColor = "#D3D3D3";
     const goldColor = "#FFD700";
     const starIconSize = {
@@ -263,7 +260,10 @@ export default class PlanView extends React.Component {
       material: 28
     };
     
-    const markerChrimsonRed = 'DC134C';
+    const markerGray = '686868';
+    const markerDotGray = 'D3D3D3';
+    const markerRed = 'EA4335';
+    const markerDotRed = '721411';
     let additionalInfo = this.state.additionalInfo;
     let markers = [];
     if(additionalInfo.length > 0) {
@@ -276,7 +276,7 @@ export default class PlanView extends React.Component {
         // I leave this code to avoid bug.
         if(i >= additionalInfo.length) {
           let last = additionalInfo[additionalInfo.length - 1];
-          marker = this.drawSingleMarker(last.lat, last.lng, markerChrimsonRed, i, i, i.toString());
+          marker = this.drawSingleMarker(last.lat, last.lng, markerRed, i, i, i.toString(), markerDotRed);
           markers.push(marker);
           continue;
         }
@@ -286,9 +286,9 @@ export default class PlanView extends React.Component {
         let lat = "" + info.lat;
         let marker = null;
         if(i == 0 || i == additionalInfo.length - 1) 
-          marker = this.drawSingleMarker(lat, lng, markerChrimsonRed, i, i, (i + 1).toString());
+          marker = this.drawSingleMarker(lat, lng, markerRed, i, i, (i + 1).toString(), markerDotRed);
         else
-          marker = this.drawSingleMarker(lat, lng, markerGray, i, i, (i + 1).toString());
+          marker = this.drawSingleMarker(lat, lng, markerGray, i, i, (i + 1).toString(), markerDotGray);
         markers.push(marker);
       }
     }
