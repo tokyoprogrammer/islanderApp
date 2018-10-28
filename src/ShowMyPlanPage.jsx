@@ -5,7 +5,7 @@ import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem} from 'react-
 import PlanView from './PlanView';
 import App from './App';
 
-import {ToolbarStyle} from './Styles';
+import {CenterDivStyle, ToolbarStyle, ShowMyPlanPageStyle} from './Styles';
 
 export default class ShowMyPlan extends React.Component {
   constructor(props) {
@@ -68,19 +68,18 @@ export default class ShowMyPlan extends React.Component {
   }
 
   render() {
-    const centerDiv = {textAlign: "center"};
-    
     let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView 
       navigator={this.props.navigator}/>) : 
-      (<div style={{textAlign: "center"}}>
-        <h3 style={{margin: "5%"}}>{this.props.strings.thereisnoplan}</h3>
-        <Button style={{width: "80%"}} onClick={this.loadPage.bind(this, "CreateFlightPlanPage")}>
+      (<div style={CenterDivStyle}>
+        <h3 style={ShowMyPlanPageStyle.title.style}>{this.props.strings.thereisnoplan}</h3>
+        <Button style={ShowMyPlanPageStyle.btn.style} 
+          onClick={this.loadPage.bind(this, "CreateFlightPlanPage")}>
           {this.props.strings.createschedule}
         </Button>
       </div>);
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={centerDiv}>
+        <div style={CenterDivStyle}>
           <h2>{this.props.strings.showschedule}</h2>
         </div>
         {planView}

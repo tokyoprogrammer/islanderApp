@@ -8,7 +8,7 @@ import LocalizedStrings from 'react-localization';
 import Stepper from 'react-stepper-horizontal';
 
 import PlanView from './PlanView';
-import {ToolbarStyle} from './Styles';
+import {CenterDivStyle, ToolbarStyle, CreatePlanPageStyle} from './Styles';
 
 export default class CreatePlanPage extends React.Component {
   constructor(props) {
@@ -214,12 +214,6 @@ export default class CreatePlanPage extends React.Component {
       {title: this.state.strings.createdone}
     ];
 
-    const centerDiv = {textAlign: "center"};
-    const infoMarkIconSize = {
-      default: 30,
-      material: 28
-    };
-
     let planView = this.state.plan != null && this.state.plan.length > 0 ? (<PlanView 
       navigator={this.props.navigator}/>) : null;
     
@@ -228,23 +222,25 @@ export default class CreatePlanPage extends React.Component {
        renderModal={() => (
           <Modal
             isOpen={this.state.showLoading}>
-            <div style={{width: "100%", display: "inline-block", position: "relative"}}>
+            <div style={CreatePlanPageStyle.modal.style}>
               <h3>Loading...</h3>
               <ProgressCircular indeterminate />
             </div>
           </Modal>
         )}>
  
-        <div style={centerDiv}>
+        <div style={CenterDivStyle}>
           <h2>{this.state.strings.createschedule}</h2>
         </div>
-        <div style={{padding: "1%"}}>
+        <div style={CreatePlanPageStyle.step.style}>
           <Stepper steps={steps} activeStep={this.activeSteps} />
         </div>
         <Card>
           <div>
             <p>
-              <Icon icon='md-info' size={infoMarkIconSize} style={{marginRight: "10px"}} /> 
+              <Icon icon={CreatePlanPageStyle.info.icon} 
+                size={CreatePlanPageStyle.info.size} 
+                style={CreatePlanPageStyle.info.style} /> 
               {this.state.strings.createdonedesc}
             </p>
           </div>

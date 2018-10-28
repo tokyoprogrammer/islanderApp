@@ -5,7 +5,7 @@ import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem} 
 import LocalizedStrings from 'react-localization';
 
 import WeatherView from './WeatherView';
-import {ToolbarStyle} from './Styles';
+import {DivH100Style, ToolbarStyle} from './Styles';
 
 export default class WeatherPage extends React.Component {
   constructor(props) {
@@ -43,10 +43,9 @@ export default class WeatherPage extends React.Component {
   }
 
   render() {
-    const centerDiv = {textAlign: "center"};
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={{height: "100%"}}>
+        <div style={DivH100Style}>
           <WeatherView />
         </div>
       </Page>

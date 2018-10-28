@@ -11,7 +11,7 @@ import FavoriteListView from './FavoriteListView';
 import App from './App';
 import DetailView from './DetailView';
 import CreatePlanPage from './CreatePlanPage';
-import {ToolbarStyle} from './Styles';
+import {CenterDivStyle, ToolbarStyle, VisitListPageStyle} from './Styles';
 
 export default class CreateVisitListPage extends React.Component {
   constructor(props) {
@@ -97,12 +97,6 @@ export default class CreateVisitListPage extends React.Component {
   }
   
   render() {
-    const centerDiv = {textAlign: "center"};
-    const infoMarkIconSize = {
-      default: 30,
-      material: 28
-    };
-
     const steps = [
       {title: this.state.strings.flightinfo},
       {title: this.state.strings.hotelinfo},
@@ -115,7 +109,7 @@ export default class CreateVisitListPage extends React.Component {
        renderModal={() => (
           <Modal
             isOpen={this.state.showLoading}>
-            <div style={{width: "100%", display: "inline-block", position: "relative"}}>
+            <div style={VisitListPageStyle.modal.style}>
               <h3>Loading...</h3>
               <ProgressCircular indeterminate />
             </div>
@@ -123,38 +117,40 @@ export default class CreateVisitListPage extends React.Component {
         )}>
  
         <div>
-          <div style={centerDiv}>
+          <div style={CenterDivStyle}>
             <h2>{this.state.strings.createschedule}</h2>
           </div>
-          <div style={{padding: "1%"}}>
+          <div style={VisitListPageStyle.step.style}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
           <Card>
             <div>
               <p>
-                <Icon icon='md-info' size={infoMarkIconSize} style={{marginRight: "10px"}} /> 
+                <Icon icon={VisitListPageStyle.info.icon} 
+                  size={VisitListPageStyle.info.size} 
+                  style={VisitListPageStyle.info.style} /> 
                 {this.state.strings.favoritesinfodesc}
               </p>
             </div>
           </Card>
           <FavoriteListView onLoadDone={this.favoriteListLoadDone.bind(this)} 
             onMoreClicked={this.goDetails.bind(this)} onCheckChanged={this.onCheckChanged.bind(this)} />
-          <div style={{textAlign: "center"}}>
-            <Button style={{width: "80%", margin: "2%"}} onClick={this.loadPage.bind(this, "HomePage")}>
+          <div style={CenterDivStyle}>
+            <Button style={VisitListPageStyle.btns.style} onClick={this.loadPage.bind(this, "HomePage")}>
               {this.state.strings.moresights}
             </Button>
             {this.state.strings.getLanguage() == "kr" ?
-              (<Button style={{width: "80%", margin: "2%"}} 
+              (<Button style={VisitListPageStyle.btns.style} 
                 onClick={this.loadPage.bind(this, "CourseRecommandationPage")}>
                 {this.state.strings.moreplans}
               </Button>) : 
               null
             }
           </div>
-          <div style={{padding: "1%"}}>
+          <div style={VisitListPageStyle.step.style}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
+          <Button style={VisitListPageStyle.gonext.style} 
             onClick={this.goNext.bind(this)}>
             {this.state.strings.gonext}
           </Button>          

@@ -4,6 +4,8 @@ import {Icon, Button, List, ListItem, Row, Col} from 'react-onsenui';
 
 import LocalizedStrings from 'react-localization';
 
+import {CenterDivW100Style, CenterDivStyle, WeatherViewStyle} from './Styles';
+
 export default class WeatherView extends React.Component {
   constructor(props) {
     super(props);
@@ -81,7 +83,7 @@ export default class WeatherView extends React.Component {
  
   render24Forecast() {
     let cols = [];
-    const centerDiv = {textAlign: "center", width: "100%"};
+    const centerDiv = CenterDivW100Style;
     if(this.state.forecast.length > 8) {
       for(let i = 0; i < 8; i++) {
         let item = this.state.forecast[i];
@@ -93,17 +95,17 @@ export default class WeatherView extends React.Component {
           <Col key={"24-col-" + i}>
             <Row>
               <div style={centerDiv}>
-                <p style={{color: "#000000"}}>{hours}</p>
+                <p style={WeatherViewStyle.render24.timecolor}>{hours}</p>
               </div>
             </Row>
             <Row>
               <div style={centerDiv}>
-                <img src={icon} style={{width: "30px"}} />
+                <img src={icon} style={WeatherViewStyle.render24.icon.style} />
               </div>
             </Row>
             <Row>
               <div style={centerDiv}>
-                <p style={{color: "#000000"}}>{degree}</p>
+                <p style={WeatherViewStyle.render24.tempColor}>{degree}</p>
               </div>
             </Row>
           </Col>
@@ -112,7 +114,7 @@ export default class WeatherView extends React.Component {
       }
     }
     return (
-      <Row width="100%">
+      <Row width={WeatherViewStyle.render24.container.width}>
         {cols}
       </Row>
     );
@@ -136,9 +138,10 @@ export default class WeatherView extends React.Component {
     if(this.state.forecast.length < 1) return null;
     let listItems = [];
     let jump = 8;
-    const centerDiv = {width: "100%", textAlign: "center"};
-    const imageWidth = {width: "35px"};
-    const fontColor = {color: "#000000", paddingTop: "5px"}
+    const Styles = WeatherViewStyle.forecast;
+    const centerDiv = {CenterDivW100Style};
+    const imageWidth = Styles.image.style;
+    const fontColor = Styles.text.style;
     let minTemp = 9999;
     let maxTemp = 0;
     let prevdt = new Date(this.state.forecast[0].dt * 1000);
@@ -163,17 +166,17 @@ export default class WeatherView extends React.Component {
       if(prevdt.getDate() != dt.getDate()) {
         // a new day, should update minTemp and maxTemp and add 
         let listitem = (
-          <div key={"weather-list-" + i} style={{padding: "0px"}}>
+          <div key={"weather-list-" + i} style={Styles.container.style}>
             <Row>
-              <Col width="30%">
+              <Col width={Styles.cols.col1.width}>
                 <div style={centerDiv}>
                   <p style={fontColor}>{prevdt.getDate() + " (" + this.getDayInStr(prevdt) + ")"}</p>
                 </div>
               </Col>
-              <Col width="40%">
+              <Col width={Styles.cols.col2.width}>
                 <div style={centerDiv}><img src={weatherIcon} style={imageWidth} /></div>
               </Col>
-              <Col width="30%">
+              <Col width={Styles.cols.col3.width}>
                 <div style={centerDiv}>
                   <p style={fontColor}>
                     {(minTemp - 273.15).toFixed(1) + " / " + (maxTemp - 273.15).toFixed(1)}
@@ -198,17 +201,17 @@ export default class WeatherView extends React.Component {
     // last one
     if(needUpdate) {
       let item = (
-        <div key={"weather-list-last"} style={{padding: "0px"}}>
+        <div key={"weather-list-last"} style={Styles.container.style}>
           <Row>
-            <Col width="30%">
+            <Col width={Styles.cols.col1.width}>
               <div style={centerDiv}>
                 <p style={fontColor}>{prevdt.getDate() + " (" + this.getDayInStr(prevdt) + ")"}</p>
               </div>
             </Col>
-            <Col width="40%">
+            <Col width={Styles.cols.col2.width}>
               <div style={centerDiv}><img src={weatherIcon} style={imageWidth}/></div>
             </Col>
-            <Col width="30%">
+            <Col width={Styles.cols.col3.width}>
               <div style={centerDiv}>
                 <p style={fontColor}>
                   {(minTemp - 273.15).toFixed(1) + " / " + (maxTemp - 273.15).toFixed(1)}
@@ -229,19 +232,13 @@ export default class WeatherView extends React.Component {
   }
 
   render() {
-    const centerDiv = {textAlign: "center"};
     let forecast24 = this.render24Forecast();
     const current = new Date();
     let forecastList = this.renderForecastList();
-    const tempFont = {
-      fontSize: "35px",
-      marginTop: "9px",
-      marginBottom: "9px"
-    };
 
     return (
-      <div style={centerDiv}>
-        <h2 style={{marginTop: "0px", paddingTop: "2%"}}>{this.state.strings.jeju}</h2>
+      <div style={CenterDivStyle}>
+        <h2 style={WeatherViewStyle.topforecast.title.style}>{this.state.strings.jeju}</h2>
         <h4>
           {current.getFullYear() + "/" + (current.getMonth() + 1) + 
             "/" + current.getDate() + " " + this.getDayInStr(current)}
@@ -249,21 +246,19 @@ export default class WeatherView extends React.Component {
         <Row>
           <Col width="35%"></Col>
           <Col width="10%">
-            <img src={this.state.cache.weatherIcon} style={{width: "40px", margin: "auto"}}/>
+            <img src={this.state.cache.weatherIcon} style={WeatherViewStyle.topforecast.icon.style}/>
           </Col>
           <Col width="20%">
-            <p style={tempFont}>
+            <p style={WeatherViewStyle.topforecast.temp.style}>
               {this.state.cache.weatherDegree + "ºC"}
             </p>
           </Col>
           <Col width="35%"></Col>
         </Row>
-        <div style={{borderRadius: "6px", backgroundColor: "rgba(255, 255, 255, .4)", padding: "3%", 
-          marginLeft: "2%", marginRight: "2%", marginTop: "5%"}}>
+        <div style={WeatherViewStyle.render24.bgground.style}>
           {forecast24}
         </div>
-        <div style={{borderRadius: "6px", backgroundColor: "rgba(255, 255, 255, .4)", padding: "3%", 
-          marginLeft: "2%", marginRight: "2%", marginTop: "5%"}}>
+        <div style={WeatherViewStyle.forecast.bgground.style}>
           {forecastList}
         </div>
       </div>

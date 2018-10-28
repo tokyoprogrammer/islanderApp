@@ -12,6 +12,10 @@ export const DivWH100Style = {
 export const CenterDivStyle = {
   textAlign: "center"
 };
+export const CenterDivW100Style = {
+  textAlign: "center",
+  width: "100%"
+};
 
 const logoURL = "img/logo.png";
 const logoURL2 = "img/logo2.png"
@@ -30,9 +34,10 @@ const commonBadgeStyle = {
 const commonGrayColor = "D3D3D3";
 const commonGoldColor = "FFD700";
 const commonRedColor = "721411";
+const commonOrangeColor = "FF8C00"
 
-const commonMarkerGrayBGColor = "686868";
-const commonMarkerGrayDotColor = "D3D3D3"
+const commonMarkerGrayBGColor = "A9A9A9";
+const commonMarkerGrayDotColor = "686868"
 const commonMarkerRedBGColor = "EA4335";
 const commonMarkerRedDotColor = "721411";
 const commonStarSize = {
@@ -861,6 +866,417 @@ export const CourseStyle = {
         marginLeft: "10%",
         marginRight: "10%",
         marginTop: "3%"
+      }
+    }
+  }
+};
+// ShowMyPlanPage
+export const ShowMyPlanPageStyle = {
+  title: {
+    style: {
+      margin: "5%"
+    }
+  },
+  btn: {
+    style: {
+      width: "80%"
+    }
+  }
+};
+// PlanView
+export const PlanViewStyle = {
+  card: {
+    plane: {
+      style: {
+        color: "#00CED1"
+      },
+      icon: "plane"
+    },
+    hotel: {
+      style: {
+        color: "#" + commonOrangeColor
+      },
+      icon: "hotel"
+    }
+  },
+  text: {
+    title: {
+      style: {
+        marginLeft: "3%"
+      }
+    },
+    desc: {
+      style: {
+        marginLeft: "3%"
+      }
+    }
+  },
+  map: {
+    center: {
+      lat: 33.356432,
+      lng: 126.5268767
+    },
+    zoom: 9,
+    marker: {
+      dotred: commonMarkerRedDotColor,
+      dotgray: commonMarkerGrayDotColor,
+      gray: commonMarkerGrayBGColor,
+      red: commonMarkerRedBGColor
+    },
+    size: {
+      width: "100vw",
+      height: "30vh"
+    }
+  },
+  schedule: {
+    footer: {
+      icon: {
+        size: {
+          default: 32
+        },
+        icon: "ion-map",
+        style: {
+          marginRight: "2%"
+        }
+      }
+    }
+  }
+};
+// CreateFlightPlanPage
+export const FlightPlanStyle = {
+  info: {
+    size: {
+      default: 30
+    },
+    icon: "md-info",
+    style: {
+      marginRight: "10px"
+    }
+  },
+  steps: {
+    style: {
+      padding: "1%"
+    }
+  },
+  calendar: {
+    input: {
+      style: {
+        width: "40%",
+        height: "30px"
+      }
+    },
+    container: {
+      style: {
+        width: "100%",
+        textAlign: "center"
+      }
+    },
+    icons: {
+      clock: {
+        url: "img/clock.png",
+        style: {
+          width: "25px",
+          padding: "3px",
+          margin: "2px",
+          marginTop: "auto",
+          marginBottom: "auto"
+        }
+      },
+      arrival: {
+        url: "img/arrival.png",
+        style: {
+          width: "30px",
+          padding: "3px"
+        }
+      },
+      departure: {
+        url: "img/departure.png",
+        style: {
+          width: "30px",
+          padding: "3px"
+        }
+      }
+    }
+  },
+  gonext: {
+    style: {
+      width: "80%",
+      margin: "10%",
+      textAlign: "center",
+      backgroundColor: "#" + commonOrangeColor
+    }
+  }
+};
+// CreateAccomodationPlanPage
+export const AccomodationPageStyle = {
+  modal: {
+    style: {
+      width: "100%",
+      display: "inline-block"
+    },
+    calendar: {
+      style: {
+        width: "100%",
+        textAlign: "center"
+      }
+    },
+    close: {
+      size: {
+        default: 25
+      },
+      icon: "md-close-circle-o",
+      style: {
+        position: "absolute",
+        top: "5%",
+        right: "5%",
+        color: "#" + commonGrayColor 
+      }
+    }
+  },
+  text: {
+    style: {
+      margin: "2%"
+    }
+  },
+  info: {
+    icon: "md-info",
+    style: {
+      marginRight: "10px"
+    },
+    size: {
+      default: 30
+    }
+  },
+  steps: {
+    style: {
+      padding: "1%"
+    }
+  },
+  map: {
+    center: {
+      lat: 33.356432,
+      lng: 126.5268767
+    },
+    zoom: 9,
+    height: "30vh"
+  },
+  addBtn: {
+    style: {
+      width: "80%",
+      margin: "10%",
+      marginTop: "1%",
+      marginBottom: "2%",
+      textAlign: "center"
+    }
+  },
+  list: {
+    calendar: {
+      size: {
+        default: 25
+      },
+      icon: "md-calendar",
+      deleteicon: "md-delete"
+    }
+  },
+  gonext: {
+    style: {
+      width: "80%",
+      margin: "10%",
+      textAlign: "center",
+      backgroundColor: "#" + commonOrangeColor
+    } 
+  }
+};
+// CreateVisitListPage
+export const VisitListPageStyle = {
+  modal: {
+    style: {
+      width: "100%",
+      display: "inline-block",
+      position: "relative"
+    }
+  },
+  step: {
+    style: {
+      padding: "1%"
+    }
+  },
+  info: {
+    icon: "md-info",
+    style: {
+      marginRight: "10px"
+    },
+    size: {
+      default: 30
+    }
+  },
+  btns: {
+    style: {
+      width: "80%",
+      margin: "2%"
+    }
+  },
+  gonext: {
+    style: {
+      width: "80%",
+      margin: "10%",
+      textAlign: "center",
+      backgroundColor: "#" + commonOrangeColor
+    } 
+  }
+};
+// CreatePlanPage
+export const CreatePlanPageStyle = {
+  modal: {
+    style: {
+      width: "100%",
+      display: "inline-block",
+      position: "relative"
+    }
+  },
+  info: {
+    icon: "md-info",
+    style: {
+      marginRight: "10px"
+    },
+    size: {
+      default: 30
+    }
+  },
+  step: {
+    style: {
+      padding: "1%"
+    }
+  },
+};
+// TMapPageStyle
+export const TMapPageStyle = {
+  row: {
+    style: {
+      marginTop: "8px",
+      marginBottom: "8px"
+    }
+  },
+  loading: {
+    style: {
+      textAlign: "center",
+      margin: "3%"
+    }
+  },
+  cols: {
+    col1: {
+      width: "15%",
+      icon: {
+        style: {
+          width: "30px",
+          height: "30px"
+        }
+      }
+    },
+    col2: {
+      width: "85%"
+    }
+  },
+  text: {
+    fromto: {
+      style: {
+        margin: "3%"
+      }
+    },
+    result: {
+      style: {
+        marginLeft: "3%",
+        marginRight: "3%",
+        marginBottom: "2%"
+      }
+    }
+  }
+};
+// WeatherViewStyle
+export const WeatherViewStyle = {
+  topforecast: {
+    title: {
+      style: {
+        marginTop: "0ox",
+        paddingTop: "2%"
+      }
+    },
+    icon: {
+      style: {
+        width: "40px",
+        margin: "auto"
+      }
+    },
+    temp: {
+      style: {
+        fontSize: "35px",
+        marginTop: "9px",
+        marginBottom: "9px"
+      }
+    }
+  },
+  render24: {
+    bgground: {
+      style: {
+        borderRadius: "6%",
+        backgroundColor: "rgba(255, 255, 255, .4)",
+        padding: "3%",
+        marginLeft: "2%",
+        marginRight: "2%",
+        marginTop: "5%"
+      }
+    },
+    container: {
+      width: "100%"
+    },
+    timecolor: {
+      color: "#000000",
+    },
+    icon: {
+      style: {
+        width: "30px"
+      }
+    },
+    tempcolor: {
+      color: "#000000"
+    }
+  },
+  forecast: {
+    bgground: {
+      style: {
+        borderRadius: "6%",
+        backgroundColor: "rgba(255, 255, 255, .4)",
+        padding: "3%",
+        marginLeft: "2%",
+        marginRight: "2%",
+        marginTop: "5%"
+      }
+    },
+    container: {
+      style: {
+        padding: "0%"
+      }
+    },
+    cols: {
+      col1: {
+        width: "30%"
+      },
+      col2: {
+        width: "40%"
+      },
+      col3: {
+        width: "30%"
+      }
+    },
+    image: {
+      style: {
+        width: "35px"
+      }
+    },
+    text: {
+      style: {
+        color: "#000000",
+        paddingTop: "5px"
       }
     }
   }

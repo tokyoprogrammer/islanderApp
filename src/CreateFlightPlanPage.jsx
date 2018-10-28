@@ -9,7 +9,7 @@ import Calendar from 'react-calendar';
 import './CalendarStyle';
 
 import CreateAccomodationPlanPage from './CreateAccomodationPlanPage';
-import {ToolbarStyle} from './Styles';
+import {ToolbarStyle, CenterDivStyle, FlightPlanStyle} from './Styles';
 
 export default class CreateFlightPlan extends React.Component {
   constructor(props) {
@@ -117,11 +117,7 @@ export default class CreateFlightPlan extends React.Component {
   }
 
   render() {
-    const centerDiv = {textAlign: "center"};
-    const infoMarkIconSize = {
-      default: 30,
-      material: 28
-    };
+    const infoMarkIconSize = FlightPlanStyle.info.size;
 
     const steps = [
       {title: this.props.strings.flightinfo},
@@ -130,10 +126,12 @@ export default class CreateFlightPlan extends React.Component {
       {title: this.props.strings.createdone}
     ];
 
+    const Styles = FlightPlanStyle.calendar;
+
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div>
-          <div style={centerDiv}>
+          <div style={CenterDivStyle}>
             <h2>{this.props.strings.createschedule}</h2>
           </div>
           <div style={{padding: "1%"}}>
@@ -142,46 +140,51 @@ export default class CreateFlightPlan extends React.Component {
           <Card>
             <div>
               <p>
-                <Icon icon='md-info' size={infoMarkIconSize} style={{marginRight: "10px"}} /> 
+                <Icon icon={FlightPlanStyle.info.icon} 
+                  size={infoMarkIconSize} 
+                  style={FlightPlanStyle.info.style} /> 
                 {this.props.strings.flightinfodesc}
               </p>
             </div>
           </Card>
           <h3>
-            <img src="img/arrival.png" style={{width: "30px", padding: "3px"}} />
+            <img src={Styles.icons.arrival.url} 
+              style={Styles.icons.arrival.style} />
             {this.props.strings.flightarrival}
           </h3>
-          <div style={{width: "100%", textAlign: "center"}}>
+          <div style={Styles.container.style}>
             <Calendar value={this.state.arrivalDate} calendarType="US" className="calendar_width_100"
               onChange={this.handleArrivalDateChange.bind(this)} minDate={new Date()}/>
           </div>
           <section>
-            <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
+            <img src={Styles.icons.clock.url} 
+              style={Styles.icons.clock.style} />
             <b>{this.props.strings.arrivaltime} :</b>
             <Input type="time" modifier='material'
-              value={this.state.arrivalTime} style={{width: "40%", height: "30px"}} 
+              value={this.state.arrivalTime} style={Styles.input.style} 
               onChange={this.handleArrivalTimeChange.bind(this)} />
           </section>
           <h3>
-            <img src="img/departure.png" style={{width: "30px", padding: "3px"}} />
+            <img src={Styles.icons.departure.url} style={Styles.icons.departure.style} />
             {this.props.strings.flightdeparting}
           </h3>
-          <div style={{width: "100%", textAlign: "center"}}>
+          <div style={Styles.container.style}>
             <Calendar value={this.state.departureDate} calendarType="US" className="calendar_width_100"
               onChange={this.handleDepartureDateChange.bind(this)}
               minDate={this.state.arrivalDate} />
           </div>
           <section>
-            <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
+            <img src={Styles.icons.clock.url} 
+              style={Styles.icons.clock.style} />
             <b>{this.props.strings.departuretime} :</b>
             <Input type="time" modifier='material'
-              value={this.state.departureTime} style={{width: "40%", height: "30px"}} 
+              value={this.state.departureTime} style={Styles.input.style} 
               onChange={this.handleDepartureTimeChange.bind(this)} />
           </section>
-          <div style={{padding: "1%"}}>
+          <div style={FlightPlanStyle.steps.style}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
+          <Button style={FlightPlanStyle.gonext.style} 
             onClick={this.goNext.bind(this)}>
             {this.props.strings.gonext}
           </Button>          

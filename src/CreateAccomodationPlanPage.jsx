@@ -13,7 +13,7 @@ import './CalendarStyle';
 import CreateVisitListPage from './CreateVisitListPage';
 import GoogleSearchField from './GoogleSearchField';
 
-import {ToolbarStyle} from './Styles';
+import {CenterDivStyle, ToolbarStyle, AccomodationPageStyle} from './Styles';
 
 export default class CreateAccomodationPlanPage extends React.Component {
   constructor(props) {
@@ -109,14 +109,14 @@ export default class CreateAccomodationPlanPage extends React.Component {
                break;
     }
     let hours = datetime.getHours();
-    hours = hours < 10 ? '0'+hours : hours;
+    hours = hours < 10 ? '0' + hours : hours;
     let minutes = datetime.getMinutes();
-    minutes = minutes < 10 ? '0'+minutes : minutes;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
     
-    dateInfo = year+this.state.strings.year+" "
-               +month+this.state.strings.month+" "
-               +date+this.state.strings.date+" "
-               +day+" "+hours+ ":"+minutes;
+    dateInfo = year + this.state.strings.year + " "
+               + month + this.state.strings.month + " "
+               + date + this.state.strings.date + " "
+               + day + " " + hours + ":" + minutes;
     return dateInfo;
   }
 
@@ -125,10 +125,10 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let year = datetime.getFullYear();
     let month = datetime.getMonth() + 1;
     let date = datetime.getDate();
-    let day =  datetime.getDay();
-    dateInfo = year+this.state.strings.year+" "
-               +month+this.state.strings.month+" "
-               +date+this.state.strings.date+" ";
+    let day = datetime.getDay();
+    dateInfo = year + this.state.strings.year + " "
+               + month + this.state.strings.month + " "
+               + date + this.state.strings.date + " ";
     return dateInfo;
   }
 
@@ -144,7 +144,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let departDate = departureDateTime.getDate();
     if(arrivalYear == departYear &&
        arrivalMonth == departMonth &&
-       arrivalDate == departDate){
+       arrivalDate == departDate) {
       return 1;
     }else{
       return 0;
@@ -166,8 +166,6 @@ export default class CreateAccomodationPlanPage extends React.Component {
       });
     }
 
-    
-
     /* save accomodation information */
     for (let i=0; i<accomodationList.length; i++){   
       let item = accomodationList[i];
@@ -188,7 +186,6 @@ export default class CreateAccomodationPlanPage extends React.Component {
       accomodationSum = accomodationSum + eachAccomodationDate;
     }  
     localStorage.setItem("accomodationInfo", JSON.stringify(tmp));
- 
     
     /* condition 1 : aaccomodation sum is same with travel total night  */
     if(accomodationSum > travelTotalNight){
@@ -204,10 +201,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
       /* accomodationSum == travelTotalNight */
     }
 
-
-      this.props.navigator.pushPage({ 
-        component: CreateVisitListPage 
-      });
+    this.props.navigator.pushPage({ 
+      component: CreateVisitListPage 
+    });
   }
 
   copy(mainObj) {
@@ -223,7 +219,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     /* alert - one day travel case */
     if(this.validateOneDayTravel()){
       notification.alert(this.state.strings.onedaytravel);
-      return ;
+      return;
     }
     /* alert - out of jeju hotel information */
     let addrInfo = this.state.currentAccomodation.addr;
@@ -231,7 +227,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let retSeogwipo = addrInfo.search(/seogwipo/i);
     if(retJeju == -1 && retSeogwipo == -1){
       notification.alert(this.state.strings.notjejuaccomodation);
-      return ;
+      return;
     }
 
     if(this.state.currentAccomodation.name != null && 
@@ -256,15 +252,13 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   addToSchedule(row) {
-   /* console.log(row)*/
+    /* console.log(row)*/
     this.setState({isOpen: true, selectedRow: row});
   }
 
   renderAccomodationList(row, index) {
-    const calendarIconSize = {
-      default: 25,
-      material: 23
-    };
+    const Styles = AccomodationPageStyle.list.calendar;
+    const calendarIconSize = Styles.size;
 
     return (
       <ListItem key={"al" + index}>
@@ -279,17 +273,16 @@ export default class CreateAccomodationPlanPage extends React.Component {
         </div>
         <div className="right">
           <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet' >
-            <Icon icon="md-calendar" size={calendarIconSize} />
+            <Icon icon={Styles.icon} size={calendarIconSize} />
           </Button>
           <Button  modifier='quiet' style={{color: 'black'}} >
-            <Icon icon='md-delete' size={calendarIconSize} />
+            <Icon icon={Styles.deleteicon} size={calendarIconSize} />
           </Button>
         </div>
       </ListItem>
     ); 
   }
   
-
   onCalendarChange(value) {
     let accomodationListCopy = this.state.accomodationList;
     console.log(value);
@@ -312,11 +305,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   render() {
-    const centerDiv = {textAlign: "center"};
-    const infoMarkIconSize = {
-      default: 30,
-      material: 28
-    };
+    const infoMarkIconSize = AccomodationPageStyle.info.size;
 
     const steps = [
       {title: this.state.strings.flightinfo},
@@ -325,24 +314,18 @@ export default class CreateAccomodationPlanPage extends React.Component {
       {title: this.state.strings.createdone}
     ];
 
-    const mapCenter = {
-      lat: 33.356432,
-      lng: 126.5268767
-    };
+    const mapCenter = AccomodationPageStyle.map.center;
+    const mapZoom = AccomodationPageStyle.map.zoom;
 
-    const mapZoom = 9;
-
-    const closeIconSize = {
-      default: 25,
-      material: 23
-    };
+    const modalStyle = AccomodationPageStyle.modal;
+    const closeIconSize = modalStyle.close.size;
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}
        renderModal={() => (
           <Modal
             isOpen={this.state.isOpen}>
-            <div style={{width: "100%", display: "inline-block"}}>
-              <div style={{width: "100%", textAlign: "center"}}>
+            <div style={modalStyle.style}>
+              <div style={modalStyle.calendar.style}>
                 <Calendar activeStartDate={this.state.arrivalDateTime}
                   minDate={this.state.arrivalDateTime}
                   maxDate={this.state.departureDateTime}
@@ -354,29 +337,30 @@ export default class CreateAccomodationPlanPage extends React.Component {
                   formatMonth={(value) => formatDate(value, 'MM')} />
               </div>
               <Button modifier='quiet' onClick={() => this.setState({isOpen: false})}
-                style={{position: "absolute", top: "5%", right: "5%", color: "#D3D3D3"}} >
-                <Icon icon="md-close-circle-o" size={closeIconSize} />
+                style={modalStyle.close.style} >
+                <Icon icon={modalStyle.close.icon} size={closeIconSize} />
               </Button>
             </div>
           </Modal>
         )}>
  
         <div>
-          <div style={centerDiv}>
+          <div style={CenterDivStyle}>
             <h2>{this.state.strings.createschedule}</h2>
           </div>
-          <div style={{padding: "1%"}}>
+          <div style={AccomodationPageStyle.steps.style}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
           <Card>
             <div>
               <p>
-                <Icon icon='md-info' size={infoMarkIconSize} style={{marginRight: "10px"}} /> 
+                <Icon icon={AccomodationPageStyle.info.icon} 
+                  size={infoMarkIconSize} style={AccomodationPageStyle.info.style} /> 
                 {this.state.strings.hotelinfodesc}
               </p>
             </div>
           </Card>
-          <b style={{margin: "2%"}}>{this.state.strings.yourplan}</b>
+          <b style={AccomodationPageStyle.text.style}>{this.state.strings.yourplan}</b>
           <Card>
             <div>
               <p>
@@ -388,25 +372,26 @@ export default class CreateAccomodationPlanPage extends React.Component {
                 +this.convertTime(this.state.departureDateTime)}
               </p>
               <p>
-                 {this.getAccomodationDate(this.state.arrivalDateTime, this.state.departureDateTime) + this.state.strings.nights+" "}
-                 {this.getAccomodationDate(this.state.arrivalDateTime, this.state.departureDateTime)+1}{this.state.strings.days}
+                 {this.getAccomodationDate(this.state.arrivalDateTime, this.state.departureDateTime) + 
+                  this.state.strings.nights + " "}
+                 {this.getAccomodationDate(this.state.arrivalDateTime, this.state.departureDateTime)+ 1 }
+                 {this.state.strings.days}
               </p>
             </div>
           </Card>
-          <b style={{margin: "2%"}}>{this.state.strings.findaccomodation}</b>
+          <b style={AccomodationPageStyle.text.style}>{this.state.strings.findaccomodation}</b>
           <GoogleSearchField initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
-            height="30vh" onSearchDone={this.onSearchDone.bind(this)}/>
-          <Button style={{width: "80%", margin: "10%", 
-            marginTop: "1%", marginBottom: "2%", textAlign: "center"}} 
+            height={AccomodationPageStyle.map.height} onSearchDone={this.onSearchDone.bind(this)}/>
+          <Button style={AccomodationPageStyle.addBtn.style} 
             onClick={this.addToAccomodationList.bind(this)}>
             {this.state.strings.addaccomodation}
           </Button>
           <List renderRow={this.renderAccomodationList.bind(this)} 
             dataSource={this.state.accomodationList} />
-          <div style={{padding: "1%"}}>
+          <div style={AccomodationPageStyle.steps.style}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center", backgroundColor: "#FF8C00"}} 
+          <Button style={AccomodationPageStyle.gonext.style} 
             onClick={this.goNext.bind(this)}>
             {this.state.strings.gonext}
           </Button>          

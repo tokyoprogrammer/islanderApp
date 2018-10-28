@@ -12,20 +12,21 @@ import TMapPage from './TMapPage';
 import MapContainer from './MapContainer';
 import Marker from './Marker';
 
+import {DivW100Style, PlanViewStyle} from './Styles';
+
 const CustomLabel = (props) => {
   return null;
 };
 
 const CustomFooter = (props) => {
   let {index, strings, onClicked} = props.event;
-  const iconSize = {
-    default: 32,
-    material: 40
-  };
 
   if(index == 0) return null;
   return (<Button modifier="large" onClick={onClicked}>
-    <Icon size={iconSize} icon="ion-map" /> {strings.navigate}
+    <Icon size={PlanViewStyle.schedule.footer.icon.size} 
+      icon={PlanViewStyle.schedule.footer.icon.icon} 
+      style={PlanViewStyle.schedule.footer.icon.style} /> 
+    {strings.navigate}
   </Button>);
 };
 
@@ -246,24 +247,14 @@ export default class PlanView extends React.Component {
       </Carousel>
     );
  
-    const mapCenter = {
-      lat: 33.356432,
-      lng: 126.5268767
-    };
-
-    const mapZoom = 9;
-    const marginTopForArrow = "80px";
-    const grayColor = "#D3D3D3";
-    const goldColor = "#FFD700";
-    const starIconSize = {
-      default: 30,
-      material: 28
-    };
+    const Styles = PlanViewStyle.map;
+    const mapCenter = Styles.center
+    const mapZoom = Styles.zoom;
+    const markerGray = Styles.marker.gray;
+    const markerDotGray = Styles.marker.dotgray;
+    const markerRed = Styles.marker.red;
+    const markerDotRed = Styles.marker.dotred;
     
-    const markerGray = '686868';
-    const markerDotGray = 'D3D3D3';
-    const markerRed = 'EA4335';
-    const markerDotRed = '721411';
     let additionalInfo = this.state.additionalInfo;
     let markers = [];
     if(additionalInfo.length > 0) {
@@ -295,16 +286,20 @@ export default class PlanView extends React.Component {
 
     let map = (
       <MapContainer initialCenter={mapCenter} zoom={mapZoom}
-        width="100vw" height = "30vh" drawLine = {true}>
+        width={Styles.size.width} height={Styles.size.height} drawLine={true}>
         {markers}
       </MapContainer>
     );
  
     return (
-      <div style={{width: "100%"}}>
+      <div style={DivW100Style}>
         <Card>
           <div>
-            <h3>{this.state.strings.flightschedule} <Icon icon='plane' style={{color: '#00CED1'}}/></h3>
+            <h3>
+              {this.state.strings.flightschedule} 
+              <Icon icon={PlanViewStyle.card.plane.icon} 
+                style={PlanViewStyle.card.plane.style} />
+            </h3>
             <li>
               {this.state.strings.arrivaltime + " : " + this.state.schedule.arrivalTime}
             </li>
@@ -320,13 +315,17 @@ export default class PlanView extends React.Component {
         </Card>
         <Card>
           <div>
-            <h3>{this.state.strings.accomodationschedule} <Icon icon='hotel' style={{color: '#FF8C00'}}/></h3>
+            <h3>
+              {this.state.strings.accomodationschedule} 
+              <Icon icon={PlanViewStyle.card.hotel.icon} 
+                style={PlanViewStyle.card.hotel.style}/>
+            </h3>
             {accomodationStrings.map((item, index) => (<li key={"hli-" + index}>{item}</li>))}
           </div>
         </Card>
-        <h3 style={{marginLeft: "3%"}}>{this.state.strings.entireplan}</h3>
+        <h3 style={PlanViewStyle.text.title.style}>{this.state.strings.entireplan}</h3>
         {map}
-        <p style={{marginLeft: "3%"}}>{this.state.strings.swipemoredetail}</p>
+        <p style={PlanViewStyle.text.desc.style}>{this.state.strings.swipemoredetail}</p>
         {carousel}
         <Timeline events={this.state.timeline[this.state.itemCarouselIndex]} 
           customStartLabel={CustomLabel} customEndLabel={CustomLabel}

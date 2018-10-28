@@ -5,7 +5,7 @@ import {Toolbar, ToolbarButton, Page, Button, BackButton, Icon, ProgressCircular
 
 import postscribe from 'postscribe';
 
-import {ToolbarStyle} from './Styles';
+import {ToolbarStyle, TMapPageStyle} from './Styles';
 
 export default class TmapView extends React.Component {
   constructor(props) {
@@ -256,11 +256,11 @@ export default class TmapView extends React.Component {
     let directionIcon = "img/directions/" + direction + ".png"
     return (
       <ListItem key={"details-" + index}>
-        <Row style={{marginTop: "8px", marginBottom: "8px"}}>
-          <Col width="15%">
-            <img src={directionIcon} style={{width: "30px", height: "30px"}} />
+        <Row style={TMapPageStyle.row.style}>
+          <Col width={TMapPageStyle.cols.col1.width}>
+            <img src={directionIcon} style={TMapPageStyle.cols.col1.icon.style} />
           </Col>
-          <Col width="85%">
+          <Col width={TMapPageStyle.cols.col2.width}>
             {desc}
           </Col>
         </Row>
@@ -272,13 +272,13 @@ export default class TmapView extends React.Component {
     return (
       <Page renderToolbar = {this.renderToolbar.bind(this)}>
         {this.state.loaded ? null : (
-          <div style={{textAlign: "center", margin: "3%"}}>
+          <div style={TMapPageStyle.loading.style}>
             <label>Loading... </label>
             <ProgressCircular indeterminate />
           </div>
         )}
-        <b style={{margin: "3%"}}>{this.fromtotext}</b>
-        <p id="result" style={{marginLeft: "3%", marginRight: "3%", marginBottom: "2%"}}></p>
+        <b style={TMapPageStyle.text.fromto.style}>{this.fromtotext}</b>
+        <p id="result" style={TMapPageStyle.text.result.style}></p>
         <div id="map_div">
         </div>
         <List dataSource = {this.state.paths} 
