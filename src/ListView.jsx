@@ -10,6 +10,8 @@ import TopSearchView from './TopSearchView';
 import FilterCarouselView from './FilterCarouselView';
 import GooglePlaceImageView from './GooglePlaceImageView';
 
+import {ToolbarStyle, ListViewStyle, CenterDivStyle} from './Styles';
+
 export default class ListView extends React.Component {
   constructor(props) {
     super(props);
@@ -25,10 +27,25 @@ export default class ListView extends React.Component {
     let strings = new LocalizedStrings(langFile);
     strings.setLanguage(lang);
 
+    let categories = [];
+    if(lang == "kr") {
+      categories = require('public/category/category_kr.json');
+    } else {
+      categories = require('public/category/category_en.json');
+    }
+
+    let categoriesMap = {};
+    for(let i = 0; i < categories.length; i++) {
+      let item = categories[i]; 
+      categoriesMap[item.key] = item.value;
+    }
+
+    this.categories = categoriesMap;
+
     let selectedCode = localStorage.getItem("code");
     let cache = JSON.parse(localStorage.getItem("items" + selectedCode));
     
-    this.listItemHeight = 130;
+    this.listItemHeight = ListViewStyle.listItemHeight;
  
     this.state = {
       items: cache.items,
@@ -65,23 +82,27 @@ export default class ListView extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle= {
-      height: '15px',
-      marginTop: '5%'
-    };
-
     return (
       <Toolbar>
         <div className="left"><BackButton></BackButton></div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon icon={ToolbarStyle.menu.icon} size={ToolbarStyle.menu.size} />
           </ToolbarButton>
         </div>
-     </Toolbar>
+      </Toolbar>
+    );
+  }
+
+  renderFixed() {
+    return (
+      <Fab onClick={this.goTopScroll.bind(this)} 
+        position={ListViewStyle.fixedFab.position}>
+        <Icon icon={ListViewStyle.fixedFab.icon} />
+      </Fab>
     );
   }
 
@@ -122,13 +143,12 @@ export default class ListView extends React.Component {
     } else {
       searchedItems = filteredItems;
     }
-
-    this.setState({filteredItems: searchedItems});
-    console.log(string);
+     
+    return searchedItems;
   } 
  
-  handleSearchBox(e) {
-    let searchString = e.target.value;
+  handleSearchBox(value) {
+    let searchString = value;
     if(searchString.length <= 0) {
       // clear search
       this.searchUsingSearchString("");
@@ -156,7 +176,8 @@ export default class ListView extends React.Component {
   }
  
   handleSearchButton() {
-    this.searchUsingSearchString(this.state.searchString);
+    let searchedItems = this.searchUsingSearchString(this.state.searchString);
+    this.setState({filteredItems: searchedItems});
   }
   
   processFilter(sigunguCode, filtered) {
@@ -189,22 +210,15 @@ export default class ListView extends React.Component {
     return filteredItems;
   }
  
+  createMarkup(text) {
+    return {__html: text }; 
+  }
+
   renderRow(index) {
     if(index >= this.state.filteredItems.length) return;
-    const imageWidth = 100;
-    const imageHeight = this.listItemHeight - 10;
-    const imageStyle = {width: imageWidth + "px", maxHeight: imageHeight + "px"};
-    const grayColor = "#D3D3D3";
-    const goldColor = "#FFD700";
-    const starIconSize = {
-      default: 30,
-      material: 28
-    };
-    const listItemStyle = {
-      height: this.listItemHeight,
-      paddingTop: "2px",
-      paddingBottom: "2px"
-    };
+    const Styles = ListViewStyle.listRow;
+    const grayColor = Styles.starIcon.color.gray;
+    const goldColor = Styles.starIcon.color.gold;
 
     let itemInfo = this.state.filteredItems[index];
 
@@ -216,16 +230,17 @@ export default class ListView extends React.Component {
     if(contentId == null || contentTypeId == null || mapX == null || mapY == null) return null;
  
     let title = itemInfo.title == null ? "" : itemInfo.title._text;
+    if(this.state.strings.getLanguage() != "kr") {
+      let tempTitle = title.split("(");
+      if(tempTitle.length > 0) title = tempTitle[0];
+    }
     
     let itemImage = itemInfo.firstimage == null ? 
-      (<GooglePlaceImageView maxWidth = {imageWidth} maxHeight = {imageHeight} 
+      (<GooglePlaceImageView maxWidth = {Styles.image.width} maxHeight = {Styles.image.height} 
         placeTitle = {title} listThumbnail = {true} multi = {false} />) :
-      (<img src={itemInfo.firstimage._text} style={imageStyle} />);
+      (<img src={itemInfo.firstimage._text} style={Styles.image.style} />);
 
     let tel = itemInfo.tel;
-    let telLink = tel == null ? null : "tel:" + tel._text;
-    let telTag = tel == null ? null : 
-      (<a href={telLink}>{tel._text}</a>);
 
     let starColor = grayColor;
     let favorites = this.state.favorites;
@@ -237,22 +252,31 @@ export default class ListView extends React.Component {
       }
     }
 
+    let cat3 = itemInfo.cat3 != null ? this.categories[itemInfo.cat3._text] : null;
+    let badge = cat3 != null ? (<span style={Styles.badge.style}>{cat3}</span>) : null;
+
     return (
-      <ListItem key={contentId} style={listItemStyle} modifier="chevron" tappable
+      <ListItem key={contentId} style={Styles.item.style} modifier="chevron" tappable
         onClick={this.goDetails.bind(this, contentId, contentTypeId)}>
-        <div className='left'>{itemImage}</div>
-        <div className='center' style = {{paddingTop: '2px', paddingBottom: '2px'}}>
-          <h3 style={{margin:"1px"}}>{title}</h3>
-          <p style={{margin:"1px", color: "#A9A9A9"}}>{addr}</p>
-          {telTag}
-        </div>
-        <div className='right'>
+        <Row style={Styles.style}>
+        <Col width={Styles.cols.col1.width}>
+          {itemImage}
+        </Col>
+        <Col width={Styles.cols.col2.width}>
+          <b style={Styles.cols.col2.title.style}>{title}</b>{badge}
+          {this.state.strings.getLanguage() == "kr" ? 
+            (<p style={Styles.cols.col2.addr.style}>{addr}</p>) : null }
+          {tel != null && this.state.strings.getLanguage() == "kr" ? 
+            (<div dangerouslySetInnerHTML={this.createMarkup(tel._text)} />) : null}
+        </Col>
+        <Col width={Styles.cols.col3.width}>
           <Button modifier='quiet' 
-            style={{width: '100%', textAlign: "center", color: starColor}}
+            style={Object.assign({color: starColor}, Styles.cols.col3.button.style)}
             onClick={this.toggleFavorite.bind(this, contentId)}>
-            <Icon icon='md-star' size={starIconSize}/>
+            <Icon icon={Styles.starIcon.icon} size={Styles.starIcon.size}/>
           </Button>
-        </div>
+        </Col>
+        </Row>
       </ListItem>);
   }
 
@@ -274,49 +298,31 @@ export default class ListView extends React.Component {
   }
 
   render() {
-    let fullHeight = window.innerHeight;
-    const imageHeight = (fullHeight * 0.4) + "px"; // 40%
-    const hrStyle = {
-      margin: '1px'
-    };
-
-    const styleToolbar = {
-      textAlign: 'center', 
-      width: fullWidth, 
-      margin: '0px',
-      backgroundColor: "#efeff4"
-    };
-
     let fullWidth = window.innerWidth + "px";
 
     return (
-      <Page renderToolbar={this.renderToolbar.bind(this)}>
-        <div style={styleToolbar} id="top">
+      <Page renderToolbar={this.renderToolbar.bind(this)}
+        renderFixed={this.renderFixed.bind(this)}>
+        <div style={CenterDivStyle} id="top">
           <TopToggleView index = {this.state.segmentIndex}
             onPostChange = {this.handleAddressFilter.bind(this)}
             strings = {this.state.strings} />
           <TopSearchView onChange={this.handleSearchBox.bind(this)} 
             onClick={this.handleSearchButton.bind(this)}/> 
           <div>
-            <hr style={hrStyle}/>
             <FilterCarouselView 
               width = {fullWidth}
               strings = {this.state.strings} 
               items = {this.state.items}
               onFilterClicked = {this.toggleFilterStatus.bind(this)}
             />  
-            <hr style={hrStyle}/>
           </div>
         </div>
-        <div className="content" style={{textAlign: 'center', width: fullWidth}}>
+        <div className="content" style={Object.assign({width: fullWidth}, CenterDivStyle)}>
           <LazyList length={this.state.filteredItems.length} 
             renderRow={this.renderRow.bind(this)} 
             calculateItemHeight={() => this.listItemHeight} />
         </div>
-        <Fab onClick={this.goTopScroll.bind(this)} 
-          style = {{ position: "fixed", bottom: '10px', right: '10px'}}>
-          <Icon icon='md-format-valign-top' />
-        </Fab>
       </Page>
     );
   }

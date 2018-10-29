@@ -13,7 +13,6 @@ export default class PixabayImage extends React.Component {
       data: []
     };
 
-    console.log()
     if(currentCache != null) {
       let cacheValidUntil = new Date(currentCache.createdDateTime);
       cacheValidUntil.setHours(cacheValidUntil.getHours() + 1);
@@ -51,7 +50,7 @@ export default class PixabayImage extends React.Component {
 
   loadImageUsingPixabayAPI() {
     var this_ = this;
-    const key = "9995637-0ccd160d0f89b528d825ac3e7";
+    const key = process.env.REACT_APP_PIXABAY_API_KEY;
     const queryURL = "https://pixabay.com/api/?key=" + key + 
       "&q=%EC%A0%9C%EC%A3%BC%EB%8F%84&lang=ko&" + 
       "image_type=photo&safesearch=true&per_page=200" +

@@ -1,31 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Button, SearchInput, Icon} from 'react-onsenui';
+import {Icon} from 'react-onsenui';
+
+import {TopSearchViewStyle} from './Styles';
 
 export default class TopSearchView extends React.Component {
   constructor(props) { 
     super(props);
   }
 
+  onChange(event) {
+    this.props.onChange(event.target.value);
+  }
+
+  onKeyPressed(event) {
+    if(event.key == 'Enter')
+      this.props.onClick();
+  }
+
+  onSearchClick(value) {
+    this.props.onClick();
+  }
+
   render() {
-    const innerDiv = {
-      margin: '1%'
-    };
-    const searchIconSize = {
-      default: 24,
-      material: 22
-    };
+    const innerDiv = TopSearchViewStyle.innerDiv.style;
+    const inputField = TopSearchViewStyle.input.style;
+    const searchButton = TopSearchViewStyle.searchBtn.style;
+    const iconStyle = TopSearchViewStyle.searchBtn.icon.style;
 
     return (
       <div style={innerDiv}>
-        <SearchInput
-          placeholder='Search...' onChange={this.props.onChange} />
-        <Button onClick={this.props.onClick} 
-          modifier='quiet' style={{margin: '2px', padding: '2px'}}>
-          <Icon icon='md-search' size={searchIconSize} />
-        </Button>
+        <input style={inputField} 
+          onChange={this.onChange.bind(this)} 
+          placeholder="search..." 
+          onKeyPress={this.onKeyPressed.bind(this)}/>
+        <button style={searchButton} onClick={this.onSearchClick.bind(this)}>
+          <img src={TopSearchViewStyle.searchBtn.icon.img} style={iconStyle} />
+        </button>
       </div>
-    );
+    )
   }
 }
 

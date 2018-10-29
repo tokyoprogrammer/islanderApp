@@ -187,7 +187,10 @@ export class GooglePlaceImageView extends React.Component {
     if(this.props.multi == false) {
       imgTag = this.props.listThumbnail == true ? 
         (<img src = {this.state.url} 
-          style={{width: this.props.maxWidth + "px", maxHeight: this.props.maxHeight + "px"}} />) :
+          style={{
+            maxWidth: this.props.maxWidth + "px", 
+            maxHeight: this.props.maxHeight + "px", 
+            padding: "5%"}} />) :
         (<img src = {this.state.url} style={{width: "100%"}}/>);
     } else {
       imgTag = this.drawCarousel();
@@ -218,5 +221,5 @@ GooglePlaceImageView.defaultProps = {
 }
 
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyDQlA7ERwcmbPVr8iFH-QGV8uS-_B6c2jQ'
+  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
 })(GooglePlaceImageView)

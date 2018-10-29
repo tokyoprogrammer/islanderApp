@@ -1,9 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {List, ListItem, Checkbox, Button, ListHeader, Icon} from 'react-onsenui';
+import {List, ListItem, Checkbox, Button, ListHeader, Icon, Row, Col} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
+
+import MapContainer from './MapContainer';
+import Marker from './Marker';
+
+import {FavoritesListViewStyle} from './Styles';
 
 export default class FavoriteListView extends React.Component {
   constructor(props) {
@@ -27,8 +32,7 @@ export default class FavoriteListView extends React.Component {
       localStorage.setItem('favorites', JSON.stringify(favorites));
     }
     const fixedAreaCode = 39; /* jeju island area code */
-    const serviceKey = 
-      "XU3%2BCzeg%2BV5ML42ythVLdLSe05DgiBqmS1wCZJfnhdpQ6X5y%2BB5W%2BJ3E%2B98cXaALAMFCqZQxlMdzLYrSy4fUrw%3D%3D";
+    const serviceKey = process.env.REACT_APP_VISIT_KOREA_API_KEY; 
 
     this.state = {
       urlForAllList: "https://api.visitkorea.or.kr/openapi/service/rest/"+ serviceLang + 
@@ -39,10 +43,19 @@ export default class FavoriteListView extends React.Component {
       favorites: favorites,
       allSights: [],
       favoritesInfo: [],
-      strings: strings
+      strings: strings,
+      checkedSights: []
     }
 
     this.readList(lang);
+
+    var this_ = this;
+    const sleepTime = 1500;
+    new Promise(function(resolve, reject) {
+      setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+    }).then(function(result) {
+      this_.setState({});
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -132,6 +145,14 @@ export default class FavoriteListView extends React.Component {
     }
     this.setState({favoritesInfo: favoritesInfo});
     this.props.onLoadDone();
+
+    var this_ = this;
+    const sleepTime = 1500;
+    new Promise(function(resolve, reject) {
+      setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+    }).then(function(result) {
+      this_.setState({});
+    });
   }
 
   toggleFavorite(key) {
@@ -157,61 +178,111 @@ export default class FavoriteListView extends React.Component {
   }
 
   onChange(id, e) {
-    if(this.props.onCheckChanged)
+    if(this.props.onCheckChanged) {
       this.props.onCheckChanged(e.target.checked, id);
+    }
+
+    let checkedSights = this.state.checkedSights.slice(0); // copy array
+    if(e.target.checked) {
+      checkedSights.push(id);
+    } else {
+      let index = checkedSights.indexOf(id);
+      if(index > -1) {
+        checkedSights.splice(index, 1);
+      }
+    }
+    this.setState({checkedSights: checkedSights});
   }
 
   renderCheckboxRow(row) {
-    const grayColor = "#D3D3D3";
-    const goldColor = "#FFD700";
-    const starIconSize = {
-      default: 30,
-      material: 28
-    };
+    const Styles = FavoritesListViewStyle.listitem;
+    const grayColor = Styles.star.colors.gray;
+    const goldColor = Styles.star.colors.gold;
  
     return (
-      <ListItem key={row.contentid._text} tappable>
-        <label className='left'>
-          {this.props.showStar ? 
-            (<Button modifier='quiet' 
-              style={{
-                width: '100%', 
-                textAlign: "center", 
-                color: this.state.favorites.includes(row.contentid._text) ? 
-                  goldColor : grayColor
-                }}
-              onClick={this.toggleFavorite.bind(this, row.contentid._text)}>
-              <Icon icon='md-star' size={starIconSize}/>
-            </Button>) :
-            (<Checkbox onChange={this.onChange.bind(this, row.contentid._text)} 
-              inputId={"checkbox-" + row.contentid._text}/>)}
-        </label>
-        <div className='left'>
-          {row.firstimage != null ? 
-            (<img src={row.firstimage._text} className='list-item__thumbnail' />) :
-            (<img src="img/noimage.png" className='list-item__thumbnail' />)}
-        </div>
-        <label htmlFor={"checkbox-" + row.contentid._text} className='center'>
-          {row.title._text}
-        </label>
-        <div className='right'>
-          <Button onClick={this.props.onMoreClicked.bind(this, row.contentid._text, row.contenttypeid._text)}>
-            {this.state.strings.moredetails}
-          </Button>
-        </div>
+      <ListItem key={row.contentid._text} tappable modifier="longdivider">
+        <Row style={Styles.row.style}>
+          <Col width={Styles.cols.col1.width}>
+            {this.props.showStar ? 
+              (<Button modifier='quiet' 
+                style={Object.assign({
+                  color: this.state.favorites.includes(row.contentid._text) ? 
+                    goldColor : grayColor
+                  }, Styles.cols.col1.btn.style)}
+                onClick={this.toggleFavorite.bind(this, row.contentid._text)}>
+                <Icon icon={Styles.star.icon} size={Styles.star.size}/>
+              </Button>) :
+              (<Checkbox onChange={this.onChange.bind(this, row.contentid._text)} 
+                inputId={"checkbox-" + row.contentid._text}/>)}
+          </Col>
+          <Col width={Styles.cols.col2.width}>
+            {row.firstimage != null ? 
+              (<img src={row.firstimage._text} className='list-item__thumbnail' />) :
+              (<img src="img/noimage.png" className='list-item__thumbnail' />)}
+          </Col>
+          <Col width={Styles.cols.col3.width}>
+            <label htmlFor={"checkbox-" + row.contentid._text}>
+              {row.title._text}
+            </label>
+          </Col>
+          <Col width={Styles.cols.col4.width}>
+            <Button onClick={this.props.onMoreClicked.bind(this, row.contentid._text, row.contenttypeid._text)}>
+              {this.state.strings.moredetails}
+            </Button>
+          </Col>
+        </Row>
       </ListItem>
     )
   }
 
+  markerClicked(e, id) {
+  }
+
+  drawSingleMarker(lat, lng, color, zIndex, id, textColor) {
+    let markerKey = "marker-" + id;
+    return (<Marker key = {markerKey} 
+             position = {{lat: lat, lng: lng}} color = {color} zIndex = {zIndex} id = {id}
+             onClick = {this.markerClicked.bind(this)} 
+             text={FavoritesListViewStyle.map.marker.dotText}
+             textColor={textColor} />);
+  }
+
   render() {
+    const mapStyles = FavoritesListViewStyle.map;
+    const markerGray = mapStyles.marker.gray;
+    const markerRed = mapStyles.marker.red;
+    const markerDotGray = mapStyles.marker.dotgray;
+    const markerDotRed = mapStyles.marker.dotred;
+    const mapCenter = mapStyles.center;
+    const mapZoom = mapStyles.zoom;
+
     return (
       <div>
+        {this.state.favoritesInfo.length > 0 ?
+        (<MapContainer initialCenter={mapCenter} zoom={mapZoom} google={this.props.google} 
+          width={mapStyles.size.width}  height={mapStyles.size.height}>
+          {this.state.favoritesInfo.map((item, index) => { 
+            if(this.props.showStar) {
+              return this.state.favorites.includes(item.contentid._text) ? 
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerRed, index, index, markerDotRed) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerGray, index, index, markerDotGray);
+            } else {
+              return this.state.checkedSights.includes(item.contentid._text) ? 
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerRed, index, index, markerDotRed) :
+                this.drawSingleMarker(item.mapy._text, item.mapx._text, 
+                  markerGray, index, index, markerDotGray);
+            }
+          })}
+        </MapContainer>) : null}
         {this.state.favoritesInfo.length > 0 ? 
           (<List dataSource={this.state.favoritesInfo}
             renderHeader={() => (
               <ListHeader>{this.state.strings.favorite}</ListHeader>)}
             renderRow={this.renderCheckboxRow.bind(this)}/>) :
-          (<h3 style={{width: "100%", textAlign: "center"}}>
+          (<h3 style={FavoritesListViewStyle.nofavorite.style}>
             {this.state.strings.nofavorites}
           </h3>)}
       </div>

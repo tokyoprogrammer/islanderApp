@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Carousel, CarouselItem, Button} from 'react-onsenui';
 
+import {FilterCarouselViewStyle} from './Styles';
+
 export default class FilterCarouselView extends React.Component {
   constructor(props) { 
     super(props);
@@ -78,27 +80,11 @@ export default class FilterCarouselView extends React.Component {
   }
 
   drawCategoryCarousel(availCategories, filtered) {
+    const Styles = FilterCarouselViewStyle.carouselitem;
     /* make category filter buttons */
-    const filterButtonStyle = {
-      width: '22%', // draw 4 buttons on single carousel
-      margin: '1%',
-      height: '30px',
-      fontSize: '0.7em',
-      padding: '1px'
-    };
-
-    let buttonStyle = {
-      width: '2%',
-      padding: '0px',
-      height: '30px',
-      fontSize: '0.7em'
-    };
-
-    const innerDivStyle = {
-      textAlign: "center",
-      margin: '0%',
-      height: '30px'
-    };
+    const filterButtonStyle = Styles.filterBtn.style;
+    const buttonStyle = Styles.arrowBtn.style;
+    const innerDivStyle = Styles.arrowBtn.innerDiv.style;
 
     /* prev button for carousel */
     let backButton = (
@@ -151,7 +137,7 @@ export default class FilterCarouselView extends React.Component {
         } else {
           // make dummy button. if there is no proper item.
           let button = (<Button 
-            style={{width:'21%', margin: '1%', height: '30px'}} modifier='quiet' disabled={true}>
+            style={filterButtonStyle} modifier='quiet' disabled={true}>
             <div style={innerDivStyle}>
             </div></Button>);
           buttonGroup.push(button);
@@ -223,8 +209,10 @@ export default class FilterCarouselView extends React.Component {
     this.props.onFilterClicked(newFilteredList);
   }
 
-
   render() {
+    const hrStyle= {
+      margin: "1px"
+    };
     let filterCarousel = this.state.filterCarouselItems.length <= 0 ? (<p>Loading...</p>) : 
       (<Carousel
          style={{width: this.props.width}}
@@ -235,7 +223,7 @@ export default class FilterCarouselView extends React.Component {
          {this.state.filterCarouselItems}
        </Carousel>);
 
-    return filterCarousel;
+    return (<div><hr style={hrStyle}/>{filterCarousel}<hr style={hrStyle} /></div>);
   }
 }
 

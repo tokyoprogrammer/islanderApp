@@ -32,23 +32,34 @@ jobs:
       - run: 
           name: Install Onsen UI
           command: npm install onsenui --save # install onsen ui
-      - run:
-          name: create dummy project for cordova
-          command: cp -r .cordova /home/circleci/.cordova
+#      - run:
+#          name: create dummy project for cordova
+#          command: cp -r .cordova /home/circleci/.cordova
       - run: 
           name: Install node modules
           command: npm install # install npm packages
-      - run:
-          name: Update Monaca
-          command: monaca update --force 
+#      - run:
+#          name: Update Monaca
+#          command: monaca update --force 
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-        
+      - run:
+          name: setup dotenv
+          command: sh createenvfile.sh  
       # try build
-      - run: monaca transpile
-
-
-
+      - run: 
+          name: Build Project
+          command: monaca transpile
+      - run:
+          name: Copy transpiled file to Heroku
+          command: |
+            git clone https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git islander-jeju-app && cp -rv ~/repo/www/* ./islander-jeju-app/
+      - run:
+          name: Commit files into Heroku git
+          command: cd islander-jeju-app && git config --global user.email "yo1226@gmail.com" && git config --global user.name "Yoseob Kim" && git add * && git commit -am "deploy"
+      - run:
+          name: Push files into Heroku git and Deploy
+          command: cd islander-jeju-app && ls -al && git push https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git master

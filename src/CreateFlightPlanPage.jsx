@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem, Card} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem, Card, Input} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import Stepper from 'react-stepper-horizontal';
@@ -9,6 +9,7 @@ import Calendar from 'react-calendar';
 import './CalendarStyle';
 
 import CreateAccomodationPlanPage from './CreateAccomodationPlanPage';
+import {ToolbarStyle, CenterDivStyle, FlightPlanStyle} from './Styles';
 
 export default class CreateFlightPlan extends React.Component {
   constructor(props) {
@@ -39,16 +40,13 @@ export default class CreateFlightPlan extends React.Component {
   }
 
   renderToolbar() {
-    const imgStyle = {
-      height: '15px',
-      marginTop: '5%'
-    };
-    
     const imgTag = this.props.strings.getLanguage() == 'kr' ? 
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/english.png" 
-         style={{width: "33px"}}/></Button>) :
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'><img src="img/korean.png" 
-         style={{width: "33px"}}/></Button>);
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+        <img src={ToolbarStyle.btns.lang.imgs.eng} 
+          style={ToolbarStyle.btns.lang.imgs.style}/></Button>) :
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+        <img src={ToolbarStyle.btns.lang.imgs.kor}
+          style={ToolbarStyle.btns.lang.imgs.style}/></Button>);
 
     return (
       <Toolbar>
@@ -56,11 +54,11 @@ export default class CreateFlightPlan extends React.Component {
           {imgTag}
         </div>
         <div className="center">
-        Islander Jeju <img src="img/milgam.png" style={imgStyle} />
+          <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
         <div className='right'>
           <ToolbarButton onClick={this.showMenu.bind(this)}>
-            <Icon icon='ion-navicon, material:md-menu' />
+            <Icon size={ToolbarStyle.menu.size} icon={ToolbarStyle.menu.icon} />
           </ToolbarButton>
         </div>
      </Toolbar>
@@ -92,6 +90,11 @@ export default class CreateFlightPlan extends React.Component {
   }
 
   goNext() {
+    if(this.state.arrivalTime == null || this.state.arrivalTime.length < 1 ||
+       this.state.departureTime == null || this.state.departureTime.length < 1) {
+      notification.alert(this.props.strings.cannotempty);
+      return;
+    }
     let arrivalTime = this.state.arrivalTime.split(":");
     let arrivalDateTime = this.state.arrivalDate;
     arrivalDateTime.setHours(arrivalTime[0], arrivalTime[1], 0);
@@ -104,34 +107,17 @@ export default class CreateFlightPlan extends React.Component {
       notification.alert(this.props.strings.cannotsame);
       return;
     }
-/*    
-    let string = 
-      "<b>" + this.props.strings.confirmschedule + "</b>" + "<br/>" + 
-      "<b>" + this.props.strings.arrivaltime + "</b>" + "<br/>" + 
-      arrivalDateTime + "<br/>" + 
-      "<b>" + this.props.strings.departuretime + "</b>" + "<br/>" + 
-      departureDateTime + "<br/>" + 
-      "<b>" + this.props.strings.areyousure + "</b>";
-    notification.confirm(string).then((response) => {
-      if(response == 1) {
-*/
-        localStorage.setItem("flightScheduleInfo", JSON.stringify({
-          arrivalTime: arrivalDateTime.toString(),
-          departureTime: departureDateTime.toString()
-        }));
-        this.props.navigator.pushPage({ 
-          component: CreateAccomodationPlanPage 
-        });
-//      }
-//    }); 
+    localStorage.setItem("flightScheduleInfo", JSON.stringify({
+      arrivalTime: arrivalDateTime.toString(),
+      departureTime: departureDateTime.toString()
+    }));
+    this.props.navigator.pushPage({ 
+      component: CreateAccomodationPlanPage 
+    });
   }
 
   render() {
-    const centerDiv = {textAlign: "center"};
-    const infoMarkIconSize = {
-      default: 30,
-      material: 28
-    };
+    const infoMarkIconSize = FlightPlanStyle.info.size;
 
     const steps = [
       {title: this.props.strings.flightinfo},
@@ -140,10 +126,12 @@ export default class CreateFlightPlan extends React.Component {
       {title: this.props.strings.createdone}
     ];
 
+    const Styles = FlightPlanStyle.calendar;
+
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
         <div>
-          <div style={centerDiv}>
+          <div style={CenterDivStyle}>
             <h2>{this.props.strings.createschedule}</h2>
           </div>
           <div style={{padding: "1%"}}>
@@ -152,46 +140,52 @@ export default class CreateFlightPlan extends React.Component {
           <Card>
             <div>
               <p>
-                <Icon icon='md-info' size={infoMarkIconSize} style={{marginRight: "10px"}} /> 
+                <Icon icon={FlightPlanStyle.info.icon} 
+                  size={infoMarkIconSize} 
+                  style={FlightPlanStyle.info.style} /> 
                 {this.props.strings.flightinfodesc}
               </p>
             </div>
           </Card>
           <h3>
-            <img src="img/arrival.png" style={{width: "30px", padding: "3px"}} />
+            <img src={Styles.icons.arrival.url} 
+              style={Styles.icons.arrival.style} />
             {this.props.strings.flightarrival}
           </h3>
-          <div style={{width: "100%", textAlign: "center"}}>
+          <div style={Styles.container.style}>
             <Calendar value={this.state.arrivalDate} calendarType="US" className="calendar_width_100"
-              onChange={this.handleArrivalDateChange.bind(this)} 
-              formatMonth={(value) => formatDate(value, 'MM')}/>
+              onChange={this.handleArrivalDateChange.bind(this)} minDate={new Date()}/>
           </div>
           <section>
-            <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
+            <img src={Styles.icons.clock.url} 
+              style={Styles.icons.clock.style} />
             <b>{this.props.strings.arrivaltime} :</b>
-            <input type="time" value={this.state.arrivalTime} style={{width: "40%", height: "30px"}} 
+            <Input type="time" modifier='material'
+              value={this.state.arrivalTime} style={Styles.input.style} 
               onChange={this.handleArrivalTimeChange.bind(this)} />
           </section>
           <h3>
-            <img src="img/departure.png" style={{width: "30px", padding: "3px"}} />
+            <img src={Styles.icons.departure.url} style={Styles.icons.departure.style} />
             {this.props.strings.flightdeparting}
           </h3>
-          <div style={{width: "100%", textAlign: "center"}}>
+          <div style={Styles.container.style}>
             <Calendar value={this.state.departureDate} calendarType="US" className="calendar_width_100"
               onChange={this.handleDepartureDateChange.bind(this)}
-              formatMonth={(value) => formatDate(value, 'MM')}
               minDate={this.state.arrivalDate} />
           </div>
           <section>
-            <img src="img/clock.png" style={{width: "25px", padding: "3px", margin:"2%"}} />
+            <img src={Styles.icons.clock.url} 
+              style={Styles.icons.clock.style} />
             <b>{this.props.strings.departuretime} :</b>
-            <input type="time" value={this.state.departureTime} style={{width: "40%", height: "30px"}} 
+            <Input type="time" modifier='material'
+              value={this.state.departureTime} style={Styles.input.style} 
               onChange={this.handleDepartureTimeChange.bind(this)} />
           </section>
-          <div style={{padding: "1%"}}>
+          <div style={FlightPlanStyle.steps.style}>
             <Stepper steps={steps} activeStep={this.activeSteps} />
           </div>
-          <Button style={{width: "80%", margin: "10%", textAlign: "center"}} onClick={this.goNext.bind(this)}>
+          <Button style={FlightPlanStyle.gonext.style} 
+            onClick={this.goNext.bind(this)}>
             {this.props.strings.gonext}
           </Button>          
         </div>

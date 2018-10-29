@@ -9,6 +9,8 @@ import CreateFlightPlanPage from './CreateFlightPlanPage';
 import ShowMyPlanPage from './ShowMyPlanPage';
 import AllFavoritesPage from './AllFavoritesPage';
 
+import {DivH100Style, CenterDivStyle, MenuStyle} from './Styles';
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -66,27 +68,6 @@ export default class App extends React.Component {
   }
   
   render() {
-    const imageStyle = {
-      width: '40%',
-      marginLeft: '30%',
-      marginRight: '30%',
-      marginBotton: '4%',
-      marginTop: '4%'
-    };
-
-    const divCenter = {
-      textAlign: 'center'
-    };
-
-    const imageSmall = {
-      marginTop: '5px',
-      height: '20px'
-    };
-
-    const listDiv = {
-      height: '60px'
-    };
-   
     return (
       <Splitter>
         <SplitterSide
@@ -96,34 +77,42 @@ export default class App extends React.Component {
           onClose={this.hide.bind(this)}
           swipeable={false}>
           <Page>
-            <div style={{height: "100%"}}>
-              <img src="img/islander.png" 
+            <div style={DivH100Style}>
+              <img src={MenuStyle.logo.circleImg.url} 
                 className="center" 
-                style={imageStyle} />
-              <div style={divCenter} >
-                <h3>Islander <Icon icon='plane' style={{color: '#00CED1'}}/> </h3>
-                <h3>Jeju <img src="img/milgam.png" style={imageSmall} /></h3> 
+                style={MenuStyle.logo.circleImg.style} />
+              <div style={CenterDivStyle} >
+                <img src={MenuStyle.logo.img.url2} style={MenuStyle.logo.img.style} />
+                <style dangerouslySetInnerHTML={
+                  { __html: MenuStyle.logo.text.psuedoContent.join('\n')}}>
+                </style>
+                <p className={MenuStyle.logo.text.className} 
+                  style={MenuStyle.logo.text.style}>
+                  <span style={MenuStyle.logo.text.spanStyle}>
+                    {MenuStyle.logo.text.text}
+                  </span>
+                </p> 
               </div>
               <List>
                 <ListItem onClick={this.loadPage.bind(this, "HomePage")} tappable 
-                  style={listDiv}>
+                  style={MenuStyle.list.container.style}>
                   {this.state.strings.home}
                 </ListItem>
                 <ListItem onClick={this.loadPage.bind(this, "AllFavoritesPage")} tappable 
-                  style={listDiv}>
+                  style={MenuStyle.list.container.style}>
                   {this.state.strings.favorite}
                 </ListItem>
                 { this.state.strings.getLanguage() == 'kr' ? 
                 (<ListItem onClick={this.loadPage.bind(this, "CourseRecommandationPage")} tappable 
-                  style={listDiv}>
+                  style={MenuStyle.list.container.style}>
                   {this.state.strings.course}
                 </ListItem>) : null}
                 <ListItem onClick={this.loadPage.bind(this, "CreateFlightPlanPage")} tappable 
-                  style={listDiv}>
+                  style={MenuStyle.list.container.style}>
                   {this.state.strings.createschedule}
                 </ListItem>
                 <ListItem onClick={this.loadPage.bind(this, "ShowMyPlanPage")} tappable 
-                  style={listDiv}>
+                  style={MenuStyle.list.container.style}>
                   {this.state.strings.showschedule}
                 </ListItem>
               </List>
@@ -135,6 +124,7 @@ export default class App extends React.Component {
             initialRoute={{ 
               component: this.state.page, 
               props: { key: this.state.page.name, strings: this.state.strings } }} 
+            swipeable 
             renderPage={this.renderPage.bind(this)}
             ref={(navigator) => { this.navigator = navigator; }} />
         </SplitterContent>

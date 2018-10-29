@@ -13,7 +13,6 @@ export class GoogleSearchField extends React.Component {
   }
 
   loadMap() {
-    console.log(this.props);
     if (this.props && this.props.google) { 
       const {google} = this.props;
       const maps = google.maps;
@@ -27,17 +26,33 @@ export class GoogleSearchField extends React.Component {
       const mapConfig = Object.assign({}, {
         center: center, 
         zoom: zoom, 
-        mapTypeId: 'roadmap' 
+        mapTypeId: 'roadmap',
+        gestureHandling: 'cooperative'
       })
 
       this.map = new maps.Map(node, mapConfig);
       let input = document.getElementById('pac-input');
-      this.searchBox = new maps.places.SearchBox(input);
-      this.map.controls[maps.ControlPosition.TOP_LEFT];
+      let defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(33.620437, 126.059291),
+        new google.maps.LatLng(33.130070, 127.098672));
+      this.searchBox = new maps.places.SearchBox(input, {
+        bounds: defaultBounds
+      });
+
+      var this_ = this;
+      // Bias the SearchBox results towards current map's viewport.
+      this.map.addListener('bounds_changed', function() {
+        this_.searchBox.setBounds(this_.map.getBounds());
+      });
 
       this.markers = [];
       this.searchBox.addListener('places_changed', this.placeChanged.bind(this));
     }
+  }
+
+  onFocus(e) {
+    let input = document.getElementById('pac-input');
+    input.value='';
   }
 
   placeChanged() {
@@ -94,14 +109,16 @@ export class GoogleSearchField extends React.Component {
 
   render() {
     const style = { 
-      width: this.props.width,
-      height: this.props.height
+      width: "95vw",
+      height: this.props.height,
+      margin: "2.5%"
     }
 
     return (
-      <div>
-        <input id="pac-input" type="text" placeholder="Search Box" 
-          style={{width: style.width, height: "30px"}} /> 
+      <div style={{textAlign: "center"}}>
+        <input id="pac-input" type="text" placeholder="Search Place..." 
+          style={{width: "95%", height: "40px", margin: "2.5%", marginBottom: "1%"}} 
+          onFocus={this.onFocus.bind(this)}/> 
         <div ref="map" style={style}>
         </div>
       </div>
@@ -113,7 +130,6 @@ GoogleSearchField.propTypes = {
   google: React.PropTypes.object,
   zoom: React.PropTypes.number,
   initialCenter: React.PropTypes.object,
-  width: React.PropTypes.string,
   height: React.PropTypes.string,
   onSearchDone: React.PropTypes.func
 }
@@ -126,5 +142,5 @@ GoogleSearchField.defaultProps = {
 }
 
 export default GoogleApiWrapper((props) => ({
-  apiKey: 'AIzaSyDQlA7ERwcmbPVr8iFH-QGV8uS-_B6c2jQ',
+  apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
 }))(GoogleSearchField)
