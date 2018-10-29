@@ -58,9 +58,9 @@ export default class HomePage extends React.Component {
       xhr.onload = function() {
         let res = JSON.parse(xhr.responseText);
         let weatherIcon = "img/weather/" + res.weather[0].icon + ".png";
-        let weatherDegree = res.main.temp - 273.15;
-        let tempMin = res.main.temp_min - 273.15;
-        let tempMax = res.main.temp_max - 273.15;
+        let weatherDegree = (res.main.temp - 273.15).toFixed(1);
+        let tempMin = (res.main.temp_min - 273.15).toFixed(1);
+        let tempMax = (res.main.temp_max - 273.15).toFixed(1);
         this_.setState({
           weatherIcon: weatherIcon,
           weatherDegree: weatherDegree,
