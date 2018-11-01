@@ -36,7 +36,7 @@ const commonGoldColor = "FFD700";
 const commonRedColor = "721411";
 const commonOrangeColor = "FF8C00"
 
-const commonMarkerGrayBGColor = "D0D0D0";
+const commonMarkerGrayBGColor = "A9A9A9";
 const commonMarkerGrayDotColor = "686868"
 const commonMarkerRedBGColor = "EA4335";
 const commonMarkerRedDotColor = "721411";

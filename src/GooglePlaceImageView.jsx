@@ -51,7 +51,10 @@ export class GooglePlaceImageView extends React.Component {
   loadImageUsingGoogleAPI() {
     const {placeTitle, google} = this.props;
     var request = {
-      query: placeTitle,
+      locationBias: new google.maps.LatLngBounds(
+        new google.maps.LatLng(33.977304, 125.956351),
+        new google.maps.LatLng(33.069115, 127.194530)),
+      query: placeTitle + " 제주",
       fields: ['photos']
     };
     const mapRef = this.refs.map; 
