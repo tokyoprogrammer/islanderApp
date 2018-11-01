@@ -275,7 +275,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
           <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet' >
             <Icon icon={Styles.icon} size={calendarIconSize} />
           </Button>
-          <Button  modifier='quiet' style={{color: 'black'}} >
+          <Button onClick={this.deleteSchedule.bind(this,row)}  modifier='quiet' style={{color: 'black'}} >
             <Icon icon={Styles.deleteicon} size={calendarIconSize} />
           </Button>
         </div>
@@ -283,6 +283,20 @@ export default class CreateAccomodationPlanPage extends React.Component {
     ); 
   }
   
+  deleteSchedule(row){
+    /* console.log(row); */
+
+    let accomodationList = this.state.accomodationList; 
+    for(let i = 0; i < accomodationList.length; i++) {
+      let item = accomodationList[i];
+      if(row == item) {
+        accomodationList.splice(i,1);
+      }
+    }
+    /* console.log(accomodationList); */
+    this.setState({});
+  }
+
   onCalendarChange(value) {
     let accomodationListCopy = this.state.accomodationList;
     console.log(value);
