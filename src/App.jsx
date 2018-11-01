@@ -117,6 +117,9 @@ export default class App extends React.Component {
                 </ListItem>
               </List>
             </div>
+            <div style={MenuStyle.version.style}>
+              <p>App Info</p>
+            </div>
           </Page>
         </SplitterSide>
         <SplitterContent>

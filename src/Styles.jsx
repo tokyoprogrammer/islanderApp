@@ -111,6 +111,15 @@ export const MenuStyle = {
         height: "60px"
       }
     }
+  },
+  version: {
+    style: {
+      textAlign: "center",
+      fontSize: "15px",
+      position: "absolute",
+      bottom: "20px",
+      right: "20px"
+    }
   }
 };
 // Common Top Toolbar Style

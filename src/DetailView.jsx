@@ -265,7 +265,7 @@ export default class DetailView extends React.Component {
         images.push(imageItem);
       }
 
-      let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
+      let imageSrc = images.length < 1 ? 
         (<GooglePlaceImageView 
            maxWidth={Styles.image.google.width} 
            maxHeight={Styles.image.google.height} 
