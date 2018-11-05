@@ -342,8 +342,6 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   getAccomodationDate(startDate,endDate){
-    console.log(startDate);
-    console.log(endDate);
     let accomodationDate;
     let diff = Math.abs(startDate - endDate);
     accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
