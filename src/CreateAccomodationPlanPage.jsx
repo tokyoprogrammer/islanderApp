@@ -158,7 +158,9 @@ export default class CreateAccomodationPlanPage extends React.Component {
 
     let travelTotalNight = this.getAccomodationDate(arrivalDateTime,departureDateTime);
     let tmp = [];
+    let travelArray = [travelTotalNight];
     let accomodationSum = parseInt(0); 
+    let travelObj = {};
     if(this.validateOneDayTravel()){
       /* don't require accomodation info */ 
       this.props.navigator.pushPage({ 
@@ -166,9 +168,20 @@ export default class CreateAccomodationPlanPage extends React.Component {
       });
     }
 
+    let travelDateTmp = new Date(arrivalDateTime);
+    for(let i=0; i<travelTotalNight; i++){
+      travelObj[travelDateTmp.toString()] = "0";
+      travelArray[i] = travelObj[travelDateTmp.toString()];
+      travelDateTmp.setDate(travelDateTmp.getDate() + 1);
+    }
+
     /* save accomodation information */
     for (let i=0; i<accomodationList.length; i++){   
       let item = accomodationList[i];
+      if(item.scheduleInfo[0] == null || item.scheduleInfo[1] == null){
+        notification.alert(this.state.strings.emptyaccomodation);
+        return ;        
+      }
       tmp.push(       
       {
         hotelInfo: {
@@ -182,8 +195,18 @@ export default class CreateAccomodationPlanPage extends React.Component {
           item.scheduleInfo[1].toString()
         ] 
       });
+      
+
       let eachAccomodationDate = this.getAccomodationDate(item.scheduleInfo[0], item.scheduleInfo[1]); 
       accomodationSum = accomodationSum + eachAccomodationDate;
+   
+      let accomodationDateTmp = item.scheduleInfo[0];
+      for(let j=0; j<eachAccomodationDate; j++){
+        travelObj[accomodationDateTmp.toString()] = "1";
+        travelArray[j] = travelObj[accomodationDateTmp.toString()];
+        accomodationDateTmp.setDate(accomodationDateTmp.getDate() + 1);
+      }
+
     }  
     localStorage.setItem("accomodationInfo", JSON.stringify(tmp));
     
@@ -199,6 +222,14 @@ export default class CreateAccomodationPlanPage extends React.Component {
       return; 
     }else{
       /* accomodationSum == travelTotalNight */
+    }
+
+
+    for(let i=0; i<travelTotalNight; i++){
+      if(travelArray[i] == "0"){
+         notification.alert(this.state.strings.emptyaccomodation); 
+         return ; 
+      }
     }
 
     this.props.navigator.pushPage({ 
@@ -299,7 +330,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
 
   onCalendarChange(value) {
     let accomodationListCopy = this.state.accomodationList;
-    console.log(value);
+    /* console.log(value); */
     for(let i = 0; i < accomodationListCopy.length; i++) {
       let item = accomodationListCopy[i];
       if(this.state.selectedRow == item) {
@@ -311,6 +342,8 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   getAccomodationDate(startDate,endDate){
+    console.log(startDate);
+    console.log(endDate);
     let accomodationDate;
     let diff = Math.abs(startDate - endDate);
     accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
