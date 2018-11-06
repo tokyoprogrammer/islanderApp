@@ -8,10 +8,3 @@
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
 }
-.line-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  /* autoprefixer: off */
-  -webkit-box-orient: vertical;
-  /* autoprefixer: on */
-}
