@@ -170,82 +170,187 @@ export const HomeStyle = {
         position: "absolute", 
         top: "10px", 
         textAlign: "center", 
-        borderRadius: "6px", 
-        right: "10px", 
-        backgroundColor: "rgba(255, 250, 250, .4)"
+        borderRadius: "6px",
+        padding: "0%", 
+        right: "10px",
+        paddingRight: "2%", 
+        backgroundColor: "rgba(255, 250, 250, .6)"
       }
     },
     icon: {
       style: {
         width: "40px",
+        height: "40px",
         float: "left"
       }
     },
     text: {
       style: {
+        verticalAlign: "middle",
+        height: "40px",
+        lineHeight: "40px",
         float: "left",
-        marginTop: "10%",
+        marginTop: "auto",
+        marginBottom: "auto",
         color: "#000000"
       },
       degree: "ºC"
     }
   },
-  list: {
+  mainbtns: {
+    icons: {
+      style: {
+        width: "100%",
+        padding: "7%"
+      },
+      sightseeing: "img/sightseeing.png",
+      food: "img/food.png",
+      culture: "img/culture.png",
+      festival: "img/festival.png",
+      activity: "img/activity.png",
+      shopping: "img/shopping.png"
+    },
     container: {
       style: {
-        margin: "3%",
-        marginTop: "-15%",
-        boxShadow: "2px 0px 2px 2px #9E9E9E"
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%"
       }
     },
-    btns: {
-      outer: {
+    rows: {
+      first: {
         style: {
-          backgroundColor: "rgba(255, 255, 255, 1.0)", 
-          marginBottom: "1%",
-          boxShadow: "0px 2px 2px 2px #9E9E9E",
-          width: "100%"
+          paddingTop: "6%",
+          paddingLeft: "1%"
+        },
+      },
+      second: {
+        style: {
+          paddingTop: "8%",
+          paddingBottom: "6%",
+          paddingLeft: "1%"
+        },
+      }
+    },
+    cols: {
+      font: {
+        style: {
+          fontSize: "13px"
         }
       },
-      inner: {
-        container: {
+      col1: {
+        width: "33%",
+        div: {
           style: {
-            margin: '1%',
             textAlign: "center",
+            width: "50%",
+            marginLeft: "35%",
+            marginRight: "15%",
+            padding: "0%"
+          }
+        },
+        btn: {
+          style: {  
             width: "100%",
-            height: "60px",
-            display: "flex" 
+            padding: "0%"
+          }
+        }
+      },
+      col2: {
+        width: "33%",
+        div: {
+          style: {
+            textAlign: "center",
+            width: "50%",
+            marginLeft: "25%",
+            marginRight: "25%",
+            padding: "0%"
           }
         },
-        icon: {
+        btn: {
+          style: {  
+            width: "100%",
+            padding: "0%"
+          }
+        }
+      },
+      col3: {
+        width: "33%",
+        div: {
           style: {
-            width: "50px",
-            height: "50px",
-            marginTop: "auto",
-            marginBottom: "auto",
-            marginRight: "5%" 
-          },
-          imgs: {
-            sightseeing: "img/sightseeing.png",
-            food: "img/food.png",
-            culture: "img/culture.png",
-            festival: "img/festival.png",
-            activity: "img/activity.png",
-            shopping: "img/shopping.png"
+            textAlign: "center",
+            width: "50%",
+            marginLeft: "15%",
+            marginRight: "35%",
+            padding: "0%"
           }
         },
-        text: {
-          style: {
-            fontSize: "20px",
-            color: "#000000",
-            marginTop: "auto",
-            marginBottom: "auto" 
+        btn: {
+          style: {  
+            width: "100%",
+            padding: "0%"
           }
         }
       }
     }
+  },
+  plan: {
+    container: {
+      style: {
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%",
+        marginRight: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%"
+      }
+    } 
   }
 };
+// HomePlanCard
+export const HomePlanCardStyle = {
+  card: {
+    style: {
+      flex: "0 0 auto",
+      width: "80%",
+      padding: "0%",
+      paddingBottom: "5%"
+    },
+    img: {
+      style: {
+        width: "100%",
+        height: "150px",
+        objectFit: "cover",
+        borderTopLeftRadius: "8px",
+        borderTopRightRadius: "8px"
+      }
+    },
+    title: {
+      style: {
+        marginTop: "4%",
+        marginLeft: "3%",
+        marginRight: "3%",
+        marginBottom: "2%",
+        paddingTop: "1%",
+        fontSize: "15px",
+        width: "95%",
+        overflow: "hidden"
+      }
+    },
+    content: {
+      style: {
+        margin: "2%",
+        marginLeft: "3%",
+        marginRight: "3%",
+        paddingTop: "1%",
+        fontSize: "15px",
+        width: "95%",
+        overflow: "hidden"
+      }
+    }
+  }
+};
+
 // MapView
 export const MapViewStyle = {
   carouselItem: {

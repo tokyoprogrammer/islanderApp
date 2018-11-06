@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, Button, List, ListItem, Row, Col} from 'react-onsenui';
 
 import MapView from './MapView';
 import PixabayImage from './PixabayImage';
 import WeatherPage from './WeatherPage';
+import HomePlanCard from './HomePlanCard'; 
 
 import {DivH100Style, ToolbarStyle, HomeStyle} from './Styles';
+
+import './HomePageCSS';
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -152,7 +155,8 @@ export default class HomePage extends React.Component {
     let foodsCode = isKr ? 39 : 82;
 
     const weatherStyles = HomeStyle.weather;
-    const listStyles = HomeStyle.list;
+    const mainBtns = HomeStyle.mainbtns;
+    const plans = HomeStyle.plan;
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
@@ -166,49 +170,76 @@ export default class HomePage extends React.Component {
               {this.state.weatherDegree + weatherStyles.text.degree}
             </span>
           </Button>
-          <div style={listStyles.container.style}>
-            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, sightCode)}>
-              <div style={listStyles.btns.inner.container.style}>
-                <img src={listStyles.btns.inner.icon.imgs.sightseeing} 
-                  style={listStyles.btns.inner.icon.style} />
-                <p style={listStyles.btns.inner.text.style}>{this.props.strings.sight}</p>
-              </div>
-            </Button>
-            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, foodsCode)}>
-              <div style={listStyles.btns.inner.container.style}>
-                <img src={listStyles.btns.inner.icon.imgs.food} 
-                  style={listStyles.btns.inner.icon.style} />
-                <p style={listStyles.btns.inner.text.style}>{this.props.strings.foods}</p>
-              </div>
-            </Button>
-            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, cultureCode)}>
-              <div style={listStyles.btns.inner.container.style}>
-                <img src={listStyles.btns.inner.icon.imgs.culture} 
-                  style={listStyles.btns.inner.icon.style} />
-                <p style={listStyles.btns.inner.text.style}>{this.props.strings.art}</p>
-              </div>
-            </Button>
-            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, festivalCode)}>
-              <div style={listStyles.btns.inner.container.style}>
-                <img src={listStyles.btns.inner.icon.imgs.festival} 
-                  style={listStyles.btns.inner.icon.style} />
-                <p style={listStyles.btns.inner.text.style}>{this.props.strings.festival}</p>
-              </div>
-            </Button>
-            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, activityCode)}>
-              <div style={listStyles.btns.inner.container.style}>
-                <img src={listStyles.btns.inner.icon.imgs.activity} 
-                  style={listStyles.btns.inner.icon.style} />
-                <p style={listStyles.btns.inner.text.style}>{this.props.strings.activity}</p>
-              </div>
-            </Button>
-            <Button style={listStyles.btns.outer.style} onClick={this.pushPage.bind(this, shoppingCode)}>
-              <div style={listStyles.btns.inner.container.style}>
-                <img src={listStyles.btns.inner.icon.imgs.shopping} 
-                  style={listStyles.btns.inner.icon.style} />
-                <p style={listStyles.btns.inner.text.style}>{this.props.strings.shopping}</p>
-              </div>
-            </Button>
+          <div style={mainBtns.container.style}>
+            <Row style={mainBtns.rows.first.style}>
+              <Col width={mainBtns.cols.col1.width}>
+                <div style={mainBtns.cols.col1.div.style}>
+                  <Button style={mainBtns.cols.col1.btn.style} 
+                    modifier="quiet"
+                    onClick={this.pushPage.bind(this, sightCode)}>
+                    <img src={mainBtns.icons.sightseeing} style={mainBtns.icons.style}/>
+                  </Button>
+                  <p style={mainBtns.cols.font.style}><strong>{this.props.strings.sight}</strong></p>
+                </div>
+              </Col>
+              <Col width={mainBtns.cols.col2.width}>
+                <div style={mainBtns.cols.col2.div.style}>
+                  <Button style={mainBtns.cols.col2.btn.style} 
+                    modifier="quiet"
+                    onClick={this.pushPage.bind(this, foodsCode)}>
+                    <img src={mainBtns.icons.food} style={mainBtns.icons.style}/>
+                  </Button>
+                  <p style={mainBtns.cols.font.style}><strong>{this.props.strings.foods}</strong></p>
+                </div>
+              </Col>
+              <Col width={mainBtns.cols.col3.width}>
+                <div style={mainBtns.cols.col3.div.style}>
+                  <Button style={mainBtns.cols.col3.btn.style} 
+                    modifier="quiet"
+                    onClick={this.pushPage.bind(this, cultureCode)}>
+                    <img src={mainBtns.icons.culture} style={mainBtns.icons.style}/>
+                  </Button>
+                  <p style={mainBtns.cols.font.style}><strong>{this.props.strings.art}</strong></p>
+                </div>
+              </Col>
+            </Row>
+            <Row style={mainBtns.rows.second.style}>
+              <Col width={mainBtns.cols.col1.width}>
+                <div style={mainBtns.cols.col1.div.style}>
+                  <Button style={mainBtns.cols.col1.btn.style} 
+                    modifier="quiet"
+                    onClick={this.pushPage.bind(this, festivalCode)}>
+                    <img src={mainBtns.icons.festival} style={mainBtns.icons.style}/>
+                  </Button>
+                  <p style={mainBtns.cols.font.style}><strong>{this.props.strings.festival}</strong></p>
+                </div>
+              </Col>
+              <Col width={mainBtns.cols.col2.width}>
+                <div style={mainBtns.cols.col2.div.style}>
+                  <Button style={mainBtns.cols.col2.btn.style} 
+                    modifier="quiet"
+                    onClick={this.pushPage.bind(this, activityCode)}>
+                    <img src={mainBtns.icons.activity} style={mainBtns.icons.style}/>
+                  </Button>
+                  <p style={mainBtns.cols.font.style}><strong>{this.props.strings.activity}</strong></p>
+                </div>
+              </Col>
+              <Col width={mainBtns.cols.col3.width}>
+                <div style={mainBtns.cols.col3.div.style}>
+                  <Button style={mainBtns.cols.col3.btn.style} 
+                    modifier="quiet"
+                    onClick={this.pushPage.bind(this, shoppingCode)}>
+                    <img src={mainBtns.icons.shopping} style={mainBtns.icons.style}/>
+                  </Button>
+                  <p style={mainBtns.cols.font.style}><strong>{this.props.strings.shopping}</strong></p>
+                </div>
+              </Col>
+            </Row>
+          </div>
+          <div className="scrolling-wrapper" style={plans.container.style}>
+            <HomePlanCard />
+            <HomePlanCard />
+            <HomePlanCard />            
           </div>
         </div>
       </Page>
