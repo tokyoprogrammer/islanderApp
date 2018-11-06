@@ -23,8 +23,8 @@
         "react-calendar": "^2.17.2",
         "react-dom": "^15.0.0",
         "react-image-timeline": "^0.2.4",
-        "react-lines-ellipsis": "^0.13.2",
         "react-localization": "^1.0.10",
+        "react-multi-clamp": "^1.1.0",
         "react-onsenui": "^1.11.1",
         "react-stepper-horizontal": "^1.0.11",
         "xml-js": "^1.6.7"

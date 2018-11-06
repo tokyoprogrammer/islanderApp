@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Card} from 'react-onsenui';
 
-import LinesEllipsis from 'react-lines-ellipsis';
+import MultiClamp from 'react-multi-clamp';
 
 import {HomePlanCardStyle} from './Styles';
 
@@ -26,12 +26,7 @@ export default class HomePlanCard extends React.Component {
           <strong>{this.state.title}</strong>
         </div>
         <div className="card__content" style={card.content.style}>
-          <LinesEllipsis 
-            text={this.state.overview} 
-            maxLine="2"
-            ellipsis="..."
-            trimRight
-            basedOn="letters" />
+          <MultiClamp ellipsis="..." clamp={2}>{this.state.overview}</MultiClamp>
         </div>
       </div>
     );
