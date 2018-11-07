@@ -6,6 +6,7 @@ import MapView from './MapView';
 import PixabayImage from './PixabayImage';
 import WeatherPage from './WeatherPage';
 import HomePlanCard from './HomePlanCard'; 
+import App from './App';
 
 import {DivH100Style, ToolbarStyle, HomeStyle} from './Styles';
 
@@ -14,11 +15,57 @@ import './HomePageCSS';
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
+    localStorage.setItem("coursecontentid", 0);
+
+    const serviceKey = process.env.REACT_APP_VISIT_KOREA_API_KEY;
+    const fixedAreaCode = 39; /* jeju island area code */
+    const fixedContentType = 25;
+    const serviceLang = "KorService";
+
+    const urlForCourseList = "https://api.visitkorea.or.kr/openapi/service/rest/" + 
+      serviceLang + "/areaBasedList?ServiceKey=" + serviceKey + 
+      "&contentTypeId=" + fixedContentType + "&areaCode=" + fixedAreaCode + 
+      "&sigunguCode=&cat1=C01&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide" + 
+      "&arrange=A&numOfRows=1000&pageNo=1";
     this.state = {
       weatherIcon: "",
-      weatherDegree: ""
+      weatherDegree: "",
+      urlForCourseList: urlForCourseList,
+      courseList: []
     }
     this.readWeather();
+    
+    if(this.props.strings.getLanguage() == "kr") {
+      this.readCourseList();
+    }
+  }
+
+  readCourseList() {
+    var this_ = this;
+    
+    new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest;
+      xhr.onload = function() {
+        let ret = this_.readItemsFromResponseText(xhr.responseText);
+        this_.setState({courseList: ret});
+        resolve(ret[0]);
+      }
+      xhr.onerror = function() {
+        notification.alert(this_.props.strings.oops);
+        reject(new TypeError('API Request failed'));
+      }
+      xhr.open('GET', this_.state.urlForCourseList);
+      xhr.send(null);
+    }).then(function(result) {
+    });
+  }
+
+  readItemsFromResponseText(responseText) {
+    var convert = require('xml-js');
+    var options = {compact: true, ignoreComment: true, spaces: 4};
+    var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
+    var items = xml.response.body.items.item;
+    return items;
   }
 
   readWeather() {
@@ -144,6 +191,16 @@ export default class HomePage extends React.Component {
     );
   }
 
+  cardOnClick(contentId) {
+    localStorage.setItem("coursecontentid", contentId);
+    localStorage.setItem("pageToLoad", "CourseRecommandationPage");
+    this.props.navigator.resetPage({ 
+      component: App, 
+      props: { key: App.name, strings: this.state.strings } }, 
+      { animation: 'none' });
+
+  }
+
   render() {
     const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
     
@@ -236,11 +293,19 @@ export default class HomePage extends React.Component {
               </Col>
             </Row>
           </div>
-          <div className="scrolling-wrapper" style={plans.container.style}>
-            <HomePlanCard />
-            <HomePlanCard />
-            <HomePlanCard />            
-          </div>
+          {this.props.strings.getLanguage() == "kr" ? (
+          <div style={plans.container.style}>
+            <p style={plans.text.style}><strong>{this.props.strings.courserecommend}</strong></p> 
+            <div className="scrolling-wrapper">
+              {this.state.courseList.map((item, index) => ( 
+                <HomePlanCard key={"plancard-" + index} 
+                  contentid={item.contentid._text} 
+                  title={item.title._text} 
+                  img={item.firstimage == null ? "img/noimage.png" : item.firstimage._text}
+                  onClick={this.cardOnClick.bind(this)}/>
+              ))}
+            </div>
+          </div>) : null }
         </div>
       </Page>
     );

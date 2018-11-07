@@ -295,6 +295,15 @@ export const HomeStyle = {
     }
   },
   plan: {
+    text: {
+      style: {
+        color: "#0076ff",
+        fontSize: "15px",
+        marginBottom: "1%",
+        marginLeft: "2%",
+        paddingTop: "6%"
+      }
+    },
     container: {
       style: {
         backgroundColor: "#fafafa",

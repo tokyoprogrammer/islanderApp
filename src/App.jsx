@@ -41,6 +41,7 @@ export default class App extends React.Component {
   loadPage(page) {
     this.hide();
     localStorage.setItem("pageToLoad", page);
+    localStorage.setItem("coursecontentid", "0");
     this.navigator.resetPage({ 
       component: App, 
       props: { key: App.name, strings: this.state.strings } }, 

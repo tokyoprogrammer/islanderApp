@@ -72,6 +72,7 @@ export default class CourseRecommandationPage extends React.Component {
       additionalInfo: [] // map info, content type info
     };
     this.overScrolled = false;
+    this.loaded = false;
     this.readLists();
   }
 
@@ -272,7 +273,20 @@ export default class CourseRecommandationPage extends React.Component {
       xhr.send(null);
     }).then(function(result) {
       // success callback
-      this_.setState({isOpen: false});
+      if(!this_.loaded) {
+        this_.loaded = true;
+        let contentId = localStorage.getItem("coursecontentid");
+        let firstIndex = 0;
+        for(let i = 0; i < this_.state.items.length; i++) {
+          let item = this_.state.items[i];
+          if(item.contentid._text == contentId) {
+            firstIndex = i;
+          }
+        }
+        this_.setState({isOpen: false, itemCarouselIndex: firstIndex});
+      } else {
+        this_.setState({isOpen: false});
+      }
     });
   }  
 
