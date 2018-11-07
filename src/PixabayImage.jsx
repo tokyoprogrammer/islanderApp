@@ -91,7 +91,7 @@ export default class PixabayImage extends React.Component {
 
   render() {
     return (
-      <img src={this.state.url} style={{width: "100%"}} 
+      <img src={this.state.url} style={{width: "100%", height: "200px", objectFit: "cover"}} 
         onError={(e)=>{e.target.src="img/bkground/default.jpg"}} />
     );
   }
