@@ -181,7 +181,11 @@ export const HomeStyle = {
       style: {
         width: "40px",
         height: "40px",
-        float: "left"
+        float: "left",
+        marginTop: "auto",
+        marginBottom: "auto",
+        vertialAlign: "middle",
+        padding: "5px"
       }
     },
     text: {
@@ -311,9 +315,116 @@ export const HomeStyle = {
         marginTop: "2%",
         marginRight: "2%",
         paddingLeft: "2%",
-        paddingRight: "2%"
+        paddingRight: "2%",
+        paddingBottom: "4%"
       }
     } 
+  },
+  recommand: {
+    text: {
+      style: {
+        color: "#0076ff",
+        fontSize: "15px",
+        marginBottom: "1%",
+        marginLeft: "2%",
+        paddingTop: "6%"
+      }
+    },
+    container: {
+      style: {
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%",
+        marginRight: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: "4%"
+      }
+    },
+    tagcontainer: {
+      style: {
+        marginBottom: "1%",
+        paddingTop: "2%"
+      }
+    },
+    sighttag: {
+      style: Object.assign({}, commonBadgeStyle, {
+        color: "#000000", 
+        backgroundColor: "#d0ecfa", 
+        fontSize: "15px", 
+        marginLeft: "2%", 
+        marginTop: "2%",
+        padding: "2%"
+      }) 
+    },
+    foodtag: {
+      style: Object.assign({}, commonBadgeStyle, {
+        color: "#000000", 
+        backgroundColor: "#faf2af", 
+        fontSize: "15px", 
+        marginLeft: "2%", 
+        marginTop: "2%",
+        padding: "2%"
+      }) 
+    }
+  },
+  bottombtns: {
+    container: {
+      style: {
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%",
+        marginRight: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: "2%"
+      }
+    },
+    btns: {
+      chevron: {
+        style: {
+          position: "relative",
+          width: "1em",
+          height: "1em",
+          borderRight: ".1em solid #ffffff",
+          borderBottom: ".1em solid #ffffff",
+          transform: "rotate(-45deg)",
+          top: "3px",
+          display: "inline-block",
+          marginLeft: "10%"
+        }
+      },
+      text: {
+        style: {
+          display: "inline-block",
+          width: "80%"
+        }
+      },
+      createbtn: {
+        style: {
+          backgroundColor: "#" + commonOrangeColor,
+          color: "#ffffff",
+          width: "85%",
+          marginTop: "4%",
+          marginBottom: "3%",
+          marginLeft: "7.5%",
+          marginRight: "7.5%",
+          padding: "3%",
+          textAlign: "left"
+        }
+      },
+      showbtn: {
+        style: {
+          color: "#ffffff",
+          width: "85%",
+          marginBottom: "4%",
+          marginLeft: "7.5%",
+          marginRight: "7.5%",
+          padding: "3%",
+          textAlign: "left"
+        }
+      }
+    }
   }
 };
 // HomePlanCard

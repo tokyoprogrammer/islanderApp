@@ -17,6 +17,7 @@ export default class HomePlanCard extends React.Component {
 
     this.state = {
       overview: "",
+      contentId: contentId,
       title: this.props.title,
       img: this.props.img,
       urlForOverview: "https://api.visitkorea.or.kr/openapi/service/rest/" + serviceLang + 
@@ -24,17 +25,50 @@ export default class HomePlanCard extends React.Component {
         "&contentId=" + contentId + "&MobileOS=ETC&MobileApp=TourAPI3.0_Guide&defaultYN=Y&" + 
         "firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y&transGuideYN=Y"
     };
-    this.setCurrentOverviewAndList();
+
+    let cache = JSON.parse(localStorage.getItem("coursecard" + contentId));
+    let useCache = false;
+    if(cache != null) {
+      let cacheValidUntil = new Date(cache.createdDateTime);
+      cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+      // cache will be valid until + 1 day of the created day.
+      let currentDateTime = new Date();
+      if(currentDateTime <= cacheValidUntil) {
+        // compare and if cache is fresh
+        useCache = true;
+      }
+    }
+
+    if(useCache) {
+      var this_ = this;
+      const sleepTime = 300;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+      }).then(function(result) {
+        this_.setState({overview: cache.items});
+      });
+
+    } else {
+      this.setCurrentOverview();
+    }
   }
 
-  setCurrentOverviewAndList() {
+  setCurrentOverview() {
     var this_ = this;
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
         let ret = this_.readItemsFromResponseText(xhr.responseText);
-        if(ret != null && ret.overview != null)
+        if(ret != null && ret.overview != null) {
           this_.setState({overview: ret.overview._text});
+          let cache = {
+            createdDateTime: new Date(),
+            items: ret.overview._text
+          };
+          let cacheName = "coursecard" + this_.state.contentId;
+          localStorage.setItem(cacheName, JSON.stringify(cache));
+        }
 
         resolve(new Response(xhr.responseText, {status: xhr.status}));
       }

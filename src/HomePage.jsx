@@ -27,16 +27,43 @@ export default class HomePage extends React.Component {
       "&contentTypeId=" + fixedContentType + "&areaCode=" + fixedAreaCode + 
       "&sigunguCode=&cat1=C01&cat2=&cat3=&listYN=Y&MobileOS=ETC&MobileApp=TourAPI3.0_Guide" + 
       "&arrange=A&numOfRows=1000&pageNo=1";
+    let category_recommandation = require("./category_recommandation.json");
+
     this.state = {
       weatherIcon: "",
       weatherDegree: "",
       urlForCourseList: urlForCourseList,
-      courseList: []
+      courseList: [],
+      recommandation: category_recommandation
     }
     this.readWeather();
     
     if(this.props.strings.getLanguage() == "kr") {
-      this.readCourseList();
+      let cache = JSON.parse(localStorage.getItem("homecourse"));
+      let useCache = false;
+      if(cache != null) {
+        let cacheValidUntil = new Date(cache.createdDateTime);
+        cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+        // cache will be valid until + 1 day of the created day.
+        let currentDateTime = new Date();
+        if(currentDateTime <= cacheValidUntil) {
+          // compare and if cache is fresh
+          useCache = true;
+        }
+      }
+
+      if(useCache) {
+        var this_ = this;
+        const sleepTime = 300;
+        // lazy loading using Promise mechanism
+        new Promise(function(resolve, reject) {
+          setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+        }).then(function(result) {
+          this_.setState({courseList: cache.items});
+        });
+      } else {
+        this.readCourseList();
+      }
     }
   }
 
@@ -48,6 +75,12 @@ export default class HomePage extends React.Component {
       xhr.onload = function() {
         let ret = this_.readItemsFromResponseText(xhr.responseText);
         this_.setState({courseList: ret});
+        let cache = {
+          createdDateTime: new Date(),
+          items: ret
+        };
+        localStorage.setItem("homecourse", JSON.stringify(cache));
+
         resolve(ret[0]);
       }
       xhr.onerror = function() {
@@ -191,6 +224,14 @@ export default class HomePage extends React.Component {
     );
   }
 
+  bottomOnClick(pageToLoad) {
+    localStorage.setItem("pageToLoad", pageToLoad);
+    this.props.navigator.resetPage({ 
+      component: App, 
+      props: { key: App.name, strings: this.state.strings } }, 
+      { animation: 'none' });
+  }
+
   cardOnClick(contentId) {
     localStorage.setItem("coursecontentid", contentId);
     localStorage.setItem("pageToLoad", "CourseRecommandationPage");
@@ -198,7 +239,14 @@ export default class HomePage extends React.Component {
       component: App, 
       props: { key: App.name, strings: this.state.strings } }, 
       { animation: 'none' });
+  }
 
+  sightOnClick(categoryId) {
+    console.log(categoryId);
+  }
+
+  foodOnClick(categoryId) {
+    console.log(categoryId);
   }
 
   render() {
@@ -214,6 +262,9 @@ export default class HomePage extends React.Component {
     const weatherStyles = HomeStyle.weather;
     const mainBtns = HomeStyle.mainbtns;
     const plans = HomeStyle.plan;
+    const recommand = HomeStyle.recommand;
+    const bottomBtns = HomeStyle.bottombtns;
+    let recommandation = isKr ? this.state.recommandation.kr : this.state.recommandation.en;
 
     return (
       <Page renderToolbar={this.renderToolbar.bind(this)}>
@@ -306,6 +357,42 @@ export default class HomePage extends React.Component {
               ))}
             </div>
           </div>) : null }
+          <div style={recommand.container.style}>
+            <p style={recommand.text.style}><strong>{this.props.strings.sightrecommand}</strong></p>
+            <div style={recommand.tagcontainer.style}>
+              {recommandation.sights.map((item, index) => (
+                <span key={"sight-recom-" + index} style={recommand.sighttag.style}
+                  onClick={this.sightOnClick.bind(this, item.key)}>
+                  {item.value}
+                </span>
+              ))}
+            </div>
+            <p style={recommand.text.style}><strong>{this.props.strings.foodrecommand}</strong></p>
+            <div style={recommand.tagcontainer.style}>
+              {recommandation.foods.map((item, index) => (
+                <span key={"food-recom-" + index} style={recommand.foodtag.style}
+                  onClick={this.foodOnClick.bind(this, item.key)}>
+                  {item.value}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div style={bottomBtns.container.style}>
+            <Button style={bottomBtns.btns.createbtn.style} 
+              onClick={this.bottomOnClick.bind(this, "CreateFlightPlanPage")}>
+              <p style={bottomBtns.btns.text.style}>
+               {this.props.strings.createschedule}
+              </p>
+              <span style={bottomBtns.btns.chevron.style}></span>
+            </Button>
+            <Button style={bottomBtns.btns.showbtn.style} 
+              onClick={this.bottomOnClick.bind(this, "ShowMyPlanPage")}>
+              <p style={bottomBtns.btns.text.style}>
+               {this.props.strings.showschedule}
+              </p>
+              <span style={bottomBtns.btns.chevron.style}></span>
+            </Button>
+          </div>
         </div>
       </Page>
     );
