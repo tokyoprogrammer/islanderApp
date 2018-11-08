@@ -85,8 +85,13 @@ export default class HomePlanCard extends React.Component {
     var convert = require('xml-js');
     var options = {compact: true, ignoreComment: true, spaces: 4};
     var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
-    var items = xml.response.body.items.item;
-    return items;
+    if(xml.response.body == null) return null;
+    if(xml.response.body.items != null) {
+      var items = xml.response.body.items.item;
+      return items;
+    } else {
+      return null;
+    }
   }
 
   onClick(contentId) {
