@@ -167,7 +167,13 @@ export default class CourseRecommandationPage extends React.Component {
 
   readCourseList() {
     var this_ = this;
-    
+    let cache = JSON.parse(localStorage.getItem("homecourse"));
+    if(cache != null) {
+      this.setState({items: cache.items, numOfItems: cache.items.length});
+      this.setCurrentOverviewAndList(cache.items[0].contentid._text);
+
+      return;
+    }    
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
@@ -193,6 +199,12 @@ export default class CourseRecommandationPage extends React.Component {
 
   setCurrentOverviewAndList(contentId) {
     var this_ = this;
+
+    let cache = JSON.parse(localStorage.getItem("coursecard" + contentId));
+    if(cache != null) {
+      this.setState({currentOverview: cache.items});
+      this.setCurrentDetailLists(contentId);
+    }
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {

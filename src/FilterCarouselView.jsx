@@ -23,6 +23,20 @@ export default class FilterCarouselView extends React.Component {
       this.setState({
         availCategories: availCategories,
         filterCarouselItems: filterCarouselItems});
+
+      const sleepTime = 500;
+      var this_ = this;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+      }).then(function(result) {
+        let clickedCategory = localStorage.getItem("clickedCategory");
+        if(clickedCategory != null && clickedCategory != 0) {
+        
+          this_.toggleFilterStatus(clickedCategory);
+          localStorage.setItem("clickedCategory", 0);
+        }
+      });
     }
   } 
  
@@ -35,6 +49,20 @@ export default class FilterCarouselView extends React.Component {
       this.setState({
         availCategories: availCategories,
         filterCarouselItems: filterCarouselItems});
+
+      const sleepTime = 500;
+      var this_ = this;
+      // lazy loading using Promise mechanism
+      new Promise(function(resolve, reject) {
+        setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+      }).then(function(result) {
+        let clickedCategory = localStorage.getItem("clickedCategory");
+        if(clickedCategory != null && clickedCategory != 0) {
+        
+          this_.toggleFilterStatus(clickedCategory);
+          localStorage.setItem("clickedCategory", 0);
+        }
+      });
     }
   }
 

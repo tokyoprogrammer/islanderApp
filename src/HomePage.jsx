@@ -16,6 +16,7 @@ export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
     localStorage.setItem("coursecontentid", 0);
+    localStorage.setItem("clickedCategory", 0);
 
     const serviceKey = process.env.REACT_APP_VISIT_KOREA_API_KEY;
     const fixedAreaCode = 39; /* jeju island area code */
@@ -247,11 +248,20 @@ export default class HomePage extends React.Component {
   }
 
   sightOnClick(categoryId) {
-    console.log(categoryId);
+    localStorage.setItem("clickedCategory", categoryId);
+    const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
+    let sightCode = isKr ? 12 : 76; 
+   
+    this.pushPage(sightCode);
   }
 
   foodOnClick(categoryId) {
-    console.log(categoryId);
+    localStorage.setItem("clickedCategory", categoryId);
+    const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
+    let foodsCode = isKr ? 39 : 82;
+   
+    this.pushPage(foodsCode);
+
   }
 
   render() {
