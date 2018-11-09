@@ -36,7 +36,7 @@ const commonGoldColor = "FFD700";
 const commonRedColor = "721411";
 const commonOrangeColor = "FF8C00"
 
-const commonMarkerGrayBGColor = "D0D0D0";
+const commonMarkerGrayBGColor = "A9A9A9";
 const commonMarkerGrayDotColor = "686868"
 const commonMarkerRedBGColor = "EA4335";
 const commonMarkerRedDotColor = "721411";
@@ -111,6 +111,15 @@ export const MenuStyle = {
         height: "60px"
       }
     }
+  },
+  version: {
+    style: {
+      textAlign: "center",
+      fontSize: "15px",
+      position: "absolute",
+      bottom: "20px",
+      right: "20px"
+    }
   }
 };
 // Common Top Toolbar Style
@@ -161,82 +170,307 @@ export const HomeStyle = {
         position: "absolute", 
         top: "10px", 
         textAlign: "center", 
-        borderRadius: "6px", 
-        right: "10px", 
-        backgroundColor: "rgba(255, 250, 250, .4)"
+        borderRadius: "6px",
+        padding: "0%", 
+        right: "10px",
+        paddingRight: "2%", 
+        backgroundColor: "rgba(255, 250, 250, .6)"
       }
     },
     icon: {
       style: {
         width: "40px",
-        float: "left"
+        height: "40px",
+        float: "left",
+        marginTop: "auto",
+        marginBottom: "auto",
+        vertialAlign: "middle",
+        padding: "5px"
       }
     },
     text: {
       style: {
+        verticalAlign: "middle",
+        height: "40px",
+        lineHeight: "40px",
         float: "left",
-        marginTop: "10%",
+        marginTop: "auto",
+        marginBottom: "auto",
         color: "#000000"
       },
       degree: "ºC"
     }
   },
-  list: {
+  mainbtns: {
+    icons: {
+      style: {
+        width: "100%",
+        padding: "7%"
+      },
+      sightseeing: "img/sightseeing.png",
+      food: "img/food.png",
+      culture: "img/culture.png",
+      festival: "img/festival.png",
+      activity: "img/activity.png",
+      shopping: "img/shopping.png"
+    },
     container: {
       style: {
-        margin: "3%",
-        marginTop: "-15%",
-        boxShadow: "2px 0px 2px 2px #9E9E9E"
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%"
+      }
+    },
+    rows: {
+      first: {
+        style: {
+          paddingTop: "6%",
+          paddingLeft: "1%"
+        },
+      },
+      second: {
+        style: {
+          paddingTop: "8%",
+          paddingBottom: "6%",
+          paddingLeft: "1%"
+        },
+      }
+    },
+    cols: {
+      font: {
+        style: {
+          fontSize: "13px"
+        }
+      },
+      col1: {
+        width: "33%",
+        div: {
+          style: {
+            textAlign: "center",
+            width: "50%",
+            marginLeft: "35%",
+            marginRight: "15%",
+            padding: "0%"
+          }
+        },
+        btn: {
+          style: {  
+            width: "100%",
+            padding: "0%"
+          }
+        }
+      },
+      col2: {
+        width: "33%",
+        div: {
+          style: {
+            textAlign: "center",
+            width: "50%",
+            marginLeft: "25%",
+            marginRight: "25%",
+            padding: "0%"
+          }
+        },
+        btn: {
+          style: {  
+            width: "100%",
+            padding: "0%"
+          }
+        }
+      },
+      col3: {
+        width: "33%",
+        div: {
+          style: {
+            textAlign: "center",
+            width: "50%",
+            marginLeft: "15%",
+            marginRight: "35%",
+            padding: "0%"
+          }
+        },
+        btn: {
+          style: {  
+            width: "100%",
+            padding: "0%"
+          }
+        }
+      }
+    }
+  },
+  plan: {
+    text: {
+      style: {
+        color: "#0076ff",
+        fontSize: "15px",
+        marginBottom: "1%",
+        marginLeft: "2%",
+        paddingTop: "6%"
+      }
+    },
+    container: {
+      style: {
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%",
+        marginRight: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: "4%"
+      }
+    } 
+  },
+  recommand: {
+    text: {
+      style: {
+        color: "#0076ff",
+        fontSize: "15px",
+        marginBottom: "1%",
+        marginLeft: "2%",
+        paddingTop: "6%"
+      }
+    },
+    container: {
+      style: {
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%",
+        marginRight: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: "4%"
+      }
+    },
+    tagcontainer: {
+      style: {
+        marginBottom: "1%",
+        paddingTop: "2%"
+      }
+    },
+    sighttag: {
+      style: Object.assign({}, commonBadgeStyle, {
+        color: "#000000", 
+        backgroundColor: "#d0ecfa", 
+        fontSize: "15px", 
+        marginLeft: "2%", 
+        marginTop: "2%",
+        padding: "2%"
+      }) 
+    },
+    foodtag: {
+      style: Object.assign({}, commonBadgeStyle, {
+        color: "#000000", 
+        backgroundColor: "#faf2af", 
+        fontSize: "15px", 
+        marginLeft: "2%", 
+        marginTop: "2%",
+        padding: "2%"
+      }) 
+    }
+  },
+  bottombtns: {
+    container: {
+      style: {
+        backgroundColor: "#fafafa",
+        width: "100%",
+        marginTop: "2%",
+        marginRight: "2%",
+        paddingLeft: "2%",
+        paddingRight: "2%",
+        paddingBottom: "2%"
       }
     },
     btns: {
-      outer: {
+      chevron: {
         style: {
-          backgroundColor: "rgba(255, 255, 255, 1.0)", 
-          marginBottom: "1%",
-          boxShadow: "0px 2px 2px 2px #9E9E9E",
-          width: "100%"
+          position: "relative",
+          width: "1em",
+          height: "1em",
+          borderRight: ".1em solid #ffffff",
+          borderBottom: ".1em solid #ffffff",
+          transform: "rotate(-45deg)",
+          top: "3px",
+          display: "inline-block",
+          marginLeft: "10%"
         }
       },
-      inner: {
-        container: {
-          style: {
-            margin: '1%',
-            textAlign: "center",
-            width: "100%",
-            height: "60px",
-            display: "flex" 
-          }
-        },
-        icon: {
-          style: {
-            width: "50px",
-            height: "50px",
-            marginTop: "auto",
-            marginBottom: "auto",
-            marginRight: "5%" 
-          },
-          imgs: {
-            sightseeing: "img/sightseeing.png",
-            food: "img/food.png",
-            culture: "img/culture.png",
-            festival: "img/festival.png",
-            activity: "img/activity.png",
-            shopping: "img/shopping.png"
-          }
-        },
-        text: {
-          style: {
-            fontSize: "20px",
-            color: "#000000",
-            marginTop: "auto",
-            marginBottom: "auto" 
-          }
+      text: {
+        style: {
+          display: "inline-block",
+          width: "80%"
+        }
+      },
+      createbtn: {
+        style: {
+          backgroundColor: "#" + commonOrangeColor,
+          color: "#ffffff",
+          width: "85%",
+          marginTop: "4%",
+          marginBottom: "3%",
+          marginLeft: "7.5%",
+          marginRight: "7.5%",
+          padding: "3%",
+          textAlign: "left"
+        }
+      },
+      showbtn: {
+        style: {
+          color: "#ffffff",
+          width: "85%",
+          marginBottom: "4%",
+          marginLeft: "7.5%",
+          marginRight: "7.5%",
+          padding: "3%",
+          textAlign: "left"
         }
       }
     }
   }
 };
+// HomePlanCard
+export const HomePlanCardStyle = {
+  card: {
+    style: {
+      flex: "0 0 auto",
+      width: "80%",
+      padding: "0%",
+      paddingBottom: "5%"
+    },
+    img: {
+      style: {
+        width: "100%",
+        height: "150px",
+        objectFit: "cover",
+        borderTopLeftRadius: "8px",
+        borderTopRightRadius: "8px"
+      }
+    },
+    title: {
+      style: {
+        marginTop: "4%",
+        marginLeft: "3%",
+        marginRight: "3%",
+        marginBottom: "2%",
+        paddingTop: "1%",
+        fontSize: "15px",
+        width: "95%",
+        overflow: "hidden"
+      }
+    },
+    content: {
+      style: {
+        margin: "2%",
+        marginLeft: "3%",
+        marginRight: "3%",
+        paddingTop: "1%",
+        fontSize: "15px",
+        width: "95%",
+        overflow: "hidden"
+      }
+    }
+  }
+};
+
 // MapView
 export const MapViewStyle = {
   carouselItem: {

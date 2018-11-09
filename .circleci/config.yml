@@ -38,10 +38,9 @@ jobs:
       - run: 
           name: Install node modules
           command: npm install # install npm packages
-#      - run:
-#          name: Update Monaca
-#          command: monaca update --force 
-
+      - run:
+          name: Update Monaca
+          command: sh update_monaca.sh 
       - save_cache:
           paths:
             - node_modules
@@ -59,7 +58,7 @@ jobs:
             git clone https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git islander-jeju-app && cp -rv ~/repo/www/* ./islander-jeju-app/
       - run:
           name: Commit files into Heroku git
-          command: cd islander-jeju-app && git config --global user.email "yo1226@gmail.com" && git config --global user.name "Yoseob Kim" && git add * && git commit -am "deploy"
+          command: sh update_heroku.sh
       - run:
           name: Push files into Heroku git and Deploy
           command: cd islander-jeju-app && ls -al && git push https://heroku:$HEROKU_API_KEY@git.heroku.com/islander-jeju-app.git master

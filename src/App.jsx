@@ -41,6 +41,7 @@ export default class App extends React.Component {
   loadPage(page) {
     this.hide();
     localStorage.setItem("pageToLoad", page);
+    localStorage.setItem("coursecontentid", "0");
     this.navigator.resetPage({ 
       component: App, 
       props: { key: App.name, strings: this.state.strings } }, 
@@ -116,6 +117,9 @@ export default class App extends React.Component {
                   {this.state.strings.showschedule}
                 </ListItem>
               </List>
+            </div>
+            <div style={MenuStyle.version.style}>
+              <p>App Info</p>
             </div>
           </Page>
         </SplitterSide>

@@ -72,6 +72,7 @@ export default class CourseRecommandationPage extends React.Component {
       additionalInfo: [] // map info, content type info
     };
     this.overScrolled = false;
+    this.loaded = false;
     this.readLists();
   }
 
@@ -166,7 +167,13 @@ export default class CourseRecommandationPage extends React.Component {
 
   readCourseList() {
     var this_ = this;
-    
+    let cache = JSON.parse(localStorage.getItem("homecourse"));
+    if(cache != null) {
+      this.setState({items: cache.items, numOfItems: cache.items.length});
+      this.setCurrentOverviewAndList(cache.items[0].contentid._text);
+
+      return;
+    }    
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
@@ -192,6 +199,12 @@ export default class CourseRecommandationPage extends React.Component {
 
   setCurrentOverviewAndList(contentId) {
     var this_ = this;
+
+    let cache = JSON.parse(localStorage.getItem("coursecard" + contentId));
+    if(cache != null) {
+      this.setState({currentOverview: cache.items});
+      this.setCurrentDetailLists(contentId);
+    }
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
       xhr.onload = function() {
@@ -272,7 +285,20 @@ export default class CourseRecommandationPage extends React.Component {
       xhr.send(null);
     }).then(function(result) {
       // success callback
-      this_.setState({isOpen: false});
+      if(!this_.loaded) {
+        this_.loaded = true;
+        let contentId = localStorage.getItem("coursecontentid");
+        let firstIndex = 0;
+        for(let i = 0; i < this_.state.items.length; i++) {
+          let item = this_.state.items[i];
+          if(item.contentid._text == contentId) {
+            firstIndex = i;
+          }
+        }
+        this_.setState({isOpen: false, itemCarouselIndex: firstIndex});
+      } else {
+        this_.setState({isOpen: false});
+      }
     });
   }  
 
@@ -304,8 +330,13 @@ export default class CourseRecommandationPage extends React.Component {
     var convert = require('xml-js');
     var options = {compact: true, ignoreComment: true, spaces: 4};
     var xml = convert.xml2js(responseText, options); // convert read responseText xml to js
-    var items = xml.response.body.items.item;
-    return items;
+    if(xml.response.body == null) return null;
+    if(xml.response.body.items != null) {
+      var items = xml.response.body.items.item;
+      return items;
+    } else {
+      return null;
+    }
   }
 
   convertContentId(urlString, contentId) {

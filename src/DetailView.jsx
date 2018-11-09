@@ -265,7 +265,7 @@ export default class DetailView extends React.Component {
         images.push(imageItem);
       }
 
-      let imageSrc = this.state.itemDetailCommon.firstimage == null ? 
+      let imageSrc = images.length < 1 ? 
         (<GooglePlaceImageView 
            maxWidth={Styles.image.google.width} 
            maxHeight={Styles.image.google.height} 
@@ -393,7 +393,7 @@ export default class DetailView extends React.Component {
 
     const Styles = DetailViewStyle.list;
 
-    let iconSize = Styles.icon.style;
+    let iconSize = Styles.icons.style;
     let smoking = this.state.itemDetailIntro.smoking == null ? 
       null : 
       this.state.itemDetailIntro.smoking._text;
@@ -405,14 +405,14 @@ export default class DetailView extends React.Component {
       null : 
       this.state.itemDetailIntro.chkcreditcardculture._text;
     let creditCardIcon = creditcard != null && creditcard.includes("가능") ?
-      (<img src={Styles.icon.creditcard} style={iconSize} />) : null;
+      (<img src={Styles.icons.creditcard} style={iconSize} />) : null;
     let parking = this.state.itemDetailIntro.parkingculture == null ? 
       null : 
       this.state.itemDetailIntro.parkingculture._text;
     let parkingIcon = parking != null && 
       (parking.includes("가능") || parking.includes("주차") || 
        parking.includes("Available") || parking.includes("spaces")) ?
-      (<img src={Styles.icon.parking} style={iconSize} />) : null;
+      (<img src={Styles.icons.parking} style={iconSize} />) : null;
     let etc = (
       <ListItem key="li-icons">
         {smokingIcon}
