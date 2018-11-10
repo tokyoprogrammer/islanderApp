@@ -1443,9 +1443,9 @@ export const WeatherViewStyle = {
     },
     temp: {
       style: {
+        height: "40px",
+        lineHeight: "40px",
         fontSize: "35px",
-        marginTop: "9px",
-        marginBottom: "9px"
       }
     }
   },
