@@ -126,11 +126,30 @@ export const MenuStyle = {
 export const ToolbarStyle = {
   btns: {
     lang: {
+      style: {
+        height: "100%",
+        width: "35px",
+        padding: "5%",
+        margin: "0%",
+        marginTop: "-5%",
+        marginLeft: "10%",
+        varticalAlign: "middle",
+        position: "relative"
+      },
       imgs: {
         eng: "img/english.png",
         kor: "img/korean.png",
         style: {
-          width: "33px"
+          maxWidth: "100%",
+          maxHeight: "100%",
+          width: "auto",
+          height: "auto",
+          position: "absolute",
+          top: "0",
+          bottom: "0",
+          left: "0",
+          right: "0",
+          margin: "auto"
         }
       }
     }

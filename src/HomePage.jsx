@@ -35,11 +35,42 @@ export default class HomePage extends React.Component {
       weatherDegree: "",
       urlForCourseList: urlForCourseList,
       courseList: [],
-      recommandation: category_recommandation
+      recommandation: category_recommandation,
+      lang: this.props.strings.getLanguage()
     }
     this.readWeather();
     
-    if(this.props.strings.getLanguage() == "kr") {
+    if(this.state.lang == "kr") {
+      let cache = JSON.parse(localStorage.getItem("homecourse"));
+      let useCache = false;
+      if(cache != null) {
+        let cacheValidUntil = new Date(cache.createdDateTime);
+        cacheValidUntil.setDate(cacheValidUntil.getDate() + 1); 
+        // cache will be valid until + 1 day of the created day.
+        let currentDateTime = new Date();
+        if(currentDateTime <= cacheValidUntil) {
+          // compare and if cache is fresh
+          useCache = true;
+        }
+      }
+
+      if(useCache) {
+        var this_ = this;
+        const sleepTime = 300;
+        // lazy loading using Promise mechanism
+        new Promise(function(resolve, reject) {
+          setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
+        }).then(function(result) {
+          this_.setState({courseList: cache.items});
+        });
+      } else {
+        this.readCourseList();
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.lang !== prevState.lang && this.state.lang == "kr") {
       let cache = JSON.parse(localStorage.getItem("homecourse"));
       let useCache = false;
       if(cache != null) {
@@ -138,7 +169,7 @@ export default class HomePage extends React.Component {
     }
 
     var this_ = this;
-    let lang = this.props.strings.getLanguage();
+    let lang = this.state.lang;
     let URL = "https://api.openweathermap.org/data/2.5/weather?q=Jeju,kr" + 
       "&appid=" + process.env.REACT_APP_WEATHER_API_KEY + 
       "&lang=" + lang;
@@ -193,23 +224,26 @@ export default class HomePage extends React.Component {
   }
 
   changeLanguage() {
-    let lang = this.props.strings.getLanguage();
+    let lang = this.state.lang;
     if(lang == 'kr') {
       this.props.strings.setLanguage('en');
       localStorage.setItem('lang', 'en');
+      this.setState({lang: "en"});
     } else {
       this.props.strings.setLanguage('kr');
       localStorage.setItem('lang', 'kr');
+      this.setState({lang: "kr"});
     }
-    this.setState({});
   }
 
   renderToolbar() {
-    const imgTag = this.props.strings.getLanguage() == 'kr' ? 
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+    const imgTag = this.state.lang == 'kr' ? 
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet' 
+        style={ToolbarStyle.btns.lang.style}>
         <img src={ToolbarStyle.btns.lang.imgs.eng} 
           style={ToolbarStyle.btns.lang.imgs.style}/></Button>) :
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'
+        style={ToolbarStyle.btns.lang.style}>
         <img src={ToolbarStyle.btns.lang.imgs.kor}
           style={ToolbarStyle.btns.lang.imgs.style}/></Button>);
 
@@ -249,7 +283,7 @@ export default class HomePage extends React.Component {
 
   sightOnClick(categoryId) {
     localStorage.setItem("clickedCategory", categoryId);
-    const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
+    const isKr = this.state.lang == 'kr' ? true : false;
     let sightCode = isKr ? 12 : 76; 
    
     this.pushPage(sightCode);
@@ -257,7 +291,7 @@ export default class HomePage extends React.Component {
 
   foodOnClick(categoryId) {
     localStorage.setItem("clickedCategory", categoryId);
-    const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
+    const isKr = this.state.lang == 'kr' ? true : false;
     let foodsCode = isKr ? 39 : 82;
    
     this.pushPage(foodsCode);
@@ -265,7 +299,7 @@ export default class HomePage extends React.Component {
   }
 
   render() {
-    const isKr = this.props.strings.getLanguage() == 'kr' ? true : false;
+    const isKr = this.state.lang == 'kr' ? true : false;
     
     let sightCode = isKr ? 12 : 76; 
     let cultureCode = isKr ? 14 : 78;
@@ -359,7 +393,7 @@ export default class HomePage extends React.Component {
               </Col>
             </Row>
           </div>
-          {this.props.strings.getLanguage() == "kr" ? (
+          {this.state.lang == "kr" ? (
           <div style={plans.container.style}>
             <p style={plans.text.style}><strong>{this.props.strings.courserecommend}</strong></p> 
             <div className="scrolling-wrapper">

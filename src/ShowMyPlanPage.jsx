@@ -35,10 +35,12 @@ export default class ShowMyPlan extends React.Component {
 
   renderToolbar() {
     const imgTag = this.props.strings.getLanguage() == 'kr' ? 
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet' 
+        style={ToolbarStyle.btns.lang.style}>
         <img src={ToolbarStyle.btns.lang.imgs.eng} 
           style={ToolbarStyle.btns.lang.imgs.style}/></Button>) :
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'>
+      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'
+        style={ToolbarStyle.btns.lang.style}>
         <img src={ToolbarStyle.btns.lang.imgs.kor}
           style={ToolbarStyle.btns.lang.imgs.style}/></Button>);
 
