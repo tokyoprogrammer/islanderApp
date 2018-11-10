@@ -36,7 +36,7 @@ export default class OpenSourceLicense extends React.Component {
         <div style={CenterDivW100Style}>
           <h2><b>Open Source License</b></h2>
         </div>
-        <div style={{marginTop: "2%", textAlign: "center", width: "100%"}}>
+        <div style={{marginTop: "2%", textAlign: "center", width: "100%", wordWrap: "break-word"}}>
           {this.licenseList.map((item, index) => (
             <div>
               <p key={"license-name-" + index}><b>{item.name}</b></p>
