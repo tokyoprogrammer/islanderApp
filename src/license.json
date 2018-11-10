@@ -1,0 +1,117 @@
+[
+  {
+    "name" : "react",
+    "url" : "https://reactjs.org/",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "OnsenUI",
+    "url" : "https://onsen.io/",
+    "desc" : "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name" : "compare-lat-lon",
+    "url" : "https://github.com/stevelacy/compare-lat-lon",
+    "desc" : "https://github.com/stevelacy/compare-lat-lon/blob/HEAD/LICENSE"
+  },
+  {
+    "name" : "cordova-custom-config",
+    "url" : "https://github.com/dpa99c/cordova-custom-config",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "cordova-plugin-device",
+    "url" : "https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device/",
+    "desc" : "http://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name" : "cordova-plugin-splashscreen",
+    "url" : "https://github.com/BogdanNic/cordova-plugin-splashscreen",
+    "desc" : "http://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name" : "cordova-plugin-vibration",
+    "url" : "https://github.com/apache/cordova-plugin-vibration",
+    "desc" : "http://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name" : "cordova-plugin-whitelist",
+    "url" : "https://github.com/apache/cordova-plugin-whitelist",
+    "desc" : "http://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name" : "dotenv-webpack",
+    "url" : "https://github.com/mrsteele/dotenv-webpack",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "google-maps-react",
+    "url" : "https://github.com/fullstackreact/google-maps-react",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "json-loader",
+    "url" : "https://github.com/webpack-contrib/json-loader",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "moment",
+    "url" : "http://momentjs.com",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "react-calendar",
+    "url" : "https://github.com/wojtekmaj/react-calendar#readme",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "react-dom",
+    "url" : "https://reactjs.org/",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "react-image-timeline",
+    "url" : "https://github.com/aaron9000/react-image-timeline/",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "react-localization",
+    "url" : "https://github.com/stefalda/react-localization#readme",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "react-multi-clamp",
+    "url" : "https://github.com/jackyr/react-multi-clamp#readme",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "react-onsenui",
+    "url" : "https://onsen.io/react/",
+    "desc" : "https://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "name" : "react-stepper-horizontal",
+    "url" : "https://github.com/mu29/react-stepper#readme",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "xml-js",
+    "url" : "https://github.com/nashwaan/xml-js#readme",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "npm",
+    "url" : "https://docs.npmjs.com/",
+    "desc" : "https://www.perlfoundation.org/artistic-license-20.html"
+  },
+  {
+    "name" : "postscribe",
+    "url" : "http://krux.github.io/postscribe/",
+    "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "ramda",
+    "url" : "https://ramdajs.com/",
+    "desc" : "https://opensource.org/licenses/MIT"
+  }
+]

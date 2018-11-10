@@ -114,11 +114,17 @@ export const MenuStyle = {
   },
   version: {
     style: {
-      textAlign: "center",
-      fontSize: "15px",
+      textAlign: "right",
+      fontSize: "10px",
+      color: "#808B96",
       position: "absolute",
       bottom: "20px",
       right: "20px"
+    },
+    p: {
+      style: {
+        marginTop: "5%"
+      }
     }
   }
 };

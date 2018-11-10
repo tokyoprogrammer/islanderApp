@@ -8,6 +8,7 @@ import CourseRecommandationPage from './CourseRecommandationPage';
 import CreateFlightPlanPage from './CreateFlightPlanPage';
 import ShowMyPlanPage from './ShowMyPlanPage';
 import AllFavoritesPage from './AllFavoritesPage';
+import OpenSourceLicense from './OpenSourceLicense';
 
 import {DivH100Style, CenterDivStyle, MenuStyle} from './Styles';
 
@@ -46,6 +47,13 @@ export default class App extends React.Component {
       component: App, 
       props: { key: App.name, strings: this.state.strings } }, 
       { animation: 'none' });
+  }
+
+  pushOpenSourceLicense() {
+    this.hide();
+    this.navigator.pushPage({ 
+      component: OpenSourceLicense 
+    });
   }
 
   show() {
@@ -119,7 +127,10 @@ export default class App extends React.Component {
               </List>
             </div>
             <div style={MenuStyle.version.style}>
-              <p>App Info</p>
+              <p style={MenuStyle.version.p.style}>{this.state.strings.version + process.env.APP_VERSION}</p>
+              <p style={MenuStyle.version.p.style} onClick={this.pushOpenSourceLicense.bind(this)}>
+                {this.state.strings.opensourcelicense}
+              </p>
             </div>
           </Page>
         </SplitterSide>
