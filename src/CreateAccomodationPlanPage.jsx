@@ -151,6 +151,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     }
   }
 
+
   goNext() {
     let accomodationList = this.state.accomodationList;
     let arrivalDateTime = this.state.arrivalDateTime;
@@ -199,9 +200,10 @@ export default class CreateAccomodationPlanPage extends React.Component {
 
       let eachAccomodationDate = this.getAccomodationDate(item.scheduleInfo[0], item.scheduleInfo[1]); 
       accomodationSum = accomodationSum + eachAccomodationDate;
-   
+      
+      let startAccomodationDateFromFirstDate = this.getAccomodationDate(item.scheduleInfo[0],arrivalDateTime);
       let accomodationDateTmp = item.scheduleInfo[0];
-      for(let j=0; j<eachAccomodationDate; j++){
+      for(let j=startAccomodationDateFromFirstDate; j<startAccomodationDateFromFirstDate + eachAccomodationDate; j++){
         travelObj[accomodationDateTmp.toString()] = "1";
         travelArray[j] = travelObj[accomodationDateTmp.toString()];
         accomodationDateTmp.setDate(accomodationDateTmp.getDate() + 1);
