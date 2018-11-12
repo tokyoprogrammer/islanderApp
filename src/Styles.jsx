@@ -138,7 +138,7 @@ export const ToolbarStyle = {
         padding: "5%",
         margin: "0%",
         marginTop: "-5%",
-        marginLeft: "10%",
+        marginLeft: "12%",
         varticalAlign: "middle",
         position: "relative"
       },
@@ -243,7 +243,7 @@ export const HomeStyle = {
       style: {
         backgroundColor: "#fafafa",
         width: "100%",
-        marginTop: "2%"
+        marginTop: "1%"
       }
     },
     rows: {
@@ -264,7 +264,8 @@ export const HomeStyle = {
     cols: {
       font: {
         style: {
-          fontSize: "13px"
+          fontSize: "13px",
+          marginTop: "-5%"
         }
       },
       col1: {

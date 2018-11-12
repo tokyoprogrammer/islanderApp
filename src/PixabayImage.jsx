@@ -5,7 +5,7 @@ export default class PixabayImage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.maxLen = 45;
+    this.maxLen = 50;
     let rand = this.getRandNum(this.maxLen);
 
     this.state = {
