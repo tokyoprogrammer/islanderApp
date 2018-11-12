@@ -265,7 +265,7 @@ export const HomeStyle = {
       font: {
         style: {
           fontSize: "13px",
-          marginTop: "-5%"
+          marginTop: "-8%"
         }
       },
       col1: {
@@ -410,12 +410,11 @@ export const HomeStyle = {
       chevron: {
         style: {
           position: "relative",
-          width: "1em",
-          height: "1em",
+          width: "0.6em",
+          height: "0.6em",
           borderRight: ".1em solid #ffffff",
           borderBottom: ".1em solid #ffffff",
           transform: "rotate(-45deg)",
-          top: "3px",
           display: "inline-block",
           marginLeft: "10%"
         }
@@ -423,7 +422,8 @@ export const HomeStyle = {
       text: {
         style: {
           display: "inline-block",
-          width: "80%"
+          width: "80%",
+          paddingLeft: "5%"
         }
       },
       createbtn: {
