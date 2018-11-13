@@ -33,7 +33,8 @@ export class MapContainer extends React.Component {
         center: center, 
         zoom: zoom, 
         mapTypeId: 'roadmap',
-        gestureHandling: 'cooperative'
+        gestureHandling: 'cooperative',
+        mapTypeControl: false
       })
 
       this.map = new maps.Map(node, mapConfig);
