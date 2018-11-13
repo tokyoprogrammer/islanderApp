@@ -305,12 +305,13 @@ export default class CreateAccomodationPlanPage extends React.Component {
           </Col>
           <Col width={listStyle.cols.col3.width}>
             <div>
-            <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet'>
+            <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet'
+              style={listStyle.calendar.style}>
               <Icon icon={listStyle.calendar.icon} size={calendarIconSize} />
             </Button>
             <Button onClick={this.deleteSchedule.bind(this,row)} modifier='quiet' 
               style={listStyle.deleteIcon.style}>
-              <Icon icon={listStyle.calendar.deleteicon} size={calendarIconSize} />
+              <Icon icon={listStyle.deleteIcon.icon} size={calendarIconSize} />
             </Button>
             </div>
           </Col>

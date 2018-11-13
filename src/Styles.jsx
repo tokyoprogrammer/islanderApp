@@ -1334,13 +1334,21 @@ export const AccomodationPageStyle = {
       size: {
         default: 25
       },
+      style: {
+        width: "50%",
+        padding: "5%",
+        margin: "0%"
+      },
       icon: "md-calendar",
-      deleteicon: "md-delete"
     },
     deleteIcon: {
       style: {
-        color: "black"
-      }
+        color: "black",
+        width: "50%",
+        padding: "5%",
+        margin: "0%"
+      },
+      icon: "md-delete"
     },
     row: {
       style: {
