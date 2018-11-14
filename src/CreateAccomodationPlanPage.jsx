@@ -84,7 +84,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   
-  convertTime(datetime){
+  convertTime(datetime) {
     let dateInfo;
     let year = datetime.getFullYear();
     let month = datetime.getMonth() + 1;
