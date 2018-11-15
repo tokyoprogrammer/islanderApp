@@ -1352,7 +1352,6 @@ export const AccomodationPageStyle = {
     },
     row: {
       style: {
-        height: "52px",
         width: "100%",
         paddingTop: "5px"
       }
