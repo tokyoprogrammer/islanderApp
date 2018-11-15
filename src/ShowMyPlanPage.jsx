@@ -21,34 +21,9 @@ export default class ShowMyPlan extends React.Component {
     this.props.showMenu();
   }
 
-  changeLanguage() {
-    let lang = this.props.strings.getLanguage();
-    if(lang == 'kr') {
-      this.props.strings.setLanguage('en');
-      localStorage.setItem('lang', 'en');
-    } else {
-      this.props.strings.setLanguage('kr');
-      localStorage.setItem('lang', 'kr');
-    }
-    this.setState({});
-  }
-
   renderToolbar() {
-    const imgTag = this.props.strings.getLanguage() == 'kr' ? 
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet' 
-        style={ToolbarStyle.btns.lang.style}>
-        <img src={ToolbarStyle.btns.lang.imgs.eng} 
-          style={ToolbarStyle.btns.lang.imgs.style}/></Button>) :
-      (<Button onClick={this.changeLanguage.bind(this)} modifier='quiet'
-        style={ToolbarStyle.btns.lang.style}>
-        <img src={ToolbarStyle.btns.lang.imgs.kor}
-          style={ToolbarStyle.btns.lang.imgs.style}/></Button>);
-
     return (
       <Toolbar>
-        <div className="left">
-          {imgTag}
-        </div>
         <div className="center">
           <img src={ToolbarStyle.title.imgs.logo.url} style={ToolbarStyle.title.imgs.logo.style} />
         </div>
