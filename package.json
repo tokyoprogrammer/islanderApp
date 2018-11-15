@@ -3,7 +3,6 @@
     "version": "2.4.0+20180301.1",
     "description": "",
     "dependencies": {
-        "compare-lat-lon": "^0.1.0",
         "cordova-custom-config": "5.0.2",
         "cordova-plugin-device": "^2.0.2",
         "cordova-plugin-splashscreen": "5.0.1",

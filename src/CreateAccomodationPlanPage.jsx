@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, Card, Modal} from 'react-onsenui';
+import {Page, Toolbar, Icon, ToolbarButton, BackButton, Button, List, ListItem, Card, Modal, Row, Col} from 'react-onsenui';
 import {notification} from 'onsenui';
 
 import LocalizedStrings from 'react-localization';
@@ -45,8 +45,8 @@ export default class CreateAccomodationPlanPage extends React.Component {
     var dateArray = new Array();
     var currentDate = startDate;
     while (currentDate <= stopDate) {
-        dateArray.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
+      dateArray.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
     }
     return dateArray;
   }
@@ -84,7 +84,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   
-  convertTime(datetime){
+  convertTime(datetime) {
     let dateInfo;
     let year = datetime.getFullYear();
     let month = datetime.getMonth() + 1;
@@ -151,6 +151,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     }
   }
 
+
   goNext() {
     let accomodationList = this.state.accomodationList;
     let arrivalDateTime = this.state.arrivalDateTime;
@@ -159,7 +160,7 @@ export default class CreateAccomodationPlanPage extends React.Component {
     let travelTotalNight = this.getAccomodationDate(arrivalDateTime,departureDateTime);
     let tmp = [];
     let travelArray = [travelTotalNight];
-    let accomodationSum = parseInt(0); 
+    let accomodationSum = 0; 
     let travelObj = {};
     if(this.validateOneDayTravel()){
       /* don't require accomodation info */ 
@@ -169,21 +170,20 @@ export default class CreateAccomodationPlanPage extends React.Component {
     }
 
     let travelDateTmp = new Date(arrivalDateTime);
-    for(let i=0; i<travelTotalNight; i++){
+    travelDateTmp.setHours(0, 0, 0, 0);
+    for(let i=0; i < travelTotalNight; i++){
       travelObj[travelDateTmp.toString()] = "0";
       travelArray[i] = travelObj[travelDateTmp.toString()];
       travelDateTmp.setDate(travelDateTmp.getDate() + 1);
     }
-
     /* save accomodation information */
-    for (let i=0; i<accomodationList.length; i++){   
+    for (let i = 0; i < accomodationList.length; i++) {   
       let item = accomodationList[i];
       if(item.scheduleInfo[0] == null || item.scheduleInfo[1] == null){
         notification.alert(this.state.strings.emptyaccomodation);
-        return ;        
+        return;
       }
-      tmp.push(       
-      {
+      tmp.push({
         hotelInfo: {
           name: item.name,
           addr: item.addr,
@@ -196,41 +196,42 @@ export default class CreateAccomodationPlanPage extends React.Component {
         ] 
       });
       
-
-      let eachAccomodationDate = this.getAccomodationDate(item.scheduleInfo[0], item.scheduleInfo[1]); 
+      let eachAccomodationDate = this.getAccomodationDate(item.scheduleInfo[0], item.scheduleInfo[1]);
+      if(eachAccomodationDate < 1) {
+        notification.alert(this.state.strings.zerodayaccomodation);
+        return;
+      }
       accomodationSum = accomodationSum + eachAccomodationDate;
-   
-      let accomodationDateTmp = item.scheduleInfo[0];
-      for(let j=0; j<eachAccomodationDate; j++){
+      
+      let startAccomodationDateFromFirstDate = this.getAccomodationDate(item.scheduleInfo[0], arrivalDateTime);
+      let accomodationDateTmp = new Date(item.scheduleInfo[0]);
+      for(let j = startAccomodationDateFromFirstDate; 
+           j < startAccomodationDateFromFirstDate + eachAccomodationDate; j++){
         travelObj[accomodationDateTmp.toString()] = "1";
         travelArray[j] = travelObj[accomodationDateTmp.toString()];
         accomodationDateTmp.setDate(accomodationDateTmp.getDate() + 1);
       }
-
     }  
-    localStorage.setItem("accomodationInfo", JSON.stringify(tmp));
-    
+
     /* condition 1 : aaccomodation sum is same with travel total night  */
-    if(accomodationSum > travelTotalNight){
+    if(accomodationSum > travelTotalNight) {
       /* duplicated accomodation case */
       notification.alert(this.state.strings.duplicateaccomodation);
-      localStorage.removeItem("accomodationInfo");
       return;
-    }else if(accomodationSum < travelTotalNight){
+    }else if(accomodationSum < travelTotalNight) {
       /* lack of  accomodation case */
       notification.alert(this.state.strings.emptyaccomodation);
       return; 
-    }else{
-      /* accomodationSum == travelTotalNight */
     }
 
-
-    for(let i=0; i<travelTotalNight; i++){
-      if(travelArray[i] == "0"){
+    for(let i = 0; i < travelTotalNight; i++) {
+      if(travelArray[i] == "0") {
          notification.alert(this.state.strings.emptyaccomodation); 
-         return ; 
+         return; 
       }
     }
+
+    localStorage.setItem("accomodationInfo", JSON.stringify(tmp));
 
     this.props.navigator.pushPage({ 
       component: CreateVisitListPage 
@@ -283,40 +284,43 @@ export default class CreateAccomodationPlanPage extends React.Component {
   }
 
   addToSchedule(row) {
-    /* console.log(row)*/
     this.setState({isOpen: true, selectedRow: row});
   }
 
   renderAccomodationList(row, index) {
-    const Styles = AccomodationPageStyle.list.calendar;
-    const calendarIconSize = Styles.size;
+    const listStyle = AccomodationPageStyle.list; 
+    const calendarIconSize = listStyle.calendar.size;
 
     return (
-      <ListItem key={"al" + index}>
-        <div className="left">
-          {row.name}
-        </div>
-        <div className="center">
-          {row.scheduleInfo != null && row.scheduleInfo.length >= 2 ? 
-            this.convertDate(row.scheduleInfo[0]) + " ~ " + 
-            this.convertDate(row.scheduleInfo[1]) :
-            this.state.strings.accomodationDateDefault}
-        </div>
-        <div className="right">
-          <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet' >
-            <Icon icon={Styles.icon} size={calendarIconSize} />
-          </Button>
-          <Button onClick={this.deleteSchedule.bind(this,row)}  modifier='quiet' style={{color: 'black'}} >
-            <Icon icon={Styles.deleteicon} size={calendarIconSize} />
-          </Button>
-        </div>
+      <ListItem key={"al" + index} modifier="longdivider">
+        <Row style={listStyle.row.style}> 
+          <Col width={listStyle.cols.col1.width} style={listStyle.cols.col1.style}>
+            {row.name}
+          </Col>
+          <Col width={listStyle.cols.col2.width}>
+            {row.scheduleInfo != null && row.scheduleInfo.length >= 2 ? 
+              this.convertDate(row.scheduleInfo[0]) + " ~ " + 
+              this.convertDate(row.scheduleInfo[1]) :
+              this.state.strings.accomodationDateDefault}
+          </Col>
+          <Col width={listStyle.cols.col3.width}>
+            <div>
+            <Button onClick={this.addToSchedule.bind(this, row)} modifier='quiet'
+              style={listStyle.calendar.style}>
+              <Icon icon={listStyle.calendar.icon} size={calendarIconSize} />
+            </Button>
+            <Button onClick={this.deleteSchedule.bind(this,row)} modifier='quiet' 
+              style={listStyle.deleteIcon.style}>
+              <Icon icon={listStyle.deleteIcon.icon} size={calendarIconSize} />
+            </Button>
+            </div>
+          </Col>
+        </Row>
       </ListItem>
     ); 
   }
   
   deleteSchedule(row){
-    /* console.log(row); */
-
     let accomodationList = this.state.accomodationList; 
     for(let i = 0; i < accomodationList.length; i++) {
       let item = accomodationList[i];
@@ -324,13 +328,11 @@ export default class CreateAccomodationPlanPage extends React.Component {
         accomodationList.splice(i,1);
       }
     }
-    /* console.log(accomodationList); */
     this.setState({});
   }
 
   onCalendarChange(value) {
     let accomodationListCopy = this.state.accomodationList;
-    /* console.log(value); */
     for(let i = 0; i < accomodationListCopy.length; i++) {
       let item = accomodationListCopy[i];
       if(this.state.selectedRow == item) {
@@ -341,10 +343,13 @@ export default class CreateAccomodationPlanPage extends React.Component {
     this.setState({isOpen: false, accomodationList: accomodationListCopy});
   }
 
-  getAccomodationDate(startDate,endDate){
-    let accomodationDate;
-    let diff = Math.abs(startDate - endDate);
-    accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
+  getAccomodationDate(startDate, endDate){
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    let diff = Math.abs(start - end);
+    let accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
 
     return accomodationDate;
   }

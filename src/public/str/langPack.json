@@ -104,11 +104,14 @@
     "navigate" : "가는 법 보기",
     "emptyaccomodation" : "숙소날짜가 비어있습니다.모두 채워주세요.",
     "duplicateaccomodation" : "숙소날짜가 중복되었습니다. ",
+    "zerodayaccomodation" : "0 박 숙소는 존재할 수 없습니다.",
     "notjejuaccomodation" : "제주도내의 숙소가 아닙니다.",
     "onedaytravel" : "당일여행은 숙소를 입력할 수 없습니다.",
     "courserecommend" : "추천 관광 코스",
     "sightrecommand" : "추천 관광지",
-    "foodrecommand" : "추천 먹거리"
+    "foodrecommand" : "추천 먹거리",
+    "opensourcelicense" : "오픈소스 라이선스",
+    "version" : "버전 : "
   },
   "en": {
     "home": "Home",
@@ -217,8 +220,11 @@
     "duplicateaccomodation" : "There is duplicated accomodation information",
     "notjejuaccomodation" : "Please select accomodation in Jeju",
     "onedaytravel" : "We don't provide select accomodation for one day travel",
+    "zerodayaccomodation" : "We cannot accept 0 night accomodation.",
     "courserecommend" : "Course Recommendation",
     "sightrecommand" : "Sights Recommandation",
-    "foodrecommand" : "Foods Recommandation"
+    "foodrecommand" : "Foods Recommandation",
+    "opensourcelicense" : "Open Source License",
+    "version" : "Version : "
   }
 }

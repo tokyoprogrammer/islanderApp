@@ -244,16 +244,16 @@ export default class WeatherView extends React.Component {
             "/" + current.getDate() + " " + this.getDayInStr(current)}
         </h4>
         <Row>
-          <Col width="35%"></Col>
+          <Col width="30%"></Col>
           <Col width="10%">
             <img src={this.state.cache.weatherIcon} style={WeatherViewStyle.topforecast.icon.style}/>
           </Col>
-          <Col width="20%">
+          <Col width="30%">
             <p style={WeatherViewStyle.topforecast.temp.style}>
               {this.state.cache.weatherDegree + "ºC"}
             </p>
           </Col>
-          <Col width="35%"></Col>
+          <Col width="30%"></Col>
         </Row>
         <div style={WeatherViewStyle.render24.bgground.style}>
           {forecast24}

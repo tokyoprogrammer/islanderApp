@@ -114,11 +114,17 @@ export const MenuStyle = {
   },
   version: {
     style: {
-      textAlign: "center",
-      fontSize: "15px",
+      textAlign: "right",
+      fontSize: "10px",
+      color: "#808B96",
       position: "absolute",
       bottom: "20px",
       right: "20px"
+    },
+    p: {
+      style: {
+        marginTop: "5%"
+      }
     }
   }
 };
@@ -126,11 +132,30 @@ export const MenuStyle = {
 export const ToolbarStyle = {
   btns: {
     lang: {
+      style: {
+        height: "100%",
+        width: "35px",
+        padding: "5%",
+        margin: "0%",
+        marginTop: "-5%",
+        marginLeft: "12%",
+        varticalAlign: "middle",
+        position: "relative"
+      },
       imgs: {
         eng: "img/english.png",
         kor: "img/korean.png",
         style: {
-          width: "33px"
+          maxWidth: "100%",
+          maxHeight: "100%",
+          width: "auto",
+          height: "auto",
+          position: "absolute",
+          top: "0",
+          bottom: "0",
+          left: "0",
+          right: "0",
+          margin: "auto"
         }
       }
     }
@@ -218,7 +243,7 @@ export const HomeStyle = {
       style: {
         backgroundColor: "#fafafa",
         width: "100%",
-        marginTop: "2%"
+        marginTop: "1%"
       }
     },
     rows: {
@@ -239,7 +264,8 @@ export const HomeStyle = {
     cols: {
       font: {
         style: {
-          fontSize: "13px"
+          fontSize: "13px",
+          marginTop: "-8%"
         }
       },
       col1: {
@@ -384,12 +410,11 @@ export const HomeStyle = {
       chevron: {
         style: {
           position: "relative",
-          width: "1em",
-          height: "1em",
+          width: "0.6em",
+          height: "0.6em",
           borderRight: ".1em solid #ffffff",
           borderBottom: ".1em solid #ffffff",
           transform: "rotate(-45deg)",
-          top: "3px",
           display: "inline-block",
           marginLeft: "10%"
         }
@@ -397,7 +422,8 @@ export const HomeStyle = {
       text: {
         style: {
           display: "inline-block",
-          width: "80%"
+          width: "80%",
+          paddingLeft: "5%"
         }
       },
       createbtn: {
@@ -1308,8 +1334,42 @@ export const AccomodationPageStyle = {
       size: {
         default: 25
       },
+      style: {
+        width: "50%",
+        padding: "5%",
+        margin: "0%"
+      },
       icon: "md-calendar",
-      deleteicon: "md-delete"
+    },
+    deleteIcon: {
+      style: {
+        color: "black",
+        width: "50%",
+        padding: "5%",
+        margin: "0%"
+      },
+      icon: "md-delete"
+    },
+    row: {
+      style: {
+        height: "52px",
+        width: "100%",
+        paddingTop: "5px"
+      }
+    },
+    cols: {
+      col1: {
+        width: "30%",
+        style: {
+          paddingRight: "10px"
+        }
+      },
+      col2: {
+        width: "45%"
+      },
+      col3: {
+        width: "25%"
+      }
     }
   },
   gonext: {
@@ -1443,9 +1503,9 @@ export const WeatherViewStyle = {
     },
     temp: {
       style: {
+        height: "40px",
+        lineHeight: "40px",
         fontSize: "35px",
-        marginTop: "9px",
-        marginBottom: "9px"
       }
     }
   },

@@ -204,6 +204,8 @@ export default class CourseRecommandationPage extends React.Component {
     if(cache != null) {
       this.setState({currentOverview: cache.items});
       this.setCurrentDetailLists(contentId);
+
+      return;
     }
     new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest;
@@ -373,14 +375,15 @@ export default class CourseRecommandationPage extends React.Component {
   handleCourseChange(e) {
     if(this.overScrolled) {
       this.overScrolled = false;
-      this.setState({});
-      console.log(e.activeIndex);
+      this.setState({isOpen: true, currentOverview: "Loading..."});
+      let contentId = this.state.items[this.state.itemCarouselIndex].contentid._text;
+      this.setCurrentOverviewAndList(contentId);
+
       return;
     }
-    var this_ = this;
-    var contentId = this.state.items[e.activeIndex].contentid._text;
-    this.setCurrentOverviewAndList(contentId);
     this.setState({itemCarouselIndex: e.activeIndex, isOpen: true, currentOverview: "Loading..."});
+    let contentId = this.state.items[e.activeIndex].contentid._text;
+    this.setCurrentOverviewAndList(contentId);
   }
 
   overScroll() {

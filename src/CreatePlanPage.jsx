@@ -53,8 +53,7 @@ export default class CreatePlanPage extends React.Component {
       schedule: schedule,
       accomodationInfo: accomodationInfo,
       accomodationArr: accomodationArr,
-      plan: [],
-      compare: require('compare-lat-lon')
+      plan: []
     };
 
     this.activeSteps = 3;
@@ -78,14 +77,20 @@ export default class CreatePlanPage extends React.Component {
     new Promise(function(resolve, reject) {
       setTimeout(resolve, sleepTime, 1); // set some timeout to render page first
     }).then(function(result) {
-      let visitList = this_.makeVisitList();
-
+      let visitList_t = this_.makeVisitList();
+      let visitList = [];
       let startPoint = this_.startPoint;
-      visitList = this_.insertMatrix(startPoint, visitList); // calculate distance from airport
-      // sort list based on dfrom factor.
-      visitList.sort(function(a, b) {
-        return a.dfrom - b.dfrom;
-      });
+      for(;;) {
+        if(visitList_t.length < 1) break;
+        visitList_t = this_.insertMatrix(startPoint, visitList_t); // calculate distance from airport
+        // sort list based on dfrom factor.
+        visitList_t.sort(function(a, b) {
+          return a.dfrom - b.dfrom;
+        });
+        visitList.push(visitList_t[0]);
+        startPoint = Object.assign({}, visitList_t[0]);
+        visitList_t.splice(0, 1); // remove first one because it is already inserted.
+      }
 
       let visitLists = this_.chunkify(visitList, this_.state.days, true); 
       // chunkify entire plan into smaller N balanced arrays (N : days)
@@ -140,20 +145,39 @@ export default class CreatePlanPage extends React.Component {
   }
 
   insertMatrix(startPoint, visitList) {
-    let ret = visitList;
+    let ret = [];
 
-    for(let i = 0; i < ret.length; i++) {
+    for(let i = 0; i < visitList.length; i++) {
       let point = {
-        lat: ret[i].lat,
-        lng: ret[i].lng
+        lat: visitList[i].lat,
+        lng: visitList[i].lng
       };
- 
-      let weight = this.state.compare(
-        this.startPoint.lat, this.startPoint.lng, 
-        point.lat, point.lng);
-      ret[i].dfrom = weight
+
+      let slat = parseFloat(startPoint.lat).toFixed(6);
+      let slng = parseFloat(startPoint.lng).toFixed(6);
+      let dlat = parseFloat(point.lat).toFixed(6);
+      let dlng = parseFloat(point.lng).toFixed(6); 
+      let weight = this.distance(slat, slng, dlat, dlng);
+      let tmp = Object.assign({}, visitList[i]);
+      tmp.dfrom = weight;
+      ret.push(tmp);
     }
     return ret;
+  }
+
+  deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  distance(lat1, lng1, lat2, lng2) {
+    const R = 6371; // Radius of the earth in km
+    let dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+    let dLon = this.deg2rad(lng2 - lng1);
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + 
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c; // Distance in km
+    return d;
   }
 
   chunkify(a, n, balanced) {  

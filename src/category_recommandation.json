@@ -2,10 +2,10 @@
   "en": {
     "sights": [
       {"key" : "A01010500", "value" : "Eco-Tourism Sites" },
-      {"key" : "A01010800", "value" : "Waterfalls" },
+      {"key" : "A01010400", "value" : "Mountain" },
       {"key" : "A01011100", "value" : "Coast" },
       {"key" : "A01011200", "value" : "Beaches" },
-      {"key" : "A01011900", "value" : "Caves" },
+      {"key" : "A01010600", "value" : "Natural Forest" },
       {"key" : "A02020600", "value" : "Theme Parks" },
       {"key" : "A02020800", "value" : "Cruises/Submarines" }
     ],
@@ -22,10 +22,10 @@
   "kr": {
     "sights": [
       {"key" : "A01010500", "value" : "자연생태관광지" },
-      {"key" : "A01010800", "value" : "폭포" },
+      {"key" : "A01010400", "value" : "산" },
       {"key" : "A01011100", "value" : "해안절경" },
       {"key" : "A01011200", "value" : "해수욕장" },
-      {"key" : "A01011900", "value" : "동굴" },
+      {"key" : "A01010600", "value" : "자연휴양림" },
       {"key" : "A02020600", "value" : "테마공원" },
       {"key" : "A02020800", "value" : "유람선/잠수함관광" }
     ],

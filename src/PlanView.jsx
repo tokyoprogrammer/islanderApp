@@ -129,7 +129,10 @@ export default class PlanView extends React.Component {
     this.state = {
       plan: plan,
       strings: strings,
-      schedule: schedule,
+      schedule: {
+        arrivalTime: new Date(schedule.arrivalTime),
+        departureTime: new Date(schedule.departureTime)
+      },
       accomodationArr: accomodationArr,
       days: days,
       itemCarouselIndex: 0,
@@ -205,6 +208,42 @@ export default class PlanView extends React.Component {
       // reached to the first
       this.prevItem();
     }
+  }
+
+  convertTime(datetime) {
+    let dateInfo;
+    let year = datetime.getFullYear();
+    let month = datetime.getMonth() + 1;
+    let date = datetime.getDate();
+    let day =  datetime.getDay();
+    switch(day){
+      case 0 : day = this.state.strings.sunday; 
+               break; 
+      case 1 : day = this.state.strings.monday;
+               break;
+      case 2 : day = this.state.strings.tuesday;
+               break;
+      case 3 : day = this.state.strings.wednesday;
+               break;
+      case 4 : day = this.state.strings.thursday;
+               break;
+      case 5 : day = this.state.strings.friday;
+               break;
+      case 6 : day = this.state.strings.saturday;
+               break;
+      default : console.log("wrong day information");
+               break;
+    }
+    let hours = datetime.getHours();
+    hours = hours < 10 ? '0' + hours : hours;
+    let minutes = datetime.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    dateInfo = year + this.state.strings.year + " "
+               + month + this.state.strings.month + " "
+               + date + this.state.strings.date + " "
+               + day + " " + hours + ":" + minutes;
+
+    return dateInfo;
   }
 
   markerClicked(e, id) {
@@ -296,15 +335,17 @@ export default class PlanView extends React.Component {
         <Card>
           <div>
             <h3>
-              {this.state.strings.flightschedule} 
+              {this.state.strings.flightschedule + " "} 
               <Icon icon={PlanViewStyle.card.plane.icon} 
                 style={PlanViewStyle.card.plane.style} />
             </h3>
             <li>
-              {this.state.strings.arrivaltime + " : " + this.state.schedule.arrivalTime}
+              {this.state.strings.arrivaltime + " : " + 
+               this.convertTime(this.state.schedule.arrivalTime)}
             </li>
             <li>
-              {this.state.strings.departuretime + " : " + this.state.schedule.departureTime}
+              {this.state.strings.departuretime + " : " + 
+               this.convertTime(this.state.schedule.departureTime)}
             </li>
             <li>
               <b>{this.state.days - 1 + " " + this.state.strings.nights + " " + 
@@ -316,7 +357,7 @@ export default class PlanView extends React.Component {
         <Card>
           <div>
             <h3>
-              {this.state.strings.accomodationschedule} 
+              {this.state.strings.accomodationschedule + " "} 
               <Icon icon={PlanViewStyle.card.hotel.icon} 
                 style={PlanViewStyle.card.hotel.style}/>
             </h3>
