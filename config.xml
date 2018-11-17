@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget xmlns="http://www.w3.org/ns/widgets" id="islander.jeju" version="1.0.0">
+<widget xmlns="http://www.w3.org/ns/widgets" id="islander.jeju" version="0.1.0">
   <name>islanderApp</name>
   <description/>
   <author/>
@@ -59,16 +59,7 @@
     <icon src="/res/ios/icon/icon-small@3x.png" width="87" height="87"/>
     <icon src="/res/ios/icon/icon-83.5@2x~ipad.png" width="167" height="167"/>
     <icon src="/res/ios/icon/icon-1024.png" width="1024" height="1024"/>
-    <splash src="/res/ios/screen/Default~iphone.png" width="320" height="480"/>
-    <splash src="/res/ios/screen/Default@2x~iphone.png" width="640" height="960"/>
-    <splash src="/res/ios/screen/Default-568h@2x~iphone.png" width="640" height="1136"/>
-    <splash src="/res/ios/screen/Default-667h.png" width="750" height="1334"/>
-    <splash src="/res/ios/screen/Default-736h.png" width="1242" height="2208"/>
-    <splash src="/res/ios/screen/Default-Landscape-736h.png" width="2208" height="1242"/>
-    <splash src="/res/ios/screen/Default-Portrait~ipad.png" width="768" height="1024"/>
-    <splash src="/res/ios/screen/Default-Landscape~ipad.png" width="1024" height="768"/>
-    <splash src="/res/ios/screen/Default-Portrait@2x~ipad.png" width="1536" height="2048"/>
-    <splash src="/res/ios/screen/Default-Landscape@2x~ipad.png" width="2048" height="1536"/>
+    <splash src="/res/ios/screen/Default@2x~universal~anyany.png"/>
     <config-file platform="ios" parent="CFBundleLocalizations" target="*-Info.plist">
       <array>
         <string>en</string>
