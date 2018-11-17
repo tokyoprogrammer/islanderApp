@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget xmlns="http://www.w3.org/ns/widgets" id="islander.jeju" version="0.1.0">
-  <name>islanderApp</name>
+  <name>Islander Jeju</name>
   <description/>
   <author/>
   <access origin="*"/>
@@ -73,12 +73,18 @@
     <icon src="/res/android/icon/xhdpi.png" density="xhdpi"/>
     <icon src="/res/android/icon/xxhdpi.png" density="xxhdpi"/>
     <icon src="/res/android/icon/xxxhdpi.png" density="xxxhdpi"/>
-    <splash src="/res/android/screen/splash-port-ldpi.9.png" density="port-ldpi"/>
-    <splash src="/res/android/screen/splash-port-mdpi.9.png" density="port-mdpi"/>
-    <splash src="/res/android/screen/splash-port-hdpi.9.png" density="port-hdpi"/>
-    <splash src="/res/android/screen/splash-port-xhdpi.9.png" density="port-xhdpi"/>
-    <splash src="/res/android/screen/splash-port-xxhdpi.9.png" density="port-xxhdpi"/>
-    <splash src="/res/android/screen/splash-port-xxxhdpi.9.png" density="port-xxxhdpi"/>
+    <splash qualifier="land-ldpi" src="/res/android/screen/drawable-land-ldpi-screen.png" />
+    <splash qualifier="land-mdpi" src="/res/android/screen/drawable-land-mdpi-screen.png" />
+    <splash qualifier="land-hdpi" src="/res/android/screen/drawable-land-hdpi-screen.png" />
+    <splash qualifier="land-xhdpi" src="/res/android/screen/drawable-land-xhdpi-screen.png" />
+    <splash qualifier="land-xxhdpi" src="/res/android/screen/drawable-land-xxhdpi-screen.png" />
+    <splash qualifier="land-xxxhdpi" src="/res/android/screen/drawable-land-xxxhdpi-screen.png" />
+    <splash qualifier="port-ldpi" src="/res/android/screen/drawable-port-ldpi-screen.png" />
+    <splash qualifier="port-mdpi" src="/res/android/screen/drawable-port-mdpi-screen.png" />
+    <splash qualifier="port-hdpi" src="/res/android/screen/drawable-port-hdpi-screen.png" />
+    <splash qualifier="port-xhdpi" src="/res/android/screen/drawable-port-xhdpi-screen.png" />
+    <splash qualifier="port-xxhdpi" src="/res/android/screen/drawable-port-xxhdpi-screen.png" />
+    <splash qualifier="port-xxxhdpi" src="/res/android/screen/drawable-port-xxxhdpi-screen.png" />
   </platform>
   <platform name="windows">
     <icon src="/res/winrt/icon/package_logo_winrt.png" target="StoreLogo"/>
