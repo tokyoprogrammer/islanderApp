@@ -113,5 +113,15 @@
     "name" : "ramda",
     "url" : "https://ramdajs.com/",
     "desc" : "https://opensource.org/licenses/MIT"
+  },
+  {
+    "name" : "Icon8",
+    "url" : "https://icons8.com/",
+    "desc" : "https://creativecommons.org/licenses/by-nd/3.0/"
+  },
+  {
+    "name" : "Pixabay",
+    "url" : "https://pixabay.com/",
+    "desc" : "https://creativecommons.org/publicdomain/zero/1.0/deed.en"
   }
 ]
