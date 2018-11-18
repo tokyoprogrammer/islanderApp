@@ -15,7 +15,7 @@
   <preference name="monaca:WebViewEngine" value="default"/>
   <preference name="SplashScreen" value="screen"/>
   <preference name="SplashScreenDelay" value="1000"/>
-  <preference name="Orientation" value="default"/>
+  <preference name="Orientation" value="portrait"/>
   <preference name="monaca:DisableCookie" value="false"/>
   <preference name="monaca:AndroidIsPackageNameSeparate" value="false"/>
   <preference name="AllowInlineMediaPlayback" value="false"/>
@@ -63,8 +63,10 @@
     <config-file platform="ios" parent="CFBundleLocalizations" target="*-Info.plist">
       <array>
         <string>en</string>
+        <string>kr</string>
       </array>
     </config-file>
+    <preference name="orientation" value="portrait" />
   </platform>
   <platform name="android">
     <icon src="/res/android/icon/ldpi.png" density="ldpi"/>
