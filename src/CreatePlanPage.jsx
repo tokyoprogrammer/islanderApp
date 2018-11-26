@@ -22,7 +22,7 @@ export default class CreatePlanPage extends React.Component {
     let schedule = JSON.parse(localStorage.getItem("flightScheduleInfo"));
     let arrivalTime = new Date(schedule.arrivalTime);
     let departureTime = new Date(schedule.departureTime);
-    days = departureTime.getDate() - arrivalTime.getDate() + 1;
+    days = this.getAccomodationDate(arrivalTime, departureTime) + 1;
 
     let accomodationInfo = JSON.parse(localStorage.getItem("accomodationInfo"));
     let accomodationArr = [];
@@ -65,6 +65,17 @@ export default class CreatePlanPage extends React.Component {
       lng: "126.491353"
     };
     this.makePlan();
+  }
+
+  getAccomodationDate(startDate, endDate){
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    let diff = Math.abs(start - end);
+    let accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
+
+    return accomodationDate;
   }
 
   showMenu() {

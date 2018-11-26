@@ -45,7 +45,7 @@ export default class PlanView extends React.Component {
     let days = 0;
     let arrivalTime = new Date(schedule.arrivalTime);
     let departureTime = new Date(schedule.departureTime);
-    days = departureTime.getDate() - arrivalTime.getDate() + 1;
+    days = this.getAccomodationDate(arrivalTime, departureTime) + 1;
 
     let accomodationInfo = localStoragePlan.accomodationInfo;
     let accomodationArr = [];
@@ -151,6 +151,18 @@ export default class PlanView extends React.Component {
       this_.setState({});
     });
   }
+
+  getAccomodationDate(startDate, endDate){
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    let diff = Math.abs(start - end);
+    let accomodationDate = parseInt(Math.floor(diff/(1000 * 60 * 60 * 24)));
+
+    return accomodationDate;
+  }
+
 
   componentDidUpdate(prevProps) {
     let lang = localStorage.getItem("lang");
